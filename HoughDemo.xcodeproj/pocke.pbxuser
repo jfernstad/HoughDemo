@@ -1,0 +1,612 @@
+// !$*UTF8*$!
+{
+	1D3623240D0F684500981E51 /* HoughDemoAppDelegate.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1427, 1094}}";
+			sepNavSelRange = "{299, 0}";
+			sepNavVisRange = "{0, 608}";
+		};
+	};
+	1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {3035.5, 1407}}";
+			sepNavSelRange = "{512, 0}";
+			sepNavVisRange = "{0, 858}";
+		};
+	};
+	1D6058900D05DD3D006BFB54 /* HoughDemo */ = {
+		activeExec = 0;
+		executables = (
+			83CBB18B13198F3F0092FE93 /* HoughDemo */,
+		);
+	};
+	28D7ACF60DDB3853001CB0EB /* HoughDemoViewController.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1427, 1069}}";
+			sepNavSelRange = "{662, 14}";
+			sepNavVisRange = "{0, 1014}";
+			sepNavWindowFrame = "{{15, 226}, {1780, 1187}}";
+		};
+	};
+	28D7ACF70DDB3853001CB0EB /* HoughDemoViewController.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1427, 2520}}";
+			sepNavSelRange = "{292, 0}";
+			sepNavVisRange = "{3, 1302}";
+		};
+	};
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = 83CBB18B13198F3F0092FE93 /* HoughDemo */;
+		activeSDKPreference = iphonesimulator4.2;
+		activeTarget = 1D6058900D05DD3D006BFB54 /* HoughDemo */;
+		addToTargets = (
+			1D6058900D05DD3D006BFB54 /* HoughDemo */,
+		);
+		breakpoints = (
+			83CBB24C1319BD9E0092FE93 /* HoughDemoViewController.m:97 */,
+			83A7D70D1319D897004AD2CF /* Hough.m:183 */,
+			83A7D7371319DA63004AD2CF /* Hough.m:130 */,
+			83A7D7861319DFE3004AD2CF /* Hough.m:179 */,
+			83A7D8BC131A0C22004AD2CF /* HoughDemoAppDelegate.m:26 */,
+			831BFCA3132C393F00019FBD /* Hough.m:155 */,
+			831BFCA5132C398900019FBD /* Hough.m:123 */,
+		);
+		codeSenseManager = 83CBB19713198F5D0092FE93 /* Code sense */;
+		executables = (
+			83CBB18B13198F3F0092FE93 /* HoughDemo */,
+		);
+		expressions = (
+			houghSpace,
+			dataProvider,
+		);
+		perUserDictionary = {
+			"PBXConfiguration.PBXBreakpointsDataSource.v1:1CA23EDF0692099D00951B8B" = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXBreakpointsDataSource_BreakpointID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					20,
+					10,
+					20,
+					10,
+					10,
+					10,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXBreakpointsDataSource_ActionID,
+					PBXBreakpointsDataSource_TypeID,
+					PBXBreakpointsDataSource_BreakpointID,
+					PBXBreakpointsDataSource_UseID,
+					PBXBreakpointsDataSource_LocationID,
+					PBXBreakpointsDataSource_ConditionID,
+					PBXBreakpointsDataSource_IgnoreCountID,
+					PBXBreakpointsDataSource_ContinueID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					1249,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 321751432;
+			PBXWorkspaceStateSaveDate = 321751432;
+		};
+		perUserProjectItems = {
+			831BFC64132C061200019FBD /* PBXTextBookmark */ = 831BFC64132C061200019FBD /* PBXTextBookmark */;
+			831BFC65132C061200019FBD /* PBXTextBookmark */ = 831BFC65132C061200019FBD /* PBXTextBookmark */;
+			831BFD53132C701500019FBD /* PBXTextBookmark */ = 831BFD53132C701500019FBD /* PBXTextBookmark */;
+			831BFD5F132C71C700019FBD /* PBXTextBookmark */ = 831BFD5F132C71C700019FBD /* PBXTextBookmark */;
+			838E9E90132D959300BF3E25 /* PBXTextBookmark */ = 838E9E90132D959300BF3E25 /* PBXTextBookmark */;
+			838E9EB9132D9E4900BF3E25 /* PBXTextBookmark */ = 838E9EB9132D9E4900BF3E25 /* PBXTextBookmark */;
+			838E9EBA132D9E4900BF3E25 /* PBXTextBookmark */ = 838E9EBA132D9E4900BF3E25 /* PBXTextBookmark */;
+			838E9EBB132D9E4900BF3E25 /* PBXTextBookmark */ = 838E9EBB132D9E4900BF3E25 /* PBXTextBookmark */;
+			838E9EBC132D9E4900BF3E25 /* PBXTextBookmark */ = 838E9EBC132D9E4900BF3E25 /* PBXTextBookmark */;
+			838E9EBD132D9E4900BF3E25 /* PBXTextBookmark */ = 838E9EBD132D9E4900BF3E25 /* PBXTextBookmark */;
+			838E9ED6132DA25C00BF3E25 /* PBXTextBookmark */ = 838E9ED6132DA25C00BF3E25 /* PBXTextBookmark */;
+			83A7D6A01319C5F8004AD2CF /* PBXTextBookmark */ = 83A7D6A01319C5F8004AD2CF /* PBXTextBookmark */;
+			83A7D6A21319C5F8004AD2CF /* PBXTextBookmark */ = 83A7D6A21319C5F8004AD2CF /* PBXTextBookmark */;
+			83A7D6A41319C5F8004AD2CF /* PBXTextBookmark */ = 83A7D6A41319C5F8004AD2CF /* PBXTextBookmark */;
+			83A7D6A61319C5F8004AD2CF /* PBXTextBookmark */ = 83A7D6A61319C5F8004AD2CF /* PBXTextBookmark */;
+			83A7D6A81319C5F8004AD2CF /* PBXTextBookmark */ = 83A7D6A81319C5F8004AD2CF /* PBXTextBookmark */;
+			83A7D6AA1319C5F8004AD2CF /* PBXTextBookmark */ = 83A7D6AA1319C5F8004AD2CF /* PBXTextBookmark */;
+			83A7D8031319EDE7004AD2CF /* PBXTextBookmark */ = 83A7D8031319EDE7004AD2CF /* PBXTextBookmark */;
+			83A7D8361319F32E004AD2CF /* PlistBookmark */ = 83A7D8361319F32E004AD2CF /* PlistBookmark */;
+			83A7D8561319F94B004AD2CF /* PBXTextBookmark */ = 83A7D8561319F94B004AD2CF /* PBXTextBookmark */;
+		};
+		sourceControlManager = 83CBB19613198F5D0092FE93 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	29B97316FDCFA39411CA2CEA /* main.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1709, 663}}";
+			sepNavSelRange = "{265, 0}";
+			sepNavVisRange = "{0, 364}";
+		};
+	};
+	831BFC64132C061200019FBD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1D3623240D0F684500981E51 /* HoughDemoAppDelegate.h */;
+		name = "HoughDemoAppDelegate.h: 14";
+		rLen = 0;
+		rLoc = 299;
+		rType = 0;
+		vrLen = 608;
+		vrLoc = 0;
+	};
+	831BFC65132C061200019FBD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */;
+		name = "HoughDemoAppDelegate.m: 23";
+		rLen = 0;
+		rLoc = 512;
+		rType = 0;
+		vrLen = 1617;
+		vrLoc = 506;
+	};
+	831BFCA3132C393F00019FBD /* Hough.m:155 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 83CBB2251319B9160092FE93 /* Hough.m */;
+		functionName = "-newHoughImageFromCurves";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 155;
+		location = HoughDemo;
+		modificationTime = 321757730.584323;
+		originalNumberOfMultipleMatches = 1;
+		state = 2;
+	};
+	831BFCA5132C398900019FBD /* Hough.m:123 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 83CBB2251319B9160092FE93 /* Hough.m */;
+		functionName = "-createCurvesForPoints:";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 123;
+		location = HoughDemo;
+		modificationTime = 321757730.58467;
+		originalNumberOfMultipleMatches = 1;
+		state = 2;
+	};
+	831BFCBE132C445E00019FBD /* HoughTouchView.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1427, 1043}}";
+			sepNavSelRange = "{288, 0}";
+			sepNavVisRange = "{0, 495}";
+		};
+	};
+	831BFCBF132C445E00019FBD /* HoughTouchView.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1427, 1890}}";
+			sepNavSelRange = "{639, 0}";
+			sepNavVisRange = "{884, 1225}";
+		};
+	};
+	831BFD53132C701500019FBD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 28D7ACF60DDB3853001CB0EB /* HoughDemoViewController.h */;
+		name = "HoughDemoViewController.h: 31";
+		rLen = 14;
+		rLoc = 662;
+		rType = 0;
+		vrLen = 1014;
+		vrLoc = 0;
+	};
+	831BFD5F132C71C700019FBD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 28D7ACF70DDB3853001CB0EB /* HoughDemoViewController.m */;
+		name = "HoughDemoViewController.m: 13";
+		rLen = 0;
+		rLoc = 292;
+		rType = 0;
+		vrLen = 1302;
+		vrLoc = 3;
+	};
+	838E9E90132D959300BF3E25 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 83CBB2241319B9160092FE93 /* Hough.h */;
+		name = "Hough.h: 22";
+		rLen = 18;
+		rLoc = 418;
+		rType = 0;
+		vrLen = 498;
+		vrLoc = 0;
+	};
+	838E9EB9132D9E4900BF3E25 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 83CBB19D131997300092FE93 /* HoughInputView.h */;
+		name = "HoughInputView.h: 28";
+		rLen = 0;
+		rLoc = 508;
+		rType = 0;
+		vrLen = 846;
+		vrLoc = 0;
+	};
+	838E9EBA132D9E4900BF3E25 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 83CBB2251319B9160092FE93 /* Hough.m */;
+		name = "Hough.m: 92";
+		rLen = 7;
+		rLoc = 2057;
+		rType = 0;
+		vrLen = 1279;
+		vrLoc = 1874;
+	};
+	838E9EBB132D9E4900BF3E25 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 831BFCBE132C445E00019FBD /* HoughTouchView.h */;
+		name = "HoughTouchView.h: 16";
+		rLen = 0;
+		rLoc = 288;
+		rType = 0;
+		vrLen = 495;
+		vrLoc = 0;
+	};
+	838E9EBC132D9E4900BF3E25 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 831BFCBF132C445E00019FBD /* HoughTouchView.m */;
+		name = "HoughTouchView.m: 24";
+		rLen = 0;
+		rLoc = 639;
+		rType = 0;
+		vrLen = 1225;
+		vrLoc = 884;
+	};
+	838E9EBD132D9E4900BF3E25 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 83CBB19E131997300092FE93 /* HoughInputView.m */;
+		name = "HoughInputView.m: 76";
+		rLen = 0;
+		rLoc = 2162;
+		rType = 0;
+		vrLen = 1397;
+		vrLoc = 1035;
+	};
+	838E9ED6132DA25C00BF3E25 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 83CBB19E131997300092FE93 /* HoughInputView.m */;
+		name = "HoughInputView.m: 151";
+		rLen = 0;
+		rLoc = 4249;
+		rType = 0;
+		vrLen = 1351;
+		vrLoc = 3348;
+	};
+	83A7D6A01319C5F8004AD2CF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 83A7D6A11319C5F8004AD2CF /* Accelerate.h */;
+		name = "Accelerate.h: 16";
+		rLen = 0;
+		rLoc = 396;
+		rType = 0;
+		vrLen = 504;
+		vrLoc = 0;
+	};
+	83A7D6A11319C5F8004AD2CF /* Accelerate.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = Accelerate.h;
+		path = /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/Accelerate.framework/Headers/Accelerate.h;
+		sourceTree = "<absolute>";
+	};
+	83A7D6A21319C5F8004AD2CF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 83A7D6A31319C5F8004AD2CF /* vForce.h */;
+		name = "vForce.h: 207";
+		rLen = 125;
+		rLoc = 9048;
+		rType = 0;
+		vrLen = 1420;
+		vrLoc = 20659;
+	};
+	83A7D6A31319C5F8004AD2CF /* vForce.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = vForce.h;
+		path = /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers/vForce.h;
+		sourceTree = "<absolute>";
+	};
+	83A7D6A41319C5F8004AD2CF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 83A7D6A51319C5F8004AD2CF /* stdio.h */;
+		name = "stdio.h: 291";
+		rLen = 99;
+		rLoc = 11104;
+		rType = 0;
+		vrLen = 2131;
+		vrLoc = 10283;
+	};
+	83A7D6A51319C5F8004AD2CF /* stdio.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = stdio.h;
+		path = /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/usr/include/stdio.h;
+		sourceTree = "<absolute>";
+	};
+	83A7D6A61319C5F8004AD2CF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 83A7D6A71319C5F8004AD2CF /* vecLib.h */;
+		name = "vecLib.h: 37";
+		rLen = 3;
+		rLoc = 684;
+		rType = 0;
+		vrLen = 831;
+		vrLoc = 36;
+	};
+	83A7D6A71319C5F8004AD2CF /* vecLib.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = vecLib.h;
+		path = /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers/vecLib.h;
+		sourceTree = "<absolute>";
+	};
+	83A7D6A81319C5F8004AD2CF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 83A7D6A91319C5F8004AD2CF /* vfp.h */;
+		name = "vfp.h: 324";
+		rLen = 6;
+		rLoc = 11617;
+		rType = 0;
+		vrLen = 1834;
+		vrLoc = 10847;
+	};
+	83A7D6A91319C5F8004AD2CF /* vfp.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = vfp.h;
+		path = /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers/vfp.h;
+		sourceTree = "<absolute>";
+	};
+	83A7D6AA1319C5F8004AD2CF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 83A7D6AB1319C5F8004AD2CF /* vecLibTypes.h */;
+		name = "vecLibTypes.h: 149";
+		rLen = 70;
+		rLoc = 6429;
+		rType = 0;
+		vrLen = 2509;
+		vrLoc = 4207;
+	};
+	83A7D6AB1319C5F8004AD2CF /* vecLibTypes.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = vecLibTypes.h;
+		path = /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers/vecLibTypes.h;
+		sourceTree = "<absolute>";
+	};
+	83A7D70D1319D897004AD2CF /* Hough.m:183 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 83CBB2251319B9160092FE93 /* Hough.m */;
+		functionName = "-creataeHoughImageFromCurves";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 183;
+		location = HoughDemo;
+		modificationTime = 321757730.583127;
+		originalNumberOfMultipleMatches = 1;
+		state = 2;
+	};
+	83A7D7371319DA63004AD2CF /* Hough.m:130 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 83CBB2251319B9160092FE93 /* Hough.m */;
+		functionName = "-createCurvesForPoints:";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 130;
+		location = HoughDemo;
+		modificationTime = 321757730.583446;
+		originalNumberOfMultipleMatches = 1;
+		state = 2;
+	};
+	83A7D7861319DFE3004AD2CF /* Hough.m:179 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 83CBB2251319B9160092FE93 /* Hough.m */;
+		functionName = "-newHoughImageFromCurves";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 179;
+		location = HoughDemo;
+		modificationTime = 321757730.583778;
+		originalNumberOfMultipleMatches = 1;
+		state = 2;
+	};
+	83A7D8031319EDE7004AD2CF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 29B97316FDCFA39411CA2CEA /* main.m */;
+		name = "main.m: 14";
+		rLen = 0;
+		rLoc = 265;
+		rType = 0;
+		vrLen = 364;
+		vrLoc = 0;
+	};
+	83A7D8361319F32E004AD2CF /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = 8D1107310486CEB800E47090 /* HoughDemo-Info.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+			UIFileSharingEnabled,
+		);
+		name = "/Users/pocke/Projects/HoughDemo/HoughDemo-Info.plist";
+		rLen = 0;
+		rLoc = 9223372036854775808;
+	};
+	83A7D8561319F94B004AD2CF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 83A7D8571319F94B004AD2CF /* NSDate.h */;
+		name = "NSDate.h: 15";
+		rLen = 51;
+		rLoc = 299;
+		rType = 0;
+		vrLen = 1767;
+		vrLoc = 0;
+	};
+	83A7D8571319F94B004AD2CF /* NSDate.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = NSDate.h;
+		path = /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSDate.h;
+		sourceTree = "<absolute>";
+	};
+	83A7D8BC131A0C22004AD2CF /* HoughDemoAppDelegate.m:26 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */;
+		functionName = "-application:didFinishLaunchingWithOptions:";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 26;
+		location = HoughDemo;
+		modificationTime = 321757730.584088;
+		originalNumberOfMultipleMatches = 1;
+		state = 2;
+	};
+	83CBB18B13198F3F0092FE93 /* HoughDemo */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = HoughDemo;
+		savedGlobals = {
+		};
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+		variableFormatDictionary = {
+		};
+	};
+	83CBB19613198F5D0092FE93 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	83CBB19713198F5D0092FE93 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	83CBB19D131997300092FE93 /* HoughInputView.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1427, 1043}}";
+			sepNavSelRange = "{508, 0}";
+			sepNavVisRange = "{0, 846}";
+		};
+	};
+	83CBB19E131997300092FE93 /* HoughInputView.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1709, 3759}}";
+			sepNavSelRange = "{4133, 0}";
+			sepNavVisRange = "{3805, 886}";
+		};
+	};
+	83CBB2241319B9160092FE93 /* Hough.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1427, 1091}}";
+			sepNavSelRange = "{418, 18}";
+			sepNavVisRange = "{0, 498}";
+		};
+	};
+	83CBB2251319B9160092FE93 /* Hough.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1442.47, 4515}}";
+			sepNavSelRange = "{2057, 7}";
+			sepNavVisRange = "{1874, 1279}";
+			sepNavWindowFrame = "{{15, 226}, {1780, 1187}}";
+		};
+	};
+	83CBB24C1319BD9E0092FE93 /* HoughDemoViewController.m:97 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 28D7ACF70DDB3853001CB0EB /* HoughDemoViewController.m */;
+		functionName = "-updateInputWithPoints:";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 97;
+		location = HoughDemo;
+		modificationTime = 321757730.582528;
+		originalNumberOfMultipleMatches = 1;
+		state = 2;
+	};
+}

@@ -1,0 +1,2 @@
+/Users/pocke/Projects/HoughDemo/Classes/HoughDemoViewController.m:123: warning: property 'touchView' requires method '-touchView' to be defined - use @synthesize, @dynamic or provide a method implementation
+/Users/pocke/Projects/HoughDemo/Classes/HoughDemoViewController.m:123: warning: property 'touchView' requires the method 'setTouchView:' to be defined - use @synthesize, @dynamic or provide a method implementation

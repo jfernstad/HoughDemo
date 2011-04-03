@@ -1,0 +1,395 @@
+THoughDemo
+v7
+r0
+t320464683.570113
+cCheck dependencies
+cCpResource build/Debug-iphoneos/HoughDemo.app/ResourceRules.plist /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/ResourceRules.plist
+cProcessInfoPlistFile /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/Info.plist HoughDemo-Info.plist
+cCompileXIB /Users/pocke/Projects/HoughDemo/MainWindow.xib
+cCompileXIB /Users/pocke/Projects/HoughDemo/HoughDemoViewController.xib
+cProcessPCH /var/folders/o+/o+VUqluREkGw8qV57RLnSU+++TM/-Caches-/com.apple.Xcode.502/SharedPrecompiledHeaders/HoughDemo_Prefix-feuniepeglyubbazblayzclkgofq/HoughDemo_Prefix.pch.gch HoughDemo_Prefix.pch normal armv7 objective-c com.apple.compilers.gcc.4_2
+cCompileC build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/main.o /Users/pocke/Projects/HoughDemo/main.m normal armv7 objective-c com.apple.compilers.gcc.4_2
+cCompileC build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughDemoAppDelegate.o /Users/pocke/Projects/HoughDemo/Classes/HoughDemoAppDelegate.m normal armv7 objective-c com.apple.compilers.gcc.4_2
+cCompileC build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughDemoViewController.o /Users/pocke/Projects/HoughDemo/Classes/HoughDemoViewController.m normal armv7 objective-c com.apple.compilers.gcc.4_2
+cCompileC build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughInputView.o /Users/pocke/Projects/HoughDemo/Classes/HoughInputView.m normal armv7 objective-c com.apple.compilers.gcc.4_2
+cCompileC build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/Hough.o /Users/pocke/Projects/HoughDemo/Classes/Hough.m normal armv7 objective-c com.apple.compilers.gcc.4_2
+cLd /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/HoughDemo normal armv7
+cGenerateDSYMFile /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app.dSYM /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/HoughDemo
+cProcessProductPackaging "/Users/pocke/Library/MobileDevice/Provisioning Profiles/E456D5FF-01FB-44D0-ADFC-E95680F78091.mobileprovision" /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/embedded.mobileprovision
+cTouch /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app
+cProcessProductPackaging /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/Entitlements.plist /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo.xcent
+cCodeSign /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app
+
+N/Users/pocke/Library/MobileDevice/Provisioning Profiles/E456D5FF-01FB-44D0-ADFC-E95680F78091.mobileprovision
+c000000004D698A4D0000000000001C4A
+t1298762317
+s7242
+
+N/Users/pocke/Projects/HoughDemo/Classes/Hough.h
+c000000004D69A7CE00000000000001E1
+t1298769870
+s481
+i<Foundation/Foundation.h>
+
+N/Users/pocke/Projects/HoughDemo/Classes/Hough.m
+c000000004D69AEEB000000000000137A
+t1298771691
+s4986
+i"Hough.h"
+i<Accelerate/Accelerate.h>
+
+N/Users/pocke/Projects/HoughDemo/Classes/HoughDemoAppDelegate.h
+c000000004D69605F00000000000001EC
+t1298751583
+s492
+i<UIKit/UIKit.h>
+
+N/Users/pocke/Projects/HoughDemo/Classes/HoughDemoAppDelegate.m
+c000000004D6957BF00000000000007BF
+t1298749375
+s1983
+i"HoughDemoAppDelegate.h"
+i"HoughDemoViewController.h"
+
+N/Users/pocke/Projects/HoughDemo/Classes/HoughDemoViewController.h
+c000000004D69894A0000000000000300
+t1298762058
+s768
+i<UIKit/UIKit.h>
+i"HoughInputView.h"
+
+N/Users/pocke/Projects/HoughDemo/Classes/HoughDemoViewController.m
+c000000004D69A7C10000000000000874
+t1298769857
+s2164
+i"HoughDemoViewController.h"
+i"Hough.h"
+
+N/Users/pocke/Projects/HoughDemo/Classes/HoughInputView.h
+c000000004D69712700000000000002D0
+t1298755879
+s720
+i<UIKit/UIKit.h>
+
+N/Users/pocke/Projects/HoughDemo/Classes/HoughInputView.m
+c000000004D6971550000000000000B37
+t1298755925
+s2871
+i"HoughInputView.h"
+
+N/Users/pocke/Projects/HoughDemo/HoughDemoViewController.xib
+c000000004D6989610000000000005D0C
+t1298762081
+s23820
+
+N/Users/pocke/Projects/HoughDemo/HoughDemo_Prefix.pch
+c000000004D6957BF00000000000000BB
+t1298749375
+s187
+i<Foundation/Foundation.h>
+i<UIKit/UIKit.h>
+
+N/Users/pocke/Projects/HoughDemo/MainWindow.xib
+c000000004D6957BF0000000000004D1D
+t1298749375
+s19741
+
+N/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app
+t1298771883
+s374
+
+N/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app.dSYM
+t1298771883
+s102
+
+N/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/HoughDemo
+t1298771883
+s38176
+
+N/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/HoughDemoViewController.nib
+t1298771882
+s1891
+
+N/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/Info.plist
+t1298771882
+s996
+
+N/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/MainWindow.nib
+t1298771882
+s1127
+
+N/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/PkgInfo
+t1298771882
+s8
+
+N/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/ResourceRules.plist
+t1298771882
+s485
+
+N/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/embedded.mobileprovision
+t1298771883
+s7242
+
+N/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo.xcent
+t1298771883
+s424
+
+N/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/Hough.o
+t1298771883
+s23304
+
+N/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughDemo.LinkFileList
+c000000004D69AFAA0000000000000263
+t1298771882
+s611
+
+N/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughDemoAppDelegate.o
+t1298771883
+s50792
+
+N/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughDemoViewController.o
+t1298771883
+s46884
+
+N/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughInputView.o
+t1298771883
+s49560
+
+N/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/main.o
+t1298771883
+s6412
+
+N/Users/pocke/Projects/HoughDemo/main.m
+c000000004D6957BF000000000000016C
+t1298749375
+s364
+i<UIKit/UIKit.h>
+
+N/XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk
+c000000004CC7DC9E0000000000000110
+t1288166558
+s272
+
+N/XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/Entitlements.plist
+c000000004CB3DFCF00000000000001A7
+t1286856655
+s423
+
+N/XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/ResourceRules.plist
+c000000004CB3DFCF00000000000001E5
+t1286856655
+s485
+
+N/XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/Accelerate.framework/Accelerate
+c000000004CC10A5C0000000000004180
+t1287719516
+s16768
+
+N/XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/Accelerate.framework/Headers/Accelerate.h
+c000000004CC10A5C00000000000001F8
+t1287719516
+s504
+
+N/XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics
+c000000004CC10EF500000000003532B0
+t1287720693
+s3486384
+
+N/XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/Foundation.framework/Foundation
+c000000004CC10F4700000000003E1F20
+t1287720775
+s4071200
+
+N/XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/Foundation.framework/Headers/Foundation.h
+c000000004CC10F1C0000000000001466
+t1287720732
+s5222
+
+N/XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIKit.h
+c000000004CC11AE60000000000000AA1
+t1287723750
+s2721
+
+N/XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/UIKit.framework/UIKit
+c000000004CC11B750000000000C769F0
+t1287723893
+s13068784
+
+N/var/folders/o+/o+VUqluREkGw8qV57RLnSU+++TM/-Caches-/com.apple.Xcode.502/SharedPrecompiledHeaders/HoughDemo_Prefix-feuniepeglyubbazblayzclkgofq/HoughDemo_Prefix.pch.gch
+t1298771883
+s10446552
+
+NHoughDemo-Info.plist
+c000000004D6957BF00000000000004D6
+t1298749375
+s1238
+
+CCheck dependencies
+r0
+lSLF07#2@18"Check dependencies320464682#320464682#0(0"0(0#1#0"8694493856#0"0#
+
+CCodeSign /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app
+s320464683.454501
+e320464683.570087
+r1
+xCodeSign
+x/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app
+lSLF07#2@43"CodeSign build/Debug-iphoneos/HoughDemo.app320464683#320464683#0(0"0(0#0#66"/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app8660776864#630"    cd /Users/pocke/Projects/HoughDemo    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    setenv _CODESIGN_ALLOCATE_ /XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate    /usr/bin/codesign -f -s "iPhone Developer: Joakim Fernstad (S8PJ9N4JZW)" --resource-rules=/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/ResourceRules.plist --entitlements /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo.xcent /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app0#
+
+CCompileC build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/Hough.o /Users/pocke/Projects/HoughDemo/Classes/Hough.m normal armv7 objective-c com.apple.compilers.gcc.4_2
+s320464683.097190
+e320464683.319317
+r1
+xCompileC
+xbuild/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/Hough.o
+x/Users/pocke/Projects/HoughDemo/Classes/Hough.m
+xnormal
+xarmv7
+xobjective-c
+xcom.apple.compilers.gcc.4_2
+lSLF07#2@55"Compile /Users/pocke/Projects/HoughDemo/Classes/Hough.m320464683#320464683#0(0"0(0#0#47"/Users/pocke/Projects/HoughDemo/Classes/Hough.m8711987552#1693"    cd /Users/pocke/Projects/HoughDemo    setenv LANG en_US.US-ASCII    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc-4.2 -x objective-c -arch armv7 -fmessage-length=0 -pipe -std=c99 -Wno-trigraphs -fpascal-strings -O0 -Wreturn-type -Wunused-variable -isysroot /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk -fvisibility=hidden -gdwarf-2 -mthumb -miphoneos-version-min=4.2 -iquote /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-generated-files.hmap -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-own-target-headers.hmap -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-all-target-headers.hmap -iquote /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-project-headers.hmap -F/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos -I/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/include -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/DerivedSources/armv7 -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/DerivedSources -include /var/folders/o+/o+VUqluREkGw8qV57RLnSU+++TM/-Caches-/com.apple.Xcode.502/SharedPrecompiledHeaders/HoughDemo_Prefix-feuniepeglyubbazblayzclkgofq/HoughDemo_Prefix.pch -c /Users/pocke/Projects/HoughDemo/Classes/Hough.m -o /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/Hough.o0#
+
+CCompileC build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughDemoAppDelegate.o /Users/pocke/Projects/HoughDemo/Classes/HoughDemoAppDelegate.m normal armv7 objective-c com.apple.compilers.gcc.4_2
+s320464683.047239
+e320464683.127786
+r1
+xCompileC
+xbuild/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughDemoAppDelegate.o
+x/Users/pocke/Projects/HoughDemo/Classes/HoughDemoAppDelegate.m
+xnormal
+xarmv7
+xobjective-c
+xcom.apple.compilers.gcc.4_2
+lSLF07#2@70"Compile /Users/pocke/Projects/HoughDemo/Classes/HoughDemoAppDelegate.m320464683#320464683#0(0"0(0#0#62"/Users/pocke/Projects/HoughDemo/Classes/HoughDemoAppDelegate.m8672490720#1723"    cd /Users/pocke/Projects/HoughDemo    setenv LANG en_US.US-ASCII    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc-4.2 -x objective-c -arch armv7 -fmessage-length=0 -pipe -std=c99 -Wno-trigraphs -fpascal-strings -O0 -Wreturn-type -Wunused-variable -isysroot /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk -fvisibility=hidden -gdwarf-2 -mthumb -miphoneos-version-min=4.2 -iquote /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-generated-files.hmap -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-own-target-headers.hmap -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-all-target-headers.hmap -iquote /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-project-headers.hmap -F/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos -I/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/include -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/DerivedSources/armv7 -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/DerivedSources -include /var/folders/o+/o+VUqluREkGw8qV57RLnSU+++TM/-Caches-/com.apple.Xcode.502/SharedPrecompiledHeaders/HoughDemo_Prefix-feuniepeglyubbazblayzclkgofq/HoughDemo_Prefix.pch -c /Users/pocke/Projects/HoughDemo/Classes/HoughDemoAppDelegate.m -o /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughDemoAppDelegate.o0#
+
+CCompileC build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughDemoViewController.o /Users/pocke/Projects/HoughDemo/Classes/HoughDemoViewController.m normal armv7 objective-c com.apple.compilers.gcc.4_2
+s320464683.047923
+e320464683.133996
+r1
+xCompileC
+xbuild/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughDemoViewController.o
+x/Users/pocke/Projects/HoughDemo/Classes/HoughDemoViewController.m
+xnormal
+xarmv7
+xobjective-c
+xcom.apple.compilers.gcc.4_2
+lSLF07#2@73"Compile /Users/pocke/Projects/HoughDemo/Classes/HoughDemoViewController.m320464683#320464683#0(0"0(0#0#65"/Users/pocke/Projects/HoughDemo/Classes/HoughDemoViewController.m8667485952#1729"    cd /Users/pocke/Projects/HoughDemo    setenv LANG en_US.US-ASCII    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc-4.2 -x objective-c -arch armv7 -fmessage-length=0 -pipe -std=c99 -Wno-trigraphs -fpascal-strings -O0 -Wreturn-type -Wunused-variable -isysroot /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk -fvisibility=hidden -gdwarf-2 -mthumb -miphoneos-version-min=4.2 -iquote /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-generated-files.hmap -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-own-target-headers.hmap -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-all-target-headers.hmap -iquote /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-project-headers.hmap -F/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos -I/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/include -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/DerivedSources/armv7 -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/DerivedSources -include /var/folders/o+/o+VUqluREkGw8qV57RLnSU+++TM/-Caches-/com.apple.Xcode.502/SharedPrecompiledHeaders/HoughDemo_Prefix-feuniepeglyubbazblayzclkgofq/HoughDemo_Prefix.pch -c /Users/pocke/Projects/HoughDemo/Classes/HoughDemoViewController.m -o /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughDemoViewController.o0#
+
+CCompileC build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughInputView.o /Users/pocke/Projects/HoughDemo/Classes/HoughInputView.m normal armv7 objective-c com.apple.compilers.gcc.4_2
+s320464683.048631
+e320464683.240755
+r1
+xCompileC
+xbuild/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughInputView.o
+x/Users/pocke/Projects/HoughDemo/Classes/HoughInputView.m
+xnormal
+xarmv7
+xobjective-c
+xcom.apple.compilers.gcc.4_2
+lSLF07#2@64"Compile /Users/pocke/Projects/HoughDemo/Classes/HoughInputView.m320464683#320464683#0(0"0(0#0#56"/Users/pocke/Projects/HoughDemo/Classes/HoughInputView.m8660725888#1711"    cd /Users/pocke/Projects/HoughDemo    setenv LANG en_US.US-ASCII    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc-4.2 -x objective-c -arch armv7 -fmessage-length=0 -pipe -std=c99 -Wno-trigraphs -fpascal-strings -O0 -Wreturn-type -Wunused-variable -isysroot /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk -fvisibility=hidden -gdwarf-2 -mthumb -miphoneos-version-min=4.2 -iquote /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-generated-files.hmap -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-own-target-headers.hmap -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-all-target-headers.hmap -iquote /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-project-headers.hmap -F/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos -I/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/include -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/DerivedSources/armv7 -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/DerivedSources -include /var/folders/o+/o+VUqluREkGw8qV57RLnSU+++TM/-Caches-/com.apple.Xcode.502/SharedPrecompiledHeaders/HoughDemo_Prefix-feuniepeglyubbazblayzclkgofq/HoughDemo_Prefix.pch -c /Users/pocke/Projects/HoughDemo/Classes/HoughInputView.m -o /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughInputView.o0#
+
+CCompileC build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/main.o /Users/pocke/Projects/HoughDemo/main.m normal armv7 objective-c com.apple.compilers.gcc.4_2
+s320464683.046419
+e320464683.097109
+r1
+xCompileC
+xbuild/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/main.o
+x/Users/pocke/Projects/HoughDemo/main.m
+xnormal
+xarmv7
+xobjective-c
+xcom.apple.compilers.gcc.4_2
+lSLF07#2@46"Compile /Users/pocke/Projects/HoughDemo/main.m320464683#320464683#0(0"0(0#0#38"/Users/pocke/Projects/HoughDemo/main.m8692846144#1683"    cd /Users/pocke/Projects/HoughDemo    setenv LANG en_US.US-ASCII    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc-4.2 -x objective-c -arch armv7 -fmessage-length=0 -pipe -std=c99 -Wno-trigraphs -fpascal-strings -O0 -Wreturn-type -Wunused-variable -isysroot /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk -fvisibility=hidden -gdwarf-2 -mthumb -miphoneos-version-min=4.2 -iquote /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-generated-files.hmap -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-own-target-headers.hmap -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-all-target-headers.hmap -iquote /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-project-headers.hmap -F/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos -I/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/include -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/DerivedSources/armv7 -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/DerivedSources -include /var/folders/o+/o+VUqluREkGw8qV57RLnSU+++TM/-Caches-/com.apple.Xcode.502/SharedPrecompiledHeaders/HoughDemo_Prefix-feuniepeglyubbazblayzclkgofq/HoughDemo_Prefix.pch -c /Users/pocke/Projects/HoughDemo/main.m -o /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/main.o0#
+
+CCompileXIB /Users/pocke/Projects/HoughDemo/HoughDemoViewController.xib
+s320464682.248847
+e320464682.638336
+r1
+xCompileXIB
+x/Users/pocke/Projects/HoughDemo/HoughDemoViewController.xib
+lSLF07#2@38"CompileXIB HoughDemoViewController.xib320464682#320464682#0(0"0(0#0#59"/Users/pocke/Projects/HoughDemo/HoughDemoViewController.xib8690093152#545"    cd /Users/pocke/Projects/HoughDemo    setenv IBC_MINIMUM_COMPATIBILITY_VERSION 4.2    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /XCode4.2/usr/bin/ibtool --errors --warnings --notices --output-format human-readable-text --compile /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/HoughDemoViewController.nib /Users/pocke/Projects/HoughDemo/HoughDemoViewController.xib --sdk /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk0#
+
+CCompileXIB /Users/pocke/Projects/HoughDemo/MainWindow.xib
+s320464682.248274
+e320464682.610195
+r1
+xCompileXIB
+x/Users/pocke/Projects/HoughDemo/MainWindow.xib
+lSLF07#2@25"CompileXIB MainWindow.xib320464682#320464682#0(0"0(0#0#46"/Users/pocke/Projects/HoughDemo/MainWindow.xib8694468736#519"    cd /Users/pocke/Projects/HoughDemo    setenv IBC_MINIMUM_COMPATIBILITY_VERSION 4.2    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /XCode4.2/usr/bin/ibtool --errors --warnings --notices --output-format human-readable-text --compile /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/MainWindow.nib /Users/pocke/Projects/HoughDemo/MainWindow.xib --sdk /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk0#
+
+CCpResource build/Debug-iphoneos/HoughDemo.app/ResourceRules.plist /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/ResourceRules.plist
+s320464682.200562
+e320464682.248217
+r1
+xCpResource
+xbuild/Debug-iphoneos/HoughDemo.app/ResourceRules.plist
+x/XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/ResourceRules.plist
+lSLF07#2@93"Copy /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/ResourceRules.plist320464682#320464682#0(0"0(0#0#88"/XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/ResourceRules.plist8706057280#478"    cd /Users/pocke/Projects/HoughDemo    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /XCode4.2/Library/PrivateFrameworks/DevToolsCore.framework/Resources/pbxcp -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -resolve-src-symlinks /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/ResourceRules.plist /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app0#
+
+CGenerateDSYMFile /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app.dSYM /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/HoughDemo
+s320464683.344870
+e320464683.359800
+r1
+xGenerateDSYMFile
+x/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app.dSYM
+x/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/HoughDemo
+lSLF07#2@101"GenerateDSYMFile build/Debug-iphoneos/HoughDemo.app.dSYM build/Debug-iphoneos/HoughDemo.app/HoughDemo320464683#320464683#0(0"0(0#0#76"/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/HoughDemo8716852096#344"    cd /Users/pocke/Projects/HoughDemo    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /XCode4.2/usr/bin/dsymutil /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/HoughDemo -o /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app.dSYM0#
+
+CLd /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/HoughDemo normal armv7
+s320464683.319394
+e320464683.344753
+r1
+xLd
+x/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/HoughDemo
+xnormal
+xarmv7
+lSLF07#2@81"Link /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/HoughDemo320464683#320464683#0(0"0(0#0#0"8718472768#815"    cd /Users/pocke/Projects/HoughDemo    setenv IPHONEOS_DEPLOYMENT_TARGET 4.2    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc-4.2 -arch armv7 -isysroot /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk -L/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos -F/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos -filelist /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/Objects-normal/armv7/HoughDemo.LinkFileList -dead_strip -miphoneos-version-min=4.2 -framework Foundation -framework UIKit -framework CoreGraphics -framework Accelerate -o /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/HoughDemo0#
+
+CProcessInfoPlistFile /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/Info.plist HoughDemo-Info.plist
+s320464682.201258
+e320464682.244830
+r1
+xProcessInfoPlistFile
+x/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/Info.plist
+xHoughDemo-Info.plist
+lSLF07#2@28"Process HoughDemo-Info.plist320464682#320464682#0(0"0(0#0#52"/Users/pocke/Projects/HoughDemo/HoughDemo-Info.plist8704110976#540"    cd /Users/pocke/Projects/HoughDemo    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    builtin-infoPlistUtility HoughDemo-Info.plist -genpkginfo /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/PkgInfo -expandbuildsettings -format binary -platform iphoneos -resourcerulesfile /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/ResourceRules.plist -o /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/Info.plist0#
+
+CProcessPCH /var/folders/o+/o+VUqluREkGw8qV57RLnSU+++TM/-Caches-/com.apple.Xcode.502/SharedPrecompiledHeaders/HoughDemo_Prefix-feuniepeglyubbazblayzclkgofq/HoughDemo_Prefix.pch.gch HoughDemo_Prefix.pch normal armv7 objective-c com.apple.compilers.gcc.4_2
+s320464682.638475
+e320464683.046336
+r1
+xProcessPCH
+x/var/folders/o+/o+VUqluREkGw8qV57RLnSU+++TM/-Caches-/com.apple.Xcode.502/SharedPrecompiledHeaders/HoughDemo_Prefix-feuniepeglyubbazblayzclkgofq/HoughDemo_Prefix.pch.gch
+xHoughDemo_Prefix.pch
+xnormal
+xarmv7
+xobjective-c
+xcom.apple.compilers.gcc.4_2
+lSLF07#2@31"Precompile HoughDemo_Prefix.pch320464682#320464683#0(0"0(0#0#52"/Users/pocke/Projects/HoughDemo/HoughDemo_Prefix.pch8718232800#1586"    cd /Users/pocke/Projects/HoughDemo    setenv LANG en_US.US-ASCII    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc-4.2 -x objective-c-header -arch armv7 -fmessage-length=0 -pipe -std=c99 -Wno-trigraphs -fpascal-strings -O0 -Wreturn-type -Wunused-variable -isysroot /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk -fvisibility=hidden -gdwarf-2 -mthumb -miphoneos-version-min=4.2 -iquote /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-generated-files.hmap -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-own-target-headers.hmap -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-all-target-headers.hmap -iquote /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo-project-headers.hmap -F/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos -I/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/include -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/DerivedSources/armv7 -I/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/DerivedSources -c /Users/pocke/Projects/HoughDemo/HoughDemo_Prefix.pch -o /var/folders/o+/o+VUqluREkGw8qV57RLnSU+++TM/-Caches-/com.apple.Xcode.502/SharedPrecompiledHeaders/HoughDemo_Prefix-feuniepeglyubbazblayzclkgofq/HoughDemo_Prefix.pch.gch0#
+
+CProcessProductPackaging "/Users/pocke/Library/MobileDevice/Provisioning Profiles/E456D5FF-01FB-44D0-ADFC-E95680F78091.mobileprovision" /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/embedded.mobileprovision
+s320464683.360010
+e320464683.436871
+r1
+xProcessProductPackaging
+x/Users/pocke/Library/MobileDevice/Provisioning Profiles/E456D5FF-01FB-44D0-ADFC-E95680F78091.mobileprovision
+x/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/embedded.mobileprovision
+lSLF07#2@194"ProcessProductPackaging "/Users/pocke/Library/MobileDevice/Provisioning Profiles/E456D5FF-01FB-44D0-ADFC-E95680F78091.mobileprovision" build/Debug-iphoneos/HoughDemo.app/embedded.mobileprovision320464683#320464683#0(0"0(0#0#91"/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/embedded.mobileprovision8712357088#409"    cd /Users/pocke/Projects/HoughDemo    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    <com.apple.tools.product-pkg-utility> "/Users/pocke/Library/MobileDevice/Provisioning Profiles/E456D5FF-01FB-44D0-ADFC-E95680F78091.mobileprovision" -o /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app/embedded.mobileprovision0#
+
+CProcessProductPackaging /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/Entitlements.plist /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo.xcent
+s320464683.439720
+e320464683.454442
+r1
+xProcessProductPackaging
+x/XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/Entitlements.plist
+x/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo.xcent
+lSLF07#2@180"ProcessProductPackaging /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/Entitlements.plist build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo.xcent320464683#320464683#0(0"0(0#0#100"/Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo.xcent8686578368#421"    cd /Users/pocke/Projects/HoughDemo    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    <com.apple.tools.product-pkg-utility> /XCode4.2/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/Entitlements.plist -entitlements -format xml -o /Users/pocke/Projects/HoughDemo/build/HoughDemo.build/Debug-iphoneos/HoughDemo.build/HoughDemo.xcent0#
+
+CTouch /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app
+s320464683.436932
+e320464683.439634
+r1
+xTouch
+x/Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app
+lSLF07#2@72"Touch /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app320464683#320464683#0(0"0(0#0#0"8704182368#250"    cd /Users/pocke/Projects/HoughDemo    setenv PATH "/XCode4.2/Platforms/iPhoneOS.platform/Developer/usr/bin:/XCode4.2/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /usr/bin/touch -c /Users/pocke/Projects/HoughDemo/build/Debug-iphoneos/HoughDemo.app0#
+
