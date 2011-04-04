@@ -18,7 +18,8 @@
 
 @interface HoughInputView : UIView {
 	NSMutableArray* points;
-	
+	UIColor* pointsColor;
+    
 	UITapGestureRecognizer* tap;
 	UIPanGestureRecognizer* pan;
 
@@ -30,6 +31,8 @@
 @property (nonatomic, retain) NSMutableArray* points; // Array of CGPoints
 @property (nonatomic, retain) NSValue* currentPoint; 
 @property (nonatomic, assign) NSObject<HoughInputProtocol>* delegate;
+@property (nonatomic, retain) UIColor* pointsColor;
 
 - (void)clear;
+
 @end

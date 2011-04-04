@@ -16,7 +16,10 @@
 @end
 
 @implementation HoughInputView
-@synthesize points, currentPoint, delegate;
+@synthesize points;
+@synthesize currentPoint;
+@synthesize delegate;
+@synthesize pointsColor;
 
 - (id)initWithFrame:(CGRect)frame {
     
@@ -56,7 +59,7 @@
 	
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	
-	CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
+	CGContextSetStrokeColorWithColor(context, pointsColor.CGColor);
 	CGContextSetLineWidth(context, 3.0);
 
 	CGPoint p;
@@ -75,6 +78,8 @@
 - (void)dealloc {
 	self.points = nil;
 	self.currentPoint = nil;
+    self.pointsColor = nil;
+    self.delegate = nil;
 	
 	[tap release];
 	[pan release];

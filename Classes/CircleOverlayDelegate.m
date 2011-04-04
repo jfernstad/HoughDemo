@@ -38,7 +38,7 @@
     
     CGContextSetStrokeColorWithColor(ctx, markColor.CGColor);
     CGContextSetLineWidth(ctx, 2.0); // TODO: Parametrize
-//    CGContextSetLineCap(ctx, kCGLineCapRound);
+    CGContextSetShadow(ctx, CGSizeMake(3, 3), 1.0);
     
     CGPoint center = CGPointZero;
     for (NSValue* v in self.points) {

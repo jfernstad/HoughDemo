@@ -42,7 +42,7 @@
 //    NSLog(@"layerDelegate is being used!");
     
     CGContextSetStrokeColorWithColor(ctx, lineColor.CGColor);
-    CGContextSetLineWidth(ctx, 1.0); // TODO: Parametrize
+    CGContextSetLineWidth(ctx, 2.0); // TODO: Parametrize
     
     for (NSValue* v in self.lines) {
         

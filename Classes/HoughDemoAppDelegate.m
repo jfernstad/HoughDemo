@@ -20,8 +20,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
-	viewController = [[HoughDemoViewController alloc] initWithNibName:@"HoughDemoViewController" bundle:nil];
-	
+	viewController = [[HoughDemoViewController alloc] init];
+    
     // Override point for customization after app launch. 
     [self.window addSubview:viewController.view];
     [self.window makeKeyAndVisible];

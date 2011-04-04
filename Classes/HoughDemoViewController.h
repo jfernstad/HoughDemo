@@ -18,6 +18,8 @@
 @interface HoughDemoViewController : UIViewController <HoughInputProtocol, HoughOverlayProtocol>{
 	HoughInputView* houghInputView;
 	HoughTouchView* houghTouchView;
+    UIButton* clearButton;
+	UILabel* status;
 	
     CALayer* lineLayer;                // Add as sublayer to houghInputView
     CALayer* circleLayer;              // Add as sublayer to houghInputTouch
@@ -30,12 +32,12 @@
 	Hough* hough;
 	BOOL busy;
 	
-	UILabel* status;
 }
 
-@property (nonatomic, retain) IBOutlet HoughInputView* houghInputView;
-@property (nonatomic, retain) IBOutlet HoughTouchView* houghTouchView;
-@property (nonatomic, retain) IBOutlet UILabel* status;
+@property (nonatomic, retain) HoughInputView* houghInputView;
+@property (nonatomic, retain) HoughTouchView* houghTouchView;
+@property (nonatomic, retain) UIButton* clearButton;
+@property (nonatomic, retain) UILabel* status;
 @property (nonatomic, retain) Hough* hough;
 @property (nonatomic, assign) BOOL busy;
 @property (nonatomic, retain) CALayer* lineLayer;
@@ -43,7 +45,7 @@
 @property (nonatomic, retain) HoughLineOverlayDelegate* lineDelegate;
 @property (nonatomic, retain) CircleOverlayDelegate* circleDelegate;
 
--(IBAction)clear;
+-(void)clear;
 -(void)updateInputWithPoints:(NSArray*)pointArray;
 -(void)overlayLines:(NSArray *)lines;  
 -(void)overlayCircles:(NSArray *)circles;

@@ -49,7 +49,7 @@
 		83CBB2241319B9160092FE93 /* Hough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Hough.h; sourceTree = "<group>"; };
 		83CBB2251319B9160092FE93 /* Hough.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Hough.m; sourceTree = "<group>"; };
 		83CBB22B1319BC160092FE93 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		83E4BCB01347B48D00BFF07D /* HoughLineOverlayDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; path = HoughLineOverlayDelegate.h; sourceTree = "<group>"; };
+		83E4BCB01347B48D00BFF07D /* HoughLineOverlayDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughLineOverlayDelegate.h; sourceTree = "<group>"; };
 		83E4BCB11347B48D00BFF07D /* HoughLineOverlayDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughLineOverlayDelegate.m; sourceTree = "<group>"; };
 		83E4BCB31347C11700BFF07D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* HoughDemo-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "HoughDemo-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };

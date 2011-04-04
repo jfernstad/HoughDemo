@@ -39,6 +39,8 @@
 
 - (void)setup{
     
+    self.backgroundColor = [UIColor blackColor];
+    
     UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
     UIPanGestureRecognizer* pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
     

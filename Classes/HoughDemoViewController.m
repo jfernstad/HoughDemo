@@ -10,6 +10,10 @@
 #import "Hough.h"
 #import "HoughLineOverlayDelegate.h"
 
+@interface HoughDemoViewController ()
+-(void)layoutViews;
+@end
+
 @implementation HoughDemoViewController
 @synthesize houghInputView;
 @synthesize houghTouchView;
@@ -20,6 +24,7 @@
 @synthesize circleLayer;
 @synthesize lineDelegate;
 @synthesize circleDelegate;
+@synthesize clearButton;
 
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -33,41 +38,96 @@
 */
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
-//- (void)loadView {
-//
-//    
-//
-//}
+- (void)loadView {
 
+    CGRect totalRect  = [UIScreen mainScreen].applicationFrame;
+    CGRect touchRect  = CGRectZero;
+    CGRect inputRect  = CGRectZero;
+    CGRect buttonRect = CGRectZero;
+    CGRect statusRect = CGRectZero;
+    
+    CGRectDivide(totalRect, &buttonRect, &touchRect,  40, CGRectMinYEdge);
+    CGRectDivide(touchRect, &touchRect,  &inputRect,  450, CGRectMinYEdge);
+    CGRectDivide(inputRect, &inputRect,  &statusRect, 450, CGRectMinYEdge);
+    
+    self.view           = [[[UIView alloc] initWithFrame:totalRect] autorelease];
+    self.houghTouchView = [[[HoughTouchView alloc] initWithFrame:touchRect] autorelease];
+    self.houghInputView = [[[HoughInputView alloc] initWithFrame:inputRect] autorelease];
+    self.clearButton    = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.status         = [[[UILabel alloc] initWithFrame:statusRect] autorelease];
 
+    self.hough = [[[Hough alloc] init] autorelease];
+
+    buttonRect = CGRectInset(buttonRect, 300, 0);
+
+    [self.clearButton addTarget:self action:@selector(clear) forControlEvents: UIControlEventTouchUpInside];
+    [self.clearButton setTitle:@"Clear" forState:UIControlStateNormal];
+    
+	
+    self.hough.frame = self.houghTouchView.frame;
+	self.houghInputView.delegate = self;
+	self.houghTouchView.delegate = self;
+    
+    self.lineDelegate = [[[HoughLineOverlayDelegate alloc] init] autorelease];
+    self.lineLayer = [CALayer layer];
+    self.lineLayer.frame = self.houghInputView.bounds;
+    self.lineLayer.delegate = self.lineDelegate;
+    
+    self.circleDelegate = [[[CircleOverlayDelegate alloc] init] autorelease];
+    self.circleLayer = [CALayer layer];
+    self.circleLayer.frame = self.houghTouchView.bounds;
+    self.circleLayer.delegate = self.circleDelegate;
+    
+    [self.houghInputView.layer addSublayer:self.lineLayer];
+    [self.houghTouchView.layer addSublayer:self.circleLayer];
+
+    
+    // Size/position
+    self.clearButton.frame = buttonRect;
+//    self.status.frame = statusRect;
+//    self.houghInputView.frame = inputRect;
+//    self.houghTouchView.frame = touchRect;
+
+    [self.view addSubview:self.houghTouchView];
+    [self.view addSubview:self.houghInputView];
+    [self.view addSubview:self.clearButton];
+    [self.view addSubview:self.status];
+
+}
+
+-(void)layoutViews{
+
+    UIColor* borderColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:1.0];
+    UIColor* bgColor     = [UIColor colorWithRed:0.05 green:0.1 blue:0.1 alpha:1.0];
+    
+    // Attributes
+    self.view.backgroundColor = [UIColor blackColor];
+    self.houghTouchView.backgroundColor = [UIColor blackColor];
+    self.houghInputView.backgroundColor = bgColor;
+    self.houghInputView.pointsColor     = [UIColor whiteColor];
+
+    [self.clearButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.clearButton setBackgroundColor:[UIColor colorWithRed:0.8 green:0.8 blue:0.85 alpha:1.0]];
+                                
+    self.houghInputView.layer.cornerRadius = 5;
+    self.houghTouchView.layer.cornerRadius = 5;
+    self.clearButton.layer.cornerRadius    = 3;
+    
+    self.houghTouchView.layer.borderWidth = 2;
+    self.houghTouchView.layer.borderColor = borderColor.CGColor;
+    
+    self.houghInputView.layer.borderWidth = 2;
+    self.houghInputView.layer.borderColor = borderColor.CGColor;
+    
+    self.lineDelegate.lineColor = [UIColor colorWithRed:0.7 green:0.1 blue:0.3 alpha:1.0];
+}
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-	hough = [[Hough alloc] init];
-	
-    hough.frame = self.houghTouchView.frame;
-	houghInputView.delegate = self;
-	houghTouchView.delegate = self; // TODO: implement for real
-
-    self.lineDelegate = [[[HoughLineOverlayDelegate alloc] init] autorelease];
-    self.lineLayer = [CALayer layer];
-    self.lineLayer.frame = self.houghInputView.frame;
-    self.lineLayer.delegate = self.lineDelegate;
-
-    self.circleDelegate = [[[CircleOverlayDelegate alloc] init] autorelease];
-    self.circleLayer = [CALayer layer];
-    self.circleLayer.frame = self.houghTouchView.frame;
-    self.circleLayer.delegate = self.circleDelegate;
-
-    // What position is this????
-    self.lineLayer.position = CGPointMake(394, 225);
-    //self.circleLayer.position = CGPointMake(394, -225);
-    
-    [self.houghInputView.layer addSublayer:self.lineLayer];
-    [self.houghTouchView.layer addSublayer:self.circleLayer];
-    
+    [self layoutViews];
+        
 	self.busy = NO;
 }
 
@@ -92,11 +152,13 @@
 
 - (void)dealloc {
 	
-	self.hough		= nil;
 	self.houghInputView	= nil;
-	self.houghTouchView  = nil;
-    self.lineLayer  = nil;
-    self.lineDelegate = nil;
+	self.houghTouchView = nil;
+    self.clearButton    = nil;
+    self.status         = nil;
+	self.hough          = nil;
+    self.lineLayer      = nil;
+    self.lineDelegate   = nil;
 
     [super dealloc];
 }
