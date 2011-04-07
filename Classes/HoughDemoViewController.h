@@ -16,11 +16,15 @@
 @class HoughTouchView;
 
 @interface HoughDemoViewController : UIViewController <HoughInputProtocol, HoughOverlayProtocol>{
+    
+    // View elements
+//    UIToolbar* toolBar;
+    UIToolbar* toolBar;
 	HoughInputView* houghInputView;
 	HoughTouchView* houghTouchView;
-    UIButton* clearButton;
 	UILabel* status;
 	
+    // Layers & delegates
     CALayer* lineLayer;                // Add as sublayer to houghInputView
     CALayer* circleLayer;              // Add as sublayer to houghInputTouch
     HoughLineOverlayDelegate* lineDelegate; // Layer delegate, add to lineLayer 
@@ -33,10 +37,9 @@
 	BOOL busy;
 	
 }
-
+@property (nonatomic, retain) UIToolbar* toolBar;
 @property (nonatomic, retain) HoughInputView* houghInputView;
 @property (nonatomic, retain) HoughTouchView* houghTouchView;
-@property (nonatomic, retain) UIButton* clearButton;
 @property (nonatomic, retain) UILabel* status;
 @property (nonatomic, retain) Hough* hough;
 @property (nonatomic, assign) BOOL busy;

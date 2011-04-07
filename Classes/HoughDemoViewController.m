@@ -12,6 +12,7 @@
 
 @interface HoughDemoViewController ()
 -(void)layoutViews;
+-(void)showSettingsView;
 @end
 
 @implementation HoughDemoViewController
@@ -24,46 +25,61 @@
 @synthesize circleLayer;
 @synthesize lineDelegate;
 @synthesize circleDelegate;
-@synthesize clearButton;
+@synthesize toolBar;
 
 /*
-// The designated initializer. Override to perform setup that is required before the view is loaded.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-*/
+ // The designated initializer. Override to perform setup that is required before the view is loaded.
+ - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+ self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+ if (self) {
+ // Custom initialization
+ }
+ return self;
+ }
+ */
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
-
+    
     CGRect totalRect  = [UIScreen mainScreen].applicationFrame;
+    CGRect navRect    = CGRectZero;
     CGRect touchRect  = CGRectZero;
     CGRect inputRect  = CGRectZero;
-    CGRect buttonRect = CGRectZero;
     CGRect statusRect = CGRectZero;
     
-    CGRectDivide(totalRect, &buttonRect, &touchRect,  40, CGRectMinYEdge);
-    CGRectDivide(touchRect, &touchRect,  &inputRect,  450, CGRectMinYEdge);
-    CGRectDivide(inputRect, &inputRect,  &statusRect, 450, CGRectMinYEdge);
+    CGRectDivide(totalRect,  &navRect, &touchRect,  30, CGRectMinYEdge);
+    CGRectDivide(touchRect,  &touchRect,  &inputRect,  450, CGRectMinYEdge);
+    CGRectDivide(inputRect,  &inputRect,  &statusRect, 450, CGRectMinYEdge);
     
     self.view           = [[[UIView alloc] initWithFrame:totalRect] autorelease];
+    self.toolBar         = [[[UIToolbar alloc] initWithFrame:navRect] autorelease];
     self.houghTouchView = [[[HoughTouchView alloc] initWithFrame:touchRect] autorelease];
     self.houghInputView = [[[HoughInputView alloc] initWithFrame:inputRect] autorelease];
-    self.clearButton    = [UIButton buttonWithType:UIButtonTypeCustom];
     self.status         = [[[UILabel alloc] initWithFrame:statusRect] autorelease];
-
-    self.hough = [[[Hough alloc] init] autorelease];
-
-    buttonRect = CGRectInset(buttonRect, 300, 0);
-
-    [self.clearButton addTarget:self action:@selector(clear) forControlEvents: UIControlEventTouchUpInside];
-    [self.clearButton setTitle:@"Clear" forState:UIControlStateNormal];
     
-	
+    self.hough = [[[Hough alloc] init] autorelease];
+    
+    // TODO: Subclass UINavigationItem 
+    //UINavigationItem* item = [[[UINavigationItem alloc] initWithTitle:@"Free hand"] autorelease];
+    
+    // TODO: Clean this mess up..
+    UIBarButtonItem* settingsItem = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"gear.png"]
+                                                                      style:UIBarButtonItemStylePlain
+                                                                     target:self
+                                                                     action:@selector(showSettingsView)] autorelease];
+    
+    UIBarButtonItem* clearItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop
+                                                                                target:self
+                                                                                action:@selector(clear)] autorelease];
+
+    UIBarButtonItem* spaceItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemFlexibleSpace
+                                   target:nil
+                                   action:nil] autorelease];
+    
+//    spaceItem.width = 200;
+    
+    [self.toolBar setItems:[NSArray arrayWithObjects:settingsItem, spaceItem, clearItem, nil] animated:YES];
+    
     self.hough.frame = self.houghTouchView.frame;
 	self.houghInputView.delegate = self;
 	self.houghTouchView.delegate = self;
@@ -80,23 +96,22 @@
     
     [self.houghInputView.layer addSublayer:self.lineLayer];
     [self.houghTouchView.layer addSublayer:self.circleLayer];
-
+    
     
     // Size/position
-    self.clearButton.frame = buttonRect;
-//    self.status.frame = statusRect;
-//    self.houghInputView.frame = inputRect;
-//    self.houghTouchView.frame = touchRect;
-
+    //    self.status.frame = statusRect;
+    //    self.houghInputView.frame = inputRect;
+    //    self.houghTouchView.frame = touchRect;
+    
+    [self.view addSubview:self.toolBar];
     [self.view addSubview:self.houghTouchView];
     [self.view addSubview:self.houghInputView];
-    [self.view addSubview:self.clearButton];
     [self.view addSubview:self.status];
-
+    
 }
 
 -(void)layoutViews{
-
+    
     UIColor* borderColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:1.0];
     UIColor* bgColor     = [UIColor colorWithRed:0.05 green:0.1 blue:0.1 alpha:1.0];
     
@@ -105,13 +120,10 @@
     self.houghTouchView.backgroundColor = [UIColor blackColor];
     self.houghInputView.backgroundColor = bgColor;
     self.houghInputView.pointsColor     = [UIColor whiteColor];
-
-    [self.clearButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.clearButton setBackgroundColor:[UIColor colorWithRed:0.8 green:0.8 blue:0.85 alpha:1.0]];
-                                
+    self.toolBar.tintColor              = borderColor;
+    
     self.houghInputView.layer.cornerRadius = 5;
     self.houghTouchView.layer.cornerRadius = 5;
-    self.clearButton.layer.cornerRadius    = 3;
     
     self.houghTouchView.layer.borderWidth = 2;
     self.houghTouchView.layer.borderColor = borderColor.CGColor;
@@ -125,9 +137,9 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     [self layoutViews];
-        
+    
 	self.busy = NO;
 }
 
@@ -154,14 +166,22 @@
 	
 	self.houghInputView	= nil;
 	self.houghTouchView = nil;
-    self.clearButton    = nil;
     self.status         = nil;
 	self.hough          = nil;
     self.lineLayer      = nil;
     self.lineDelegate   = nil;
-
+    self.toolBar         = nil;
+    
     [super dealloc];
 }
+
+#pragma mark -
+
+-(void)showSettingsView{
+    
+    // TODO: Load popover with settings view
+}
+
 
 #pragma mark -
 #pragma mark Delegates
@@ -182,12 +202,12 @@
 		imgCreation = [start timeIntervalSinceNow];
 		
 		self.busy = NO;
-	
+        
         // Show hough image
 		self.houghTouchView.layer.contents = (id)img;
-
+        
 		CGImageRelease(img);
-	
+        
 		self.status.text = [NSString stringWithFormat:@"Time for Hough generation: %3.3f ms (%1.3f ms/curve)", -imgCreation*1000.0, -imgCreation*1000.0/pointArray.count];
 	}
 	else {

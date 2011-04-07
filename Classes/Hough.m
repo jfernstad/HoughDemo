@@ -202,7 +202,13 @@
 -(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points{
 	//NSLog(@" - newHoughSpaceFromPoints - ");
 
+
+    NSDate* start = [NSDate date];
+    NSTimeInterval stop;
 	[self createCurvesForPoints:points];
+    stop = [start timeIntervalSinceNow];
+//    NSLog(@" Time for Hough creation: %2.3fms, %d curves, (%2.3f ms/curve)",-stop*1000.0f, points.count, -stop/1000.0f*(CGFloat)points.count);
+
 	self.pointsCopy = points;
 	return [self newHoughImageFromCurves];
 }

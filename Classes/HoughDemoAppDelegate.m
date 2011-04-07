@@ -21,6 +21,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
 	viewController = [[HoughDemoViewController alloc] init];
+    [UIApplication sharedApplication].statusBarHidden = YES;
     
     // Override point for customization after app launch. 
     [self.window addSubview:viewController.view];
