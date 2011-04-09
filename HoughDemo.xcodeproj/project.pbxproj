@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		025FBB241350F2DF002717DD /* UIColor+HoughExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 025FBB231350F2DF002717DD /* UIColor+HoughExtensions.m */; };
+		025FBB2B1350FBF6002717DD /* HoughSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 025FBB2A1350FBF6002717DD /* HoughSettingsViewController.m */; };
 		1D3623260D0F684500981E51 /* HoughDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -31,6 +33,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		025FBB221350F2DF002717DD /* UIColor+HoughExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+HoughExtensions.h"; sourceTree = "<group>"; };
+		025FBB231350F2DF002717DD /* UIColor+HoughExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HoughExtensions.m"; sourceTree = "<group>"; };
+		025FBB291350FBF6002717DD /* HoughSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughSettingsViewController.h; sourceTree = "<group>"; };
+		025FBB2A1350FBF6002717DD /* HoughSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughSettingsViewController.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* HoughDemoAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughDemoAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughDemoAppDelegate.m; sourceTree = "<group>"; };
@@ -97,6 +103,10 @@
 				83492F1C1347DE2E002BD8BF /* Layer delegates */,
 				83492F1D1347E080002BD8BF /* CGGeometry+HoughExtensions.c */,
 				83492F1E1347E080002BD8BF /* CGGeometry+HoughExtensions.h */,
+				025FBB221350F2DF002717DD /* UIColor+HoughExtensions.h */,
+				025FBB231350F2DF002717DD /* UIColor+HoughExtensions.m */,
+				025FBB291350FBF6002717DD /* HoughSettingsViewController.h */,
+				025FBB2A1350FBF6002717DD /* HoughSettingsViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -193,6 +203,9 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Joakim Fernstad";
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "HoughDemo" */;
 			compatibilityVersion = "Xcode 3.1";
 			developmentRegion = English;
@@ -243,6 +256,8 @@
 				83E4BCB21347B48D00BFF07D /* HoughLineOverlayDelegate.m in Sources */,
 				83492F1A1347DE0E002BD8BF /* CircleOverlayDelegate.m in Sources */,
 				83492F1F1347E080002BD8BF /* CGGeometry+HoughExtensions.c in Sources */,
+				025FBB241350F2DF002717DD /* UIColor+HoughExtensions.m in Sources */,
+				025FBB2B1350FBF6002717DD /* HoughSettingsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,6 +274,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = HoughDemo_Prefix.pch;
 				INFOPLIST_FILE = "HoughDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = HoughDemo;
 			};
 			name = Debug;
@@ -271,6 +287,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = HoughDemo_Prefix.pch;
 				INFOPLIST_FILE = "HoughDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = HoughDemo;
 				VALIDATE_PRODUCT = YES;
 			};

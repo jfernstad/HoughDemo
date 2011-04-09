@@ -9,6 +9,8 @@
 #import "HoughDemoViewController.h"
 #import "Hough.h"
 #import "HoughLineOverlayDelegate.h"
+#import "UIColor+HoughExtensions.h"
+#import "HoughSettingsViewController.h"
 
 @interface HoughDemoViewController ()
 -(void)layoutViews;
@@ -26,6 +28,7 @@
 @synthesize lineDelegate;
 @synthesize circleDelegate;
 @synthesize toolBar;
+//@synthesize settingsViewController;
 
 /*
  // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -47,12 +50,17 @@
     CGRect inputRect  = CGRectZero;
     CGRect statusRect = CGRectZero;
     
-    CGRectDivide(totalRect,  &navRect, &touchRect,  30, CGRectMinYEdge);
+    // TODO: Put constants in enum
+    
+    CGRectDivide(totalRect,  &navRect, &touchRect,  44, CGRectMinYEdge);
     CGRectDivide(touchRect,  &touchRect,  &inputRect,  450, CGRectMinYEdge);
     CGRectDivide(inputRect,  &inputRect,  &statusRect, 450, CGRectMinYEdge);
     
+    touchRect = CGRectInset(touchRect, 15, 15);
+    inputRect = CGRectInset(inputRect, 15, 15);
+    
     self.view           = [[[UIView alloc] initWithFrame:totalRect] autorelease];
-    self.toolBar         = [[[UIToolbar alloc] initWithFrame:navRect] autorelease];
+    self.toolBar        = [[[UIToolbar alloc] initWithFrame:navRect] autorelease];
     self.houghTouchView = [[[HoughTouchView alloc] initWithFrame:touchRect] autorelease];
     self.houghInputView = [[[HoughInputView alloc] initWithFrame:inputRect] autorelease];
     self.status         = [[[UILabel alloc] initWithFrame:statusRect] autorelease];
@@ -112,18 +120,17 @@
 
 -(void)layoutViews{
     
-    UIColor* borderColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:1.0];
-    UIColor* bgColor     = [UIColor colorWithRed:0.05 green:0.1 blue:0.1 alpha:1.0];
+    UIColor* borderColor = [UIColor borderColor];
     
     // Attributes
-    self.view.backgroundColor = [UIColor blackColor];
-    self.houghTouchView.backgroundColor = [UIColor blackColor];
-    self.houghInputView.backgroundColor = bgColor;
+    self.view.backgroundColor = [UIColor mainBackgroundColor];
+    self.houghTouchView.backgroundColor = [UIColor houghBackgroundColor];
+    self.houghInputView.backgroundColor = [UIColor inputBackgroundColor];
     self.houghInputView.pointsColor     = [UIColor whiteColor];
-    self.toolBar.tintColor              = borderColor;
+    self.toolBar.tintColor              = [UIColor toolbarTintColor];
     
-    self.houghInputView.layer.cornerRadius = 5;
-    self.houghTouchView.layer.cornerRadius = 5;
+    self.houghInputView.layer.cornerRadius = 10;
+    self.houghTouchView.layer.cornerRadius = 10;
     
     self.houghTouchView.layer.borderWidth = 2;
     self.houghTouchView.layer.borderColor = borderColor.CGColor;
@@ -131,7 +138,8 @@
     self.houghInputView.layer.borderWidth = 2;
     self.houghInputView.layer.borderColor = borderColor.CGColor;
     
-    self.lineDelegate.lineColor = [UIColor colorWithRed:0.7 green:0.1 blue:0.3 alpha:1.0];
+    self.lineDelegate.lineColor   = [UIColor lineColor];
+    self.circleDelegate.markColor = [UIColor lineColor];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -180,6 +188,12 @@
 -(void)showSettingsView{
     
     // TODO: Load popover with settings view
+    HoughSettingsViewController* settings = [[[HoughSettingsViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease];
+    
+    UIPopoverController* pop = [[UIPopoverController alloc] initWithContentViewController:settings];
+    
+    [pop presentPopoverFromBarButtonItem:[toolBar.items objectAtIndex:0] permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+    
 }
 
 

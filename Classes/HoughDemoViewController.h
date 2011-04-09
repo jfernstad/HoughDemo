@@ -14,6 +14,7 @@
 
 @class Hough;
 @class HoughTouchView;
+//@class HoughSettingsViewController;
 
 @interface HoughDemoViewController : UIViewController <HoughInputProtocol, HoughOverlayProtocol>{
     
@@ -29,6 +30,8 @@
     CALayer* circleLayer;              // Add as sublayer to houghInputTouch
     HoughLineOverlayDelegate* lineDelegate; // Layer delegate, add to lineLayer 
     CircleOverlayDelegate* circleDelegate; // Layer delegate, add to circleLayer 
+    
+//    HoughSettingsViewController* settingsViewController;
     
 //	CGImageRef* dotImg;
 //	CGImageRef* houghImg;
@@ -47,6 +50,7 @@
 @property (nonatomic, retain) CALayer* circleLayer;
 @property (nonatomic, retain) HoughLineOverlayDelegate* lineDelegate;
 @property (nonatomic, retain) CircleOverlayDelegate* circleDelegate;
+//@property (nonatomic, retain) HoughSettingsViewController* settingsViewController;
 
 -(void)clear;
 -(void)updateInputWithPoints:(NSArray*)pointArray;
