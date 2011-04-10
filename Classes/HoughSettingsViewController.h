@@ -10,7 +10,10 @@
 
 
 @interface HoughSettingsViewController : UITableViewController {
-    
+    UISegmentedControl* modeControl;
+    UISwitch* autoAnalysisSwitch;
 }
+@property (nonatomic, retain) UISegmentedControl* modeControl;
+@property (nonatomic, retain) UISwitch* autoAnalysisSwitch;
 
 @end

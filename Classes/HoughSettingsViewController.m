@@ -8,8 +8,24 @@
 
 #import "HoughSettingsViewController.h"
 
+@interface HoughSettingsViewController ()
+- (UIView*)analysisViewInRect:(CGRect)rect;
+@end
+
+enum{
+    kModeSection,
+    kAnalysisSection,
+    kNumberOfSections
+} ESection;
+
+enum{
+    kModeRow,
+    kModeNumberOfRows
+} EModeRows;
 
 @implementation HoughSettingsViewController
+@synthesize modeControl;
+@synthesize autoAnalysisSwitch;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -22,6 +38,9 @@
 
 - (void)dealloc
 {
+    self.modeControl = nil;
+    self.autoAnalysisSwitch = nil;
+    
     [super dealloc];
 }
 
@@ -35,10 +54,63 @@
 
 #pragma mark - View lifecycle
 
+- (UISegmentedControl*)modeControl{
+
+    if (!modeControl) {
+        modeControl = [[UISegmentedControl alloc] initWithItems:
+                            [NSArray arrayWithObjects:@"Free hand", @"Image", @"Video", nil]];
+        
+        [modeControl setSelectedSegmentIndex:2]; // TODO: Parameter
+        
+    }
+    return modeControl;
+}
+
+- (UISwitch*)autoAnalysisSwitch{
+    if (!autoAnalysisSwitch) {
+        autoAnalysisSwitch = [[[UISwitch alloc] init] autorelease];
+        autoAnalysisSwitch.on = NO; // TODO: Parameter
+    }
+    return autoAnalysisSwitch;
+}
+
+- (UIView*)analysisViewInRect:(CGRect)rect{
+
+    CGSize size = CGSizeZero;
+    CGRect textRect = CGRectZero;
+    CGRect switchRect = CGRectZero;
+
+    UIView* tmpView = [[[UIView alloc] init] autorelease];
+    UILabel* text   = [[[UILabel alloc] init] autorelease];
+
+    text.text = @"Auto analysis";
+    size = self.autoAnalysisSwitch.bounds.size;
+    
+    CGRectDivide(rect, &textRect, &switchRect, rect.size.width - size.width - 50, CGRectMinXEdge);
+    
+    tmpView.backgroundColor = [UIColor clearColor];
+    text.backgroundColor = [UIColor clearColor];
+    
+    // Center rect in rect
+    switchRect = CGRectMake(CGRectGetMinX(switchRect) + (CGRectGetMaxX(switchRect) - CGRectGetMinX(switchRect))/2 - size.width/2,
+                            (CGRectGetMaxY(switchRect) - CGRectGetMinY(switchRect))/2 - size.height/2,
+                            size.width, size.height);
+    
+    self.autoAnalysisSwitch.frame = switchRect;
+    tmpView.frame = rect;
+    text.frame = textRect;
+    
+    [tmpView addSubview:text];
+    [tmpView addSubview:self.autoAnalysisSwitch];
+
+    return tmpView;
+
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
@@ -81,30 +153,94 @@
 
 #pragma mark - Table view data source
 
+- (NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+
+    NSString* title = nil;
+    switch (section) {
+        case kModeSection:
+        {
+            title = @"Modes";
+        }
+            break;
+        case kAnalysisSection:
+        {
+            title = @"";
+        }    
+            break;
+            
+        default:
+            break;
+    }
+    
+    return title;    
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return 0;
+    return kNumberOfSections;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return 0;
+    
+    NSInteger nRows = 1;
+    
+    switch (section) {
+        case kModeSection:
+        {
+            nRows = 1;
+        }
+            break;
+        case kAnalysisSection:
+        {
+            nRows = 1;
+        }    
+            break;
+            
+        default:
+            break;
+    }
+
+    return nRows;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
+    UIView* cellView = nil;
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
+    cellView = [[[UIView alloc] initWithFrame:cell.bounds] autorelease];
+    CGRect tmpRect = CGRectZero;
+    
+    switch (indexPath.section) {
+        case kModeSection:
+        {
+            [cellView addSubview:self.modeControl];
+        }
+            break;
+        case kAnalysisSection:
+        {
+            tmpRect = cell.contentView.bounds;
+            tmpRect = CGRectInset(tmpRect, 5, 0);
+            
+            cellView = [self analysisViewInRect:tmpRect];
+            
+        }    
+            break;
+            
+        default:
+            break;
+    }
     // Configure the cell...
+    
+    [cell.contentView addSubview:cellView];
     
     return cell;
 }
