@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		025FBB241350F2DF002717DD /* UIColor+HoughExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 025FBB231350F2DF002717DD /* UIColor+HoughExtensions.m */; };
 		025FBB2B1350FBF6002717DD /* HoughSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 025FBB2A1350FBF6002717DD /* HoughSettingsViewController.m */; };
+		028778CF13574A31009D30F2 /* libobjc.A.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 028778CE13574A31009D30F2 /* libobjc.A.dylib */; };
 		1D3623260D0F684500981E51 /* HoughDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -37,6 +38,7 @@
 		025FBB231350F2DF002717DD /* UIColor+HoughExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HoughExtensions.m"; sourceTree = "<group>"; };
 		025FBB291350FBF6002717DD /* HoughSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughSettingsViewController.h; sourceTree = "<group>"; };
 		025FBB2A1350FBF6002717DD /* HoughSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughSettingsViewController.m; sourceTree = "<group>"; };
+		028778CE13574A31009D30F2 /* libobjc.A.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libobjc.A.dylib; path = usr/lib/libobjc.A.dylib; sourceTree = SDKROOT; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* HoughDemoAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughDemoAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughDemoAppDelegate.m; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				028778CF13574A31009D30F2 /* libobjc.A.dylib in Frameworks */,
 				83E4BCB41347C11700BFF07D /* QuartzCore.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -158,6 +161,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				028778CE13574A31009D30F2 /* libobjc.A.dylib */,
 				83E4BCB31347C11700BFF07D /* QuartzCore.framework */,
 				83CBB22B1319BC160092FE93 /* Accelerate.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,

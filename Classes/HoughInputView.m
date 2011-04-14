@@ -6,9 +6,11 @@
 //  Copyright 2011 NOW Electronics. All rights reserved.
 //
 
+#import <objc/runtime.h>
 #import "HoughInputView.h"
 #import "HoughLineOverlayDelegate.h"
 #import "CGGeometry+HoughExtensions.h"
+#import "Hough.h"
 
 @interface HoughInputView ()
 - (void)handleGesture:(UIGestureRecognizer *)gestureRecognizer;
@@ -20,6 +22,7 @@
 @synthesize currentPoint;
 @synthesize delegate;
 @synthesize pointsColor;
+@synthesize houghRef;
 
 - (id)initWithFrame:(CGRect)frame {
     
@@ -80,7 +83,8 @@
 	self.currentPoint = nil;
     self.pointsColor = nil;
     self.delegate = nil;
-	
+    self.houghRef = nil;
+    
 	[tap release];
 	[pan release];
 	
@@ -93,11 +97,13 @@
 // Gestures
 - (void)handleGesture:(UIGestureRecognizer *)gestureRecognizer{
 	///(@"Got a %@", [gestureRecognizer class]);
+    // for (gestureRecognizer.numberOfTouches
+    // [gestureRecognizer locationForTouch:inView:];
 	CGPoint p = [gestureRecognizer locationInView:self];
 	
 	self.currentPoint = [NSValue valueWithCGPoint:p];
 	
-	if (gestureRecognizer == tap) {
+	if (gestureRecognizer == tap || houghRef.interactionMode == kFreeHandDraw) {
 		[self.points addObject:self.currentPoint];
 	}else if (gestureRecognizer == pan) {
 		if (gestureRecognizer.state == UIGestureRecognizerStateBegan || self.points.count == 0) {
@@ -112,7 +118,11 @@
 	
 	if (delegate) {
 		//NSLog(@"handleGesture: Calling delegate");
-		[delegate performSelector:@selector(updateInputWithPoints:) withObject:self.points afterDelay:0.0];
+        // Grr.. need to pass another argument, maybe attach with runtime methods?
+        NSArray* pointArray = [NSArray arrayWithObject:self.currentPoint];
+        
+        objc_setAssociatedObject(pointArray, kHoughInputGestureState, [NSNumber numberWithInt:(int)gestureRecognizer.state], OBJC_ASSOCIATION_RETAIN);
+		[delegate performSelector:@selector(updateInputWithPoints:) withObject:pointArray afterDelay:0.0];
 	}
 }
 

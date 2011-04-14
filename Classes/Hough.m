@@ -13,22 +13,25 @@
 
 @interface Hough ()
 @property (nonatomic, copy)   NSArray* pointsCopy;
+@property (nonatomic, copy)   NSArray* tmpPointsCopy;
 @property (nonatomic, retain) NSMutableArray* curves;
 
 -(BOOL) isPointAlreadyInArray:(CGPoint)p;
--(void) createCurvesForPoints: (NSArray*)points;
--(CGImageRef)newHoughImageFromCurves;
+-(void) setupHough;
+-(NSArray*) createCurvesForPoints:(NSArray*)points;
+-(CGImageRef) houghImageFromCurves:(NSArray*)curves;
 @end
 
-
 @implementation Hough
-@synthesize frame, pointsCopy, curves;
+@synthesize frame, pointsCopy, tmpPointsCopy, curves, interactionMode;
 
 -(id)init{
 
 	if (self == [super init]) {
 		self.curves = [NSMutableArray arrayWithCapacity:0];
-	}
+        self.interactionMode = kFreeHandDots;
+        isSetup = NO;
+    }
 	
 	return self;
 }
@@ -40,8 +43,26 @@
 -(void)clear{
     self.pointsCopy = nil;
     [self.curves removeAllObjects];
+    
+    int maxDist = round(sqrt(powf(self.frame.size.height, 2) +
+							 powf(self.frame.size.width,  2))/[Hough yScale]+0.5f);
+    int maxVals = self.frame.size.width;
+    NSUInteger size = maxDist * maxVals;
+	
+    memset(houghSpace,   0, size);
+    memset(tmpHoughSpace, 0, size);
 }
 
+-(void)makePersistent{
+    // TODO: Copy houghImage to tmpHoughImage;
+    int maxDist = round(sqrt(powf(self.frame.size.height, 2) +
+							 powf(self.frame.size.width,  2))/[Hough yScale]+0.5f);
+    int maxVals = self.frame.size.width;
+    NSUInteger size = maxDist * maxVals;
+    
+//    memcpy(tmpHoughSpace, houghSpace, size);
+    memcpy(houghSpace, tmpHoughSpace, size);
+}
 -(BOOL) isPointAlreadyInArray:(CGPoint) p{
 	
 	BOOL ret = NO;
@@ -59,18 +80,37 @@
 	return ret;
 }
 
+-(void)setFrame:(CGRect)rect{
+    frame = rect;
+    [self setupHough];
+}
+
+-(void)setupHough{
+
+    NSLog(@"Setting up Hough!");
+    int maxDist = round(sqrt(powf(self.frame.size.height, 2) +
+							 powf(self.frame.size.width,  2))/[Hough yScale]+0.5f);
+	int maxVals = self.frame.size.width;
+    NSUInteger size = maxDist * maxVals;
+
+    houghSpace    = (unsigned char*)malloc(size);
+    tmpHoughSpace = (unsigned char*)malloc(size);
+    
+    isSetup = YES;
+    // TODO: verify we have memory
+}
+
 // WOHO   4 times faster than createHoughSpace!
--(void)createCurvesForPoints: (NSArray*)points{
-	int maxDist	  = round(sqrt(frame.size.height*frame.size.height + frame.size.width*frame.size.width)/2.0f+0.5f);
+-(NSArray*)createCurvesForPoints: (NSArray*)points{
+    
+    NSAssert(isSetup, @"! Hough doesn't have a frame! call .frame = rect. ");
+    
+	int maxDist	  = round(sqrt(frame.size.height*frame.size.height + frame.size.width*frame.size.width)/[Hough yScale]+0.5f);
 	// First try of vectorized Hough transform
 	int maxVals		= frame.size.width;
 	float startVal	= 0.0f;
 	float thetaInc	= M_PI/frame.size.width;
-	float angles [ maxVals ] __attribute__((aligned));
-	
-	vDSP_vramp(&startVal, &thetaInc, angles, 1, maxVals); // Create angles used in cos/sin
-
-	
+	float angles   [ maxVals ] __attribute__((aligned));
 	float cosValues[ maxVals ] __attribute__((aligned));
 	float sinValues[ maxVals ] __attribute__((aligned));
 	float cosPart  [ maxVals ] __attribute__((aligned));
@@ -78,6 +118,8 @@
 	float yValues  [ maxVals ] __attribute__((aligned));
 	float yOffset  [ maxVals ] __attribute__((aligned));
 	
+	vDSP_vramp(&startVal, &thetaInc, angles, 1, maxVals); // Create angles used in cos/sin
+
 #ifdef __i386__
 	vvcosf(cosValues, angles, &maxVals);
 	vvsinf(sinValues, angles, &maxVals);
@@ -97,15 +139,17 @@
 	float xAmp	 = 0.0;
 	float yAmp	 = 0.0;
 	
-	float compressedOffset = (maxDist - maxDist/Y_SCALE)/2.0f; // To see the entire wave we need to scale and offset the amplitude. 
+	float compressedOffset = (maxDist - maxDist/[Hough yScale])/2.0f; // To see the entire wave we need to scale and offset the amplitude. 
 	
+    NSMutableArray* outArray = [NSMutableArray arrayWithCapacity:points.count];
+    
 	for (NSValue* val in points) {
 		
 		p = [val CGPointValue];
 
-		if ([self isPointAlreadyInArray:p]) { // Extreme difference in performance
-			continue;
-		}
+//		if ([self isPointAlreadyInArray:p]) { // Extreme difference in performance
+//			continue;
+//		}
 
 		xAmp	 = p.x - maxVals/2;
 		yAmp	 = p.y - offset;
@@ -128,32 +172,36 @@
 			[tmpArray addObject:[NSValue valueWithCGPoint:p2]];
 		}
 
-		if (points.count > self.curves.count) {
-			///NSLog(@"Added curve");
-			[self.curves addObject:tmpArray];
-		}
-		else {
-			// TODO: Refactor to handle multiple touches. 
-			//NSLog(@"Replaced curve");
-			[self.curves replaceObjectAtIndex:self.curves.count-1 withObject:tmpArray];
-		}
+        [outArray addObject:tmpArray];
 	}
+
+    return outArray;
 }
 
--(CGImageRef)newHoughImageFromCurves{
+-(CGImageRef)houghImageFromCurves:(NSArray*)newCurves{
 	CGImageRef outImg = NULL; // 8 bit grayscale
 
+    NSAssert(isSetup, @"! Hough doesn't have a frame! call .frame = rect. ");
+
 	int maxDist = round(sqrt(powf(self.frame.size.height, 2) +
-							 powf(self.frame.size.width,  2))/2.0f+0.5f);
+							 powf(self.frame.size.width,  2))/[Hough yScale]+0.5f);
 	int maxVals = self.frame.size.width;
 	
-	unsigned char* houghSpace = (unsigned char*)malloc(maxDist * maxVals); // MaxDist x angle
+	//unsigned char* houghSpace = (unsigned char*)malloc(maxDist * maxVals); // MaxDist x angle
+    
+    unsigned char* pointer = tmpHoughSpace;
+    
+    if (self.interactionMode == kFreeHandDraw) {
+        pointer = houghSpace;
+    }else{
+        memcpy(tmpHoughSpace, houghSpace, maxDist * maxVals);
+    }
 	
 	// Draw the curves
 	int y = 0;
 	CGPoint p;
 	int position = 0;
-	for (NSArray* curve in self.curves) {
+	for (NSArray* curve in newCurves) {
 		for (NSValue* val in curve) {
 			
 			p = [val CGPointValue];
@@ -161,13 +209,13 @@
 			
 			if (y > 0 && y <= maxDist){
 				position = (int)(p.x + y * maxVals);
-				houghSpace[ position ]++;
+				pointer[ position ]++;
 			}
 		}
 	}
 	
 	CGFloat decode [] = {0.0f, 100.0f};
-	CFDataRef cfImgData = CFDataCreate(NULL, houghSpace, maxDist * maxVals);
+	CFDataRef cfImgData = CFDataCreate(NULL, pointer, maxDist * maxVals);
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(cfImgData);
 	CGColorSpaceRef csp = CGColorSpaceCreateDeviceGray();
 	
@@ -196,21 +244,29 @@
 	CFRelease(cfImgData);
 	CGContextRelease(cr);
 	CGColorSpaceRelease(csp);
-	free(houghSpace);
+	//free(houghSpace);
 	return outImg;
 }
+
 -(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points{
-	//NSLog(@" - newHoughSpaceFromPoints - ");
+	NSArray* newCurves = [self createCurvesForPoints:points];
+    
+    CGImageRef outImage = [self houghImageFromCurves:newCurves];
 
+    if (self.interactionMode == kFreeHandDots) {
+        self.tmpPointsCopy = points;
+    
+    }else{
 
-    NSDate* start = [NSDate date];
-    NSTimeInterval stop;
-	[self createCurvesForPoints:points];
-    stop = [start timeIntervalSinceNow];
-//    NSLog(@" Time for Hough creation: %2.3fms, %d curves, (%2.3f ms/curve)",-stop*1000.0f, points.count, -stop/1000.0f*(CGFloat)points.count);
-
-	self.pointsCopy = points;
-	return [self newHoughImageFromCurves];
+        // Ugh.. Redo this.
+        NSMutableArray* totalPoints = [NSMutableArray arrayWithArray:self.pointsCopy];
+        [totalPoints addObjectsFromArray:points];
+        self.pointsCopy = totalPoints;
+        
+        [self.curves addObjectsFromArray:curves];
+    }
+    
+	return outImage;
 }
 
 -(void)dealloc{
@@ -218,6 +274,9 @@
 	self.pointsCopy = nil;
 	self.curves = nil;
 	
+    free(houghSpace);
+    free(tmpHoughSpace);
+    
 	[super dealloc];
 }
 

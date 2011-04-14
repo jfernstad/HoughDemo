@@ -11,6 +11,7 @@
 #import "HoughLineOverlayDelegate.h"
 #import "UIColor+HoughExtensions.h"
 #import "HoughSettingsViewController.h"
+#import <objc/runtime.h>
 
 @interface HoughDemoViewController ()
 -(void)layoutViews;
@@ -66,6 +67,8 @@
     self.status         = [[[UILabel alloc] initWithFrame:statusRect] autorelease];
     
     self.hough = [[[Hough alloc] init] autorelease];
+    self.hough.interactionMode = kFreeHandDraw; // TODO: Parameterize
+    self.houghInputView.houghRef = self.hough;
     
     // TODO: Subclass UINavigationItem 
     //UINavigationItem* item = [[[UINavigationItem alloc] initWithTitle:@"Free hand"] autorelease];
@@ -202,19 +205,29 @@
 
 -(void)updateInputWithPoints:(NSArray*)pointArray{
 	// If we are not busy drawing the hough, update the input. 
-	CGImageRef img = nil;
+	
+    CGImageRef img = nil;
 	
 	NSDate* start;
 	NSTimeInterval imgCreation;
 	
+    // TODO: Save points temporarily, draw them when hough isn't busy anymore.
+    
 	if (!self.busy) {
 		
 		self.busy = YES;
 		
-		start = [NSDate date];
+        NSNumber* gestureState = objc_getAssociatedObject(pointArray, kHoughInputGestureState);
+        objc_setAssociatedObject(pointArray, kHoughInputGestureState, nil, OBJC_ASSOCIATION_RETAIN); // Clear association
+
+        start = [NSDate date];
 		img   = [hough newHoughSpaceFromPoints:pointArray];
 		imgCreation = [start timeIntervalSinceNow];
 		
+        if (hough.interactionMode == kFreeHandDots && [gestureState intValue] == (int)UIGestureRecognizerStateEnded) {
+            [hough makePersistent]; // Store temporary image as 
+        }
+        
 		self.busy = NO;
         
         // Show hough image

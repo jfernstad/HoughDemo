@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "HoughTouchView.h"
 
+#define kHoughInputGestureState @"GestureState"
+
 @class HoughLineOverlayDelegate;
+@class Hough;
 
 @protocol HoughInputProtocol
 -(void)updateInputWithPoints:(NSArray*)pointArray;
@@ -26,12 +29,14 @@
 	NSValue* currentPoint;
 
 	NSObject<HoughInputProtocol>* delegate;
+    Hough* houghRef;
 }
 
 @property (nonatomic, retain) NSMutableArray* points; // Array of CGPoints
 @property (nonatomic, retain) NSValue* currentPoint; 
 @property (nonatomic, assign) NSObject<HoughInputProtocol>* delegate;
 @property (nonatomic, retain) UIColor* pointsColor;
+@property (nonatomic, assign) Hough* houghRef;
 
 - (void)clear;
 

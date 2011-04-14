@@ -38,6 +38,7 @@ enum{
 
 - (void)dealloc
 {
+    NSLog(@"Settings controller dealloc");
     self.modeControl = nil;
     self.autoAnalysisSwitch = nil;
     
