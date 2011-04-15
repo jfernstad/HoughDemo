@@ -7,25 +7,33 @@
 //
 
 #import "HoughSettingsViewController.h"
+#import "Hough.h"
 
 @interface HoughSettingsViewController ()
 - (UIView*)analysisViewInRect:(CGRect)rect;
+- (UIView*)interactionModeViewInRect:(CGRect)rect;
+- (void)segTouch:(id)sender;
 @end
 
 enum{
     kModeSection,
+    kFreeHandInteractionSection,
     kAnalysisSection,
+    
     kNumberOfSections
 } ESection;
 
 enum{
     kModeRow,
+    
     kModeNumberOfRows
 } EModeRows;
 
 @implementation HoughSettingsViewController
 @synthesize modeControl;
 @synthesize autoAnalysisSwitch;
+@synthesize freeHandInteractionMode;
+@synthesize houghRef;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -61,7 +69,7 @@ enum{
         modeControl = [[UISegmentedControl alloc] initWithItems:
                             [NSArray arrayWithObjects:@"Free hand", @"Image", @"Video", nil]];
         
-        [modeControl setSelectedSegmentIndex:2]; // TODO: Parameter
+        [modeControl setSelectedSegmentIndex:1]; // TODO: Parameter
         
     }
     return modeControl;
@@ -73,6 +81,21 @@ enum{
         autoAnalysisSwitch.on = NO; // TODO: Parameter
     }
     return autoAnalysisSwitch;
+}
+
+- (UISegmentedControl*)freeHandInteractionMode{
+    if (!freeHandInteractionMode) {
+        freeHandInteractionMode = [[UISegmentedControl alloc] initWithItems:
+                       [NSArray arrayWithObjects:@"Draw", @"Tap", nil]];
+        
+        [freeHandInteractionMode setSelectedSegmentIndex:(houghRef.interactionMode==kFreeHandDraw)?0:1]; // TODO: Parameter
+        
+        [freeHandInteractionMode addTarget:self
+                                    action:@selector(segTouch:)
+                          forControlEvents:UIControlEventValueChanged];
+        
+    }
+    return freeHandInteractionMode;
 }
 
 - (UIView*)analysisViewInRect:(CGRect)rect{
@@ -106,6 +129,40 @@ enum{
 
     return tmpView;
 
+}
+- (UIView*)interactionModeViewInRect:(CGRect)rect{
+    
+    CGSize size     = CGSizeZero;
+    CGRect textRect = CGRectZero;
+    CGRect segRect  = CGRectZero;
+    
+    UIView* tmpView = [[[UIView alloc] init] autorelease];
+    UILabel* text   = [[[UILabel alloc] init] autorelease];
+    
+    text.text = @"Interaction mode";
+    size = self.freeHandInteractionMode.bounds.size;
+    
+    //size.height = rect.size.height - 5;
+    
+    CGRectDivide(rect, &textRect, &segRect, rect.size.width - size.width - 35, CGRectMinXEdge);
+    
+    tmpView.backgroundColor = [UIColor clearColor];
+    text.backgroundColor = [UIColor clearColor];
+    
+    // Center rect in rect
+    segRect = CGRectMake(CGRectGetMinX(segRect) + (CGRectGetMaxX(segRect) - CGRectGetMinX(segRect))/2 - size.width/2,
+                            (CGRectGetMaxY(segRect) - CGRectGetMinY(segRect))/2 - size.height/2,
+                            size.width, size.height);
+    
+    self.freeHandInteractionMode.frame = segRect;
+    tmpView.frame = rect;
+    text.frame = textRect;
+    
+    [tmpView addSubview:text];
+    [tmpView addSubview:self.freeHandInteractionMode];
+    
+    return tmpView;
+    
 }
 - (void)viewDidLoad
 {
@@ -199,6 +256,11 @@ enum{
             nRows = 1;
         }    
             break;
+        case kFreeHandInteractionSection:
+        {
+            nRows = 1;
+        }    
+            break;
             
         default:
             break;
@@ -217,13 +279,28 @@ enum{
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
     cellView = [[[UIView alloc] initWithFrame:cell.bounds] autorelease];
     CGRect tmpRect = CGRectZero;
+    CGSize tmpSize = CGSizeZero;
     
     switch (indexPath.section) {
         case kModeSection:
         {
-            [cellView addSubview:self.modeControl];
+            switch (indexPath.row) {
+                case kModeRow:
+                {
+                    tmpSize = [self.modeControl sizeThatFits:CGRectInset(cell.contentView.bounds, 3, 0).size];
+                    tmpRect.size = tmpSize;
+                    self.modeControl.frame = tmpRect;
+                    [cellView addSubview:self.modeControl];
+                }
+                    break;
+                    
+                default:
+                    break;
+            }
         }
             break;
         case kAnalysisSection:
@@ -236,6 +313,15 @@ enum{
         }    
             break;
             
+        case kFreeHandInteractionSection:
+        {
+            tmpRect = cell.contentView.bounds;
+            tmpRect = CGRectInset(tmpRect, 5, 0);
+
+            cellView = [self interactionModeViewInRect:tmpRect];
+        }
+            break;
+            
         default:
             break;
     }
@@ -245,7 +331,13 @@ enum{
     
     return cell;
 }
+- (void)segTouch:(id)sender{
 
+    if (sender == self.freeHandInteractionMode) {
+        houghRef.interactionMode = (self.freeHandInteractionMode.selectedSegmentIndex == 0)?kFreeHandDraw:kFreeHandDots;
+    }
+
+}
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath

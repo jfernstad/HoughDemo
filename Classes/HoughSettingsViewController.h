@@ -8,12 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
+@class Hough;
 
 @interface HoughSettingsViewController : UITableViewController {
     UISegmentedControl* modeControl;
+    UISegmentedControl* freeHandInteractionMode;
     UISwitch* autoAnalysisSwitch;
+
+    Hough* houghRef;
 }
+
 @property (nonatomic, retain) UISegmentedControl* modeControl;
+@property (nonatomic, retain) UISegmentedControl* freeHandInteractionMode;
 @property (nonatomic, retain) UISwitch* autoAnalysisSwitch;
+@property (nonatomic, assign) Hough* houghRef;
 
 @end

@@ -192,6 +192,7 @@
     
     // TODO: Load popover with settings view
     HoughSettingsViewController* settings = [[[HoughSettingsViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease];
+    settings.houghRef = self.hough;
     
     UIPopoverController* pop = [[UIPopoverController alloc] initWithContentViewController:settings];
     
