@@ -7,6 +7,7 @@
 //
 
 #import "HoughTouchView.h"
+#import "Hough.h"
 
 @interface HoughTouchView()
 // Gestures
@@ -46,7 +47,7 @@
     
     tap.numberOfTapsRequired	= 1;
     tap.numberOfTouchesRequired = 1;
-    pan.maximumNumberOfTouches	= 1;
+    pan.maximumNumberOfTouches	= 2;
     
     [self addGestureRecognizer:tap];
     [self addGestureRecognizer:pan];
@@ -77,17 +78,30 @@
 
     //p.y = self.frame.size.height - p.y;
     
-	CGRect r;
+	CGRect r = CGRectZero;
 	
-	r.origin = p;
-	r.size   = self.frame.size;
-	
+    if (gestureRecognizer.numberOfTouches == 0) {
+        return;
+    }
+    
+	NSMutableArray* points = [NSMutableArray arrayWithCapacity:gestureRecognizer.numberOfTouches];
+	NSMutableArray* rects  = [NSMutableArray arrayWithCapacity:gestureRecognizer.numberOfTouches];
+    
+    for (NSUInteger i = 0; i < gestureRecognizer.numberOfTouches; i++) {
+        p = [gestureRecognizer locationOfTouch:i inView:self];
+        r.origin = p;
+        r.size   = self.frame.size;
+
+        [points addObject:[NSValue valueWithCGPoint:p]];
+        [rects  addObject:[NSValue valueWithCGRect:r]];
+    }
+    
 	if (delegate && [delegate respondsToSelector:@selector(overlayLines:)]) { // TODO: handle multitouch
-		[delegate performSelector:@selector(overlayLines:) withObject:[NSArray arrayWithObject:[NSValue valueWithCGRect:r]] afterDelay:0.0];
+		[delegate performSelector:@selector(overlayLines:) withObject:rects afterDelay:0.0];
     }
 
 	if (delegate && [delegate respondsToSelector:@selector(overlayCircles:)]) {
-		[delegate performSelector:@selector(overlayCircles:) withObject:[NSArray arrayWithObject:[NSValue valueWithCGPoint:p]] afterDelay:0.0];
+		[delegate performSelector:@selector(overlayCircles:) withObject:points afterDelay:0.0];
     }
 }
 

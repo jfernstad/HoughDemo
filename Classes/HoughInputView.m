@@ -49,7 +49,7 @@
     
     tap.numberOfTapsRequired	= 1;
     tap.numberOfTouchesRequired = 1;
-    pan.maximumNumberOfTouches	= 1;
+    pan.maximumNumberOfTouches	= 2;
     
     [self addGestureRecognizer:tap];
     [self addGestureRecognizer:pan];
@@ -101,16 +101,26 @@
     // [gestureRecognizer locationForTouch:inView:];
 	CGPoint p = [gestureRecognizer locationInView:self];
 	
+    NSMutableArray* tmpPoints = [NSMutableArray arrayWithCapacity:gestureRecognizer.numberOfTouches];
+    
+    for (NSUInteger i = 0; i < gestureRecognizer.numberOfTouches; i++) {
+        p = [gestureRecognizer locationOfTouch:i inView:self];
+
+        [tmpPoints addObject:[NSValue valueWithCGPoint:p]];
+    }
+
 	self.currentPoint = [NSValue valueWithCGPoint:p];
 	
 	if (gestureRecognizer == tap || houghRef.interactionMode == kFreeHandDraw) {
-		[self.points addObject:self.currentPoint];
+		[self.points addObjectsFromArray:tmpPoints];
 	}else if (gestureRecognizer == pan) {
 		if (gestureRecognizer.state == UIGestureRecognizerStateBegan || self.points.count == 0) {
-			[self.points addObject:self.currentPoint];
+            [self.points addObjectsFromArray:tmpPoints];
 		}
 		else {
-			[self.points replaceObjectAtIndex:self.points.count-1 withObject:self.currentPoint];
+            NSRange r = {self.points.count-tmpPoints.count, tmpPoints.count};
+//			[self.points replaceObjectAtIndex:self.points.count-1 withObject:self.currentPoint];
+			[self.points replaceObjectsInRange:r withObjectsFromArray:tmpPoints];
 		}
 	}
 	
@@ -119,10 +129,10 @@
 	if (delegate) {
 		//NSLog(@"handleGesture: Calling delegate");
         // Grr.. need to pass another argument, maybe attach with runtime methods?
-        NSArray* pointArray = [NSArray arrayWithObject:self.currentPoint];
+        //NSArray* pointArray = [NSArray arrayWithObject:self.currentPoint];
         
-        objc_setAssociatedObject(pointArray, kHoughInputGestureState, [NSNumber numberWithInt:(int)gestureRecognizer.state], OBJC_ASSOCIATION_RETAIN);
-		[delegate performSelector:@selector(updateInputWithPoints:) withObject:pointArray afterDelay:0.0];
+        objc_setAssociatedObject(tmpPoints, kHoughInputGestureState, [NSNumber numberWithInt:(int)gestureRecognizer.state], OBJC_ASSOCIATION_RETAIN);
+		[delegate performSelector:@selector(updateInputWithPoints:) withObject:tmpPoints afterDelay:0.0];
 	}
 }
 
