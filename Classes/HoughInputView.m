@@ -69,7 +69,7 @@
 	for (NSValue* val in self.points) {
 		[val getValue:&p];
 		
-		CGContextAddEllipseInRect(context, CGRectWithCenter(p, 3.0));
+		CGContextAddEllipseInRect(context, CGRectWithCenter(p, 1.0));
 	}
 	
 	CGContextDrawPath(context, kCGPathFillStroke);

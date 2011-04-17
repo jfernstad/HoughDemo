@@ -28,6 +28,8 @@ typedef enum{
     unsigned char* tmpHoughSpace;
 
     BOOL isSetup;
+    
+    CGColorSpaceRef colorSpace;
 }
 @property (nonatomic, assign) CGRect frame;
 @property (nonatomic, assign) EInteractionMode interactionMode;

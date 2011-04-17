@@ -20,6 +20,7 @@
 -(void) setupHough;
 -(NSArray*) createCurvesForPoints:(NSArray*)points;
 -(CGImageRef) houghImageFromCurves:(NSArray*)curves;
+-(CGColorSpaceRef)createColorSpace;
 @end
 
 @implementation Hough
@@ -95,7 +96,8 @@
 
     houghSpace    = (unsigned char*)malloc(size);
     tmpHoughSpace = (unsigned char*)malloc(size);
-    
+    colorSpace    = [self createColorSpace];
+
     isSetup = YES;
     // TODO: verify we have memory
 }
@@ -214,13 +216,15 @@
 		}
 	}
 	
-	CGFloat decode [] = {0.0f, 100.0f};
+	CGFloat decode [] = {0.0f, 255.0f}; // TODO: Change to dynamic range. Calc Max/Min per image.
 	CFDataRef cfImgData = CFDataCreate(NULL, pointer, maxDist * maxVals);
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(cfImgData);
-	CGColorSpaceRef csp = CGColorSpaceCreateDeviceGray();
+	
+    //CGColorSpaceRef csp = CGColorSpaceCreateDeviceGray();
+    //CGColorSpaceRef csp = [self createColorSpace];
 	
 	
-	CGImageRef tmp = CGImageCreate(maxVals, maxDist, 8, 8, maxVals, csp, kCGImageAlphaNone, dataProvider, decode, NO, kCGRenderingIntentDefault);
+	CGImageRef tmp = CGImageCreate(maxVals, maxDist, 8, 8, maxVals, colorSpace, kCGImageAlphaNone, dataProvider, decode, NO, kCGRenderingIntentDefault);
 
 	CGColorSpaceRef scpr = CGColorSpaceCreateDeviceRGB();
 	
@@ -243,7 +247,7 @@
 	CGImageRelease(tmp);
 	CFRelease(cfImgData);
 	CGContextRelease(cr);
-	CGColorSpaceRelease(csp);
+	//CGColorSpaceRelease(csp);
 	//free(houghSpace);
 	return outImg;
 }
@@ -262,18 +266,46 @@
         NSMutableArray* totalPoints = [NSMutableArray arrayWithArray:self.pointsCopy];
         [totalPoints addObjectsFromArray:points];
         self.pointsCopy = totalPoints;
-        
-        [self.curves addObjectsFromArray:curves];
     }
+
+    [self.curves addObjectsFromArray:newCurves];
     
 	return outImage;
 }
 
+-(CGColorSpaceRef)createColorSpace{
+
+    CGColorSpaceRef outSpace = NULL;
+    
+    NSUInteger i = 0;
+    
+    unsigned char colorTable[256*3];
+    
+    // 0 = black
+    colorTable[0] = 0;
+    colorTable[1] = 0;
+    colorTable[2] = 0;
+    
+    for (i = 1; i < 255; i++) {
+        colorTable[i * 3 + 0] = 255;
+        colorTable[i * 3 + 1] = 255-(i-1)*255/10;
+        colorTable[i * 3 + 2] = 255-(i-1)*255/10;
+//        colorTable[i * 3 + 0] = MIN(128 + i * 10, 255);
+//        colorTable[i * 3 + 1] = MAX(128 + i, 0);
+//        colorTable[i * 3 + 2] = MAX(128 + i, 0);
+    }
+    
+    outSpace = CGColorSpaceCreateIndexed(CGColorSpaceCreateDeviceRGB(), 255, colorTable);
+    
+    return outSpace;
+    
+}
 -(void)dealloc{
 
 	self.pointsCopy = nil;
 	self.curves = nil;
 	
+    CGColorSpaceRelease(colorSpace);
     free(houghSpace);
     free(tmpHoughSpace);
     
