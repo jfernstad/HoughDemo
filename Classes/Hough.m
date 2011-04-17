@@ -24,7 +24,7 @@
 @end
 
 @implementation Hough
-@synthesize frame, pointsCopy, tmpPointsCopy, curves, interactionMode;
+@synthesize size, pointsCopy, tmpPointsCopy, curves, interactionMode;
 
 -(id)init{
 
@@ -45,24 +45,22 @@
     self.pointsCopy = nil;
     [self.curves removeAllObjects];
     
-    int maxDist = round(sqrt(powf(self.frame.size.height, 2) +
-							 powf(self.frame.size.width,  2))/[Hough yScale]+0.5f);
-    int maxVals = self.frame.size.width;
-    NSUInteger size = maxDist * maxVals;
+	int maxDist = self.size.height;
+	int maxVals = self.size.width;
+    NSUInteger area = maxDist * maxVals;
 	
-    memset(houghSpace,   0, size);
-    memset(tmpHoughSpace, 0, size);
+    memset(houghSpace,   0, area);
+    memset(tmpHoughSpace, 0, area);
 }
 
 -(void)makePersistent{
     // TODO: Copy houghImage to tmpHoughImage;
-    int maxDist = round(sqrt(powf(self.frame.size.height, 2) +
-							 powf(self.frame.size.width,  2))/[Hough yScale]+0.5f);
-    int maxVals = self.frame.size.width;
-    NSUInteger size = maxDist * maxVals;
+	int maxDist = self.size.height;
+	int maxVals = self.size.width;
+    NSUInteger area = maxDist * maxVals;
     
 //    memcpy(tmpHoughSpace, houghSpace, size);
-    memcpy(houghSpace, tmpHoughSpace, size);
+    memcpy(houghSpace, tmpHoughSpace, area);
 }
 -(BOOL) isPointAlreadyInArray:(CGPoint) p{
 	
@@ -81,21 +79,25 @@
 	return ret;
 }
 
--(void)setFrame:(CGRect)rect{
-    frame = rect;
+-(void)setSize:(CGSize)rectSize{
+    int maxDist = round(sqrt(powf(rectSize.height, 2) +
+							 powf(rectSize.width,  2))/[Hough yScale]+0.5f);
+    int maxVals = rectSize.width;
+
+    size = CGSizeMake(maxVals, maxDist);
+    
+    
     [self setupHough];
 }
 
 -(void)setupHough{
 
     NSLog(@"Setting up Hough!");
-    int maxDist = round(sqrt(powf(self.frame.size.height, 2) +
-							 powf(self.frame.size.width,  2))/[Hough yScale]+0.5f);
-	int maxVals = self.frame.size.width;
-    NSUInteger size = maxDist * maxVals;
+    
+    NSUInteger area = self.size.width * self.size.height;
 
-    houghSpace    = (unsigned char*)malloc(size);
-    tmpHoughSpace = (unsigned char*)malloc(size);
+    houghSpace    = (unsigned char*)malloc(area);
+    tmpHoughSpace = (unsigned char*)malloc(area);
     colorSpace    = [self createColorSpace];
 
     isSetup = YES;
@@ -106,12 +108,11 @@
 -(NSArray*)createCurvesForPoints: (NSArray*)points{
     
     NSAssert(isSetup, @"! Hough doesn't have a frame! call .frame = rect. ");
-    
-	int maxDist	  = round(sqrt(frame.size.height*frame.size.height + frame.size.width*frame.size.width)/[Hough yScale]+0.5f);
-	// First try of vectorized Hough transform
-	int maxVals		= frame.size.width;
+
+    int maxVals = self.size.width;
+
 	float startVal	= 0.0f;
-	float thetaInc	= M_PI/frame.size.width;
+	float thetaInc	= M_PI/self.size.width;
 	float angles   [ maxVals ] __attribute__((aligned));
 	float cosValues[ maxVals ] __attribute__((aligned));
 	float sinValues[ maxVals ] __attribute__((aligned));
@@ -137,11 +138,11 @@
 	CGPoint p, p2;
 	int k			= 0;
 	
-	float offset = maxDist/2.0f;
+	float offset = self.size.height/2.0f;
 	float xAmp	 = 0.0;
 	float yAmp	 = 0.0;
 	
-	float compressedOffset = (maxDist - maxDist/[Hough yScale])/2.0f; // To see the entire wave we need to scale and offset the amplitude. 
+	float compressedOffset = (self.size.height - self.size.height/[Hough yScale])/2.0f; // To see the entire wave we need to scale and offset the amplitude. 
 	
     NSMutableArray* outArray = [NSMutableArray arrayWithCapacity:points.count];
     
@@ -153,7 +154,7 @@
 //			continue;
 //		}
 
-		xAmp	 = p.x - maxVals/2;
+		xAmp	 = p.x - self.size.width/2;
 		yAmp	 = p.y - offset;
 		
 		// calc cos part: (x-180)*cos
@@ -169,7 +170,7 @@
 		// TODO: SIMD this
 		for(k = 0; k < maxVals; k++){
 			p2.x = k;
-			p2.y = (int)(yOffset[k]/Y_SCALE + compressedOffset);
+			p2.y = (int)(yOffset[k]/[Hough yScale] + compressedOffset);
 			
 			[tmpArray addObject:[NSValue valueWithCGPoint:p2]];
 		}
@@ -185,9 +186,8 @@
 
     NSAssert(isSetup, @"! Hough doesn't have a frame! call .frame = rect. ");
 
-	int maxDist = round(sqrt(powf(self.frame.size.height, 2) +
-							 powf(self.frame.size.width,  2))/[Hough yScale]+0.5f);
-	int maxVals = self.frame.size.width;
+	int maxDist = self.size.height;
+	int maxVals = self.size.width;
 	
 	//unsigned char* houghSpace = (unsigned char*)malloc(maxDist * maxVals); // MaxDist x angle
     

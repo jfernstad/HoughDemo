@@ -16,7 +16,7 @@ typedef enum{
 } EInteractionMode;
 
 @interface Hough : NSObject {
-	CGRect frame;
+	CGSize size;
 	
 	NSArray* pointsCopy;
 	NSArray* tmpPointsCopy;
@@ -31,7 +31,7 @@ typedef enum{
     
     CGColorSpaceRef colorSpace;
 }
-@property (nonatomic, assign) CGRect frame;
+@property (nonatomic, assign) CGSize size;
 @property (nonatomic, assign) EInteractionMode interactionMode;
 
 +(CGFloat)yScale;

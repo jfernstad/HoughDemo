@@ -91,7 +91,7 @@
     
     [self.toolBar setItems:[NSArray arrayWithObjects:settingsItem, spaceItem, clearItem, nil] animated:YES];
     
-    self.hough.frame = self.houghTouchView.frame;
+    self.hough.size = self.houghTouchView.frame.size;
 	self.houghInputView.delegate = self;
 	self.houghTouchView.delegate = self;
     

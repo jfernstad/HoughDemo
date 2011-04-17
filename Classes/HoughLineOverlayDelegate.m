@@ -64,6 +64,7 @@
         CGContextMoveToPoint(ctx, drawRect.origin.x, drawRect.origin.y);
         CGContextAddLineToPoint(ctx, drawRect.origin.x + drawRect.size.width, 
                                      drawRect.origin.y + drawRect.size.height);
+        //CGContextAddEllipseInRect(ctx, CGRectWithCenter(peak, 5));
         CGContextDrawPath(ctx, kCGPathFillStroke);
     }
 	
