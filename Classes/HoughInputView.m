@@ -118,7 +118,9 @@
             [self.points addObjectsFromArray:tmpPoints];
 		}
 		else {
-            NSRange r = {self.points.count-tmpPoints.count, tmpPoints.count};
+            NSInteger start = self.points.count-tmpPoints.count;
+            start = MAX(start, 0);
+            NSRange r = {(NSUInteger)start, tmpPoints.count};
 //			[self.points replaceObjectAtIndex:self.points.count-1 withObject:self.currentPoint];
 			[self.points replaceObjectsInRange:r withObjectsFromArray:tmpPoints];
 		}

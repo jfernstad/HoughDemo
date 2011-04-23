@@ -221,14 +221,14 @@
         NSNumber* gestureState = objc_getAssociatedObject(pointArray, kHoughInputGestureState);
         objc_setAssociatedObject(pointArray, kHoughInputGestureState, nil, OBJC_ASSOCIATION_RETAIN); // Clear association
 
+        if (hough.interactionMode == kFreeHandDots && [gestureState intValue] == (int)UIGestureRecognizerStateEnded) {
+            [hough makePersistent]; // Store temporary image as 
+        }
+
         start = [NSDate date];
 		img   = [hough newHoughSpaceFromPoints:pointArray];
 		imgCreation = [start timeIntervalSinceNow];
 		
-        if (hough.interactionMode == kFreeHandDots && [gestureState intValue] == (int)UIGestureRecognizerStateEnded) {
-            [hough makePersistent]; // Store temporary image as 
-        }
-        
 		self.busy = NO;
         
         // Show hough image
