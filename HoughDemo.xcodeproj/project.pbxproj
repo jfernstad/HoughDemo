@@ -93,6 +93,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				836DE7111370F0300010D82A /* Extensions */,
 				1D3623240D0F684500981E51 /* HoughDemoAppDelegate.h */,
 				1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */,
 				28D7ACF60DDB3853001CB0EB /* HoughDemoViewController.h */,
@@ -104,10 +105,6 @@
 				83CBB2241319B9160092FE93 /* Hough.h */,
 				83CBB2251319B9160092FE93 /* Hough.m */,
 				83492F1C1347DE2E002BD8BF /* Layer delegates */,
-				83492F1D1347E080002BD8BF /* CGGeometry+HoughExtensions.c */,
-				83492F1E1347E080002BD8BF /* CGGeometry+HoughExtensions.h */,
-				025FBB221350F2DF002717DD /* UIColor+HoughExtensions.h */,
-				025FBB231350F2DF002717DD /* UIColor+HoughExtensions.m */,
 				025FBB291350FBF6002717DD /* HoughSettingsViewController.h */,
 				025FBB2A1350FBF6002717DD /* HoughSettingsViewController.m */,
 			);
@@ -180,6 +177,17 @@
 				83492F191347DE0D002BD8BF /* CircleOverlayDelegate.m */,
 			);
 			name = "Layer delegates";
+			sourceTree = "<group>";
+		};
+		836DE7111370F0300010D82A /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				83492F1D1347E080002BD8BF /* CGGeometry+HoughExtensions.c */,
+				83492F1E1347E080002BD8BF /* CGGeometry+HoughExtensions.h */,
+				025FBB221350F2DF002717DD /* UIColor+HoughExtensions.h */,
+				025FBB231350F2DF002717DD /* UIColor+HoughExtensions.m */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

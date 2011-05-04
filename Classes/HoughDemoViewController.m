@@ -236,7 +236,7 @@
         
 		CGImageRelease(img);
         
-		self.status.text = [NSString stringWithFormat:@"Time for Hough generation: %3.3f ms (%1.3f ms/curve)", -imgCreation*1000.0, -imgCreation*1000.0/pointArray.count];
+		self.status.text = [NSString stringWithFormat:@"Time for Hough generation: %3.3f ms (%1.3f ms/curve)", -imgCreation*1000.0, -imgCreation*1000.0/((pointArray.count>0)?pointArray.count:1)];
 	}
 	else {
 		NSLog(@" BUSY! Not finished with previous image");
