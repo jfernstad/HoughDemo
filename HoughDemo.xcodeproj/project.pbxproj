@@ -23,6 +23,8 @@
 		833AE29B13495BDE00DFC76D /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 833AE29713495BDE00DFC76D /* iTunesArtwork.png */; };
 		83492F1A1347DE0E002BD8BF /* CircleOverlayDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 83492F191347DE0D002BD8BF /* CircleOverlayDelegate.m */; };
 		83492F1F1347E080002BD8BF /* CGGeometry+HoughExtensions.c in Sources */ = {isa = PBXBuildFile; fileRef = 83492F1D1347E080002BD8BF /* CGGeometry+HoughExtensions.c */; };
+		8353D8431370F701008B125C /* HoughFreeHandViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8353D8421370F701008B125C /* HoughFreeHandViewController.m */; };
+		836DE7131370F2AA0010D82A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 836DE7121370F2AA0010D82A /* test.jpg */; };
 		83CBB19F131997300092FE93 /* HoughInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBB19E131997300092FE93 /* HoughInputView.m */; };
 		83CBB2261319B9160092FE93 /* Hough.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBB2251319B9160092FE93 /* Hough.m */; };
 		83CBB22C1319BC160092FE93 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83CBB22B1319BC160092FE93 /* Accelerate.framework */; };
@@ -59,6 +61,9 @@
 		83492F191347DE0D002BD8BF /* CircleOverlayDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircleOverlayDelegate.m; sourceTree = "<group>"; };
 		83492F1D1347E080002BD8BF /* CGGeometry+HoughExtensions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "CGGeometry+HoughExtensions.c"; sourceTree = "<group>"; };
 		83492F1E1347E080002BD8BF /* CGGeometry+HoughExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CGGeometry+HoughExtensions.h"; sourceTree = "<group>"; };
+		8353D8411370F701008B125C /* HoughFreeHandViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughFreeHandViewController.h; sourceTree = "<group>"; };
+		8353D8421370F701008B125C /* HoughFreeHandViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughFreeHandViewController.m; sourceTree = "<group>"; };
+		836DE7121370F2AA0010D82A /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
 		83CBB19D131997300092FE93 /* HoughInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughInputView.h; sourceTree = "<group>"; };
 		83CBB19E131997300092FE93 /* HoughInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughInputView.m; sourceTree = "<group>"; };
 		83CBB2241319B9160092FE93 /* Hough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Hough.h; sourceTree = "<group>"; };
@@ -98,6 +103,8 @@
 				1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */,
 				28D7ACF60DDB3853001CB0EB /* HoughDemoViewController.h */,
 				28D7ACF70DDB3853001CB0EB /* HoughDemoViewController.m */,
+				8353D8411370F701008B125C /* HoughFreeHandViewController.h */,
+				8353D8421370F701008B125C /* HoughFreeHandViewController.m */,
 				83CBB19D131997300092FE93 /* HoughInputView.h */,
 				83CBB19E131997300092FE93 /* HoughInputView.m */,
 				831BFCBE132C445E00019FBD /* HoughTouchView.h */,
@@ -143,6 +150,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				836DE7121370F2AA0010D82A /* test.jpg */,
 				83D2BF23134D5226008F32ED /* gear.png */,
 				833AE29413495BDE00DFC76D /* Icon-72.png */,
 				83D2BF25134D7EBB008F32ED /* Icon-Small-50.png */,
@@ -249,6 +257,7 @@
 				83D2BF24134D5226008F32ED /* gear.png in Resources */,
 				83D2BF27134D7EBB008F32ED /* Icon-Small-50.png in Resources */,
 				83D2BF28134D7EBB008F32ED /* Icon-Small.png in Resources */,
+				836DE7131370F2AA0010D82A /* test.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,6 +279,7 @@
 				83492F1F1347E080002BD8BF /* CGGeometry+HoughExtensions.c in Sources */,
 				025FBB241350F2DF002717DD /* UIColor+HoughExtensions.m in Sources */,
 				025FBB2B1350FBF6002717DD /* HoughSettingsViewController.m in Sources */,
+				8353D8431370F701008B125C /* HoughFreeHandViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -3,7 +3,7 @@
 //  HoughDemo
 //
 //  Created by Joakim Fernstad on 3/12/11.
-//  Copyright 2011 NOW Electronics. All rights reserved.
+//  Copyright 2011 Joakim Fernstad. All rights reserved.
 //
 
 #import "HoughTouchView.h"
