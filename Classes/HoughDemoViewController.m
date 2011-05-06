@@ -8,9 +8,11 @@
 
 #import "HoughDemoViewController.h"
 #import "Hough.h"
+#import "HoughFreeHandViewController.h"
 #import "HoughLineOverlayDelegate.h"
 #import "UIColor+HoughExtensions.h"
 #import "HoughSettingsViewController.h"
+#import "HoughImageViewController.h"
 #import <objc/runtime.h>
 
 @interface HoughDemoViewController ()
@@ -18,7 +20,8 @@
 @end
 
 @implementation HoughDemoViewController
-//@synthesize settingsViewController;
+@synthesize tabBar;
+@synthesize freehandVC;
 
 /*
  // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -38,76 +41,25 @@
 //    
 //    // TODO: Put constants in enum
 //    
-    
-    
+
     self.view           = [[[UIView alloc] initWithFrame:totalRect] autorelease];
     
     tabBar              = [[UITabBarController alloc] init];
     
     [self.view addSubview:tabBar.view];
     
-    NSArray* vcs = [NSArray arrayWithObject:[[[HoughFreeHandViewController alloc] init] autorelease]];
+    freehandVC = [[HoughFreeHandViewController alloc] init];
+    freehandVC.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Freehand" image:[UIImage imageNamed:@"gear.png"] tag:0] autorelease];
+    freehandVC.tabBarItem.badgeValue = @"F";
+    
+    imageVC = [[HoughImageViewController alloc] init];
+    imageVC.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Image" image:[UIImage imageNamed:@"gear.png"] tag:1] autorelease];
+    imageVC.tabBarItem.badgeValue = @"I";
+    
+    NSArray* vcs = [NSArray arrayWithObjects:freehandVC, imageVC, nil];
     
     [tabBar setViewControllers:vcs animated:NO];
-    
-//    self.toolBar        = [[[UIToolbar alloc] initWithFrame:navRect] autorelease];
-//    self.houghTouchView = [[[HoughTouchView alloc] initWithFrame:touchRect] autorelease];
-//    self.houghInputView = [[[HoughInputView alloc] initWithFrame:inputRect] autorelease];
-//    self.status         = [[[UILabel alloc] initWithFrame:statusRect] autorelease];
-//    
-//    self.hough = [[[Hough alloc] init] autorelease];
-//    self.hough.interactionMode = kFreeHandDraw; // TODO: Parameterize
-//    self.houghInputView.houghRef = self.hough;
-//    
-//    // TODO: Subclass UINavigationItem 
-//    //UINavigationItem* item = [[[UINavigationItem alloc] initWithTitle:@"Free hand"] autorelease];
-//    
-//    // TODO: Clean this mess up..
-//    UIBarButtonItem* settingsItem = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"gear.png"]
-//                                                                      style:UIBarButtonItemStylePlain
-//                                                                     target:self
-//                                                                     action:@selector(showSettingsView)] autorelease];
-//    
-//    UIBarButtonItem* clearItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop
-//                                                                                target:self
-//                                                                                action:@selector(clear)] autorelease];
-//
-//    UIBarButtonItem* spaceItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemFlexibleSpace
-//                                   target:nil
-//                                   action:nil] autorelease];
-//    
-////    spaceItem.width = 200;
-//    
-//    [self.toolBar setItems:[NSArray arrayWithObjects:settingsItem, spaceItem, clearItem, nil] animated:YES];
-//    
-//    self.hough.size = self.houghTouchView.frame.size;
-//	self.houghInputView.delegate = self;
-//	self.houghTouchView.delegate = self;
-//    
-//    self.lineDelegate = [[[HoughLineOverlayDelegate alloc] init] autorelease];
-//    self.lineLayer = [CALayer layer];
-//    self.lineLayer.frame = self.houghInputView.bounds;
-//    self.lineLayer.delegate = self.lineDelegate;
-//    
-//    self.circleDelegate = [[[CircleOverlayDelegate alloc] init] autorelease];
-//    self.circleLayer = [CALayer layer];
-//    self.circleLayer.frame = self.houghTouchView.bounds;
-//    self.circleLayer.delegate = self.circleDelegate;
-//    
-//    [self.houghInputView.layer addSublayer:self.lineLayer];
-//    [self.houghTouchView.layer addSublayer:self.circleLayer];
-//    
-//    
-//    // Size/position
-//    //    self.status.frame = statusRect;
-//    //    self.houghInputView.frame = inputRect;
-//    //    self.houghTouchView.frame = touchRect;
-//    
-//    [self.view addSubview:self.toolBar];
-//    [self.view addSubview:self.houghTouchView];
-//    [self.view addSubview:self.houghInputView];
-//    [self.view addSubview:self.status];
-    
+   
 }
 
 -(void)layoutViews{
@@ -143,6 +95,9 @@
 
 
 - (void)dealloc {
+    
+    self.tabBar = nil;
+    self.freehandVC = nil;
     
     [super dealloc];
 }

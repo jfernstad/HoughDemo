@@ -25,6 +25,8 @@
 		83492F1F1347E080002BD8BF /* CGGeometry+HoughExtensions.c in Sources */ = {isa = PBXBuildFile; fileRef = 83492F1D1347E080002BD8BF /* CGGeometry+HoughExtensions.c */; };
 		8353D8431370F701008B125C /* HoughFreeHandViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8353D8421370F701008B125C /* HoughFreeHandViewController.m */; };
 		836DE7131370F2AA0010D82A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 836DE7121370F2AA0010D82A /* test.jpg */; };
+		839C9DC31373BA690074A39C /* HoughImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 839C9DC21373BA690074A39C /* HoughImageViewController.m */; };
+		839C9DC71373BC770074A39C /* hand.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 839C9DC61373BC770074A39C /* hand.jpg */; };
 		83CBB19F131997300092FE93 /* HoughInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBB19E131997300092FE93 /* HoughInputView.m */; };
 		83CBB2261319B9160092FE93 /* Hough.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBB2251319B9160092FE93 /* Hough.m */; };
 		83CBB22C1319BC160092FE93 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83CBB22B1319BC160092FE93 /* Accelerate.framework */; };
@@ -64,6 +66,9 @@
 		8353D8411370F701008B125C /* HoughFreeHandViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughFreeHandViewController.h; sourceTree = "<group>"; };
 		8353D8421370F701008B125C /* HoughFreeHandViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughFreeHandViewController.m; sourceTree = "<group>"; };
 		836DE7121370F2AA0010D82A /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
+		839C9DC11373BA680074A39C /* HoughImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughImageViewController.h; sourceTree = "<group>"; };
+		839C9DC21373BA690074A39C /* HoughImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughImageViewController.m; sourceTree = "<group>"; };
+		839C9DC61373BC770074A39C /* hand.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = hand.jpg; sourceTree = "<group>"; };
 		83CBB19D131997300092FE93 /* HoughInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughInputView.h; sourceTree = "<group>"; };
 		83CBB19E131997300092FE93 /* HoughInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughInputView.m; sourceTree = "<group>"; };
 		83CBB2241319B9160092FE93 /* Hough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Hough.h; sourceTree = "<group>"; };
@@ -98,22 +103,14 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				839C9DC51373BA9B0074A39C /* Views */,
+				839C9DC41373BA770074A39C /* View Controllers */,
 				836DE7111370F0300010D82A /* Extensions */,
+				83492F1C1347DE2E002BD8BF /* Layer delegates */,
 				1D3623240D0F684500981E51 /* HoughDemoAppDelegate.h */,
 				1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */,
-				28D7ACF60DDB3853001CB0EB /* HoughDemoViewController.h */,
-				28D7ACF70DDB3853001CB0EB /* HoughDemoViewController.m */,
-				8353D8411370F701008B125C /* HoughFreeHandViewController.h */,
-				8353D8421370F701008B125C /* HoughFreeHandViewController.m */,
-				83CBB19D131997300092FE93 /* HoughInputView.h */,
-				83CBB19E131997300092FE93 /* HoughInputView.m */,
-				831BFCBE132C445E00019FBD /* HoughTouchView.h */,
-				831BFCBF132C445E00019FBD /* HoughTouchView.m */,
 				83CBB2241319B9160092FE93 /* Hough.h */,
 				83CBB2251319B9160092FE93 /* Hough.m */,
-				83492F1C1347DE2E002BD8BF /* Layer delegates */,
-				025FBB291350FBF6002717DD /* HoughSettingsViewController.h */,
-				025FBB2A1350FBF6002717DD /* HoughSettingsViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -150,6 +147,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				839C9DC61373BC770074A39C /* hand.jpg */,
 				836DE7121370F2AA0010D82A /* test.jpg */,
 				83D2BF23134D5226008F32ED /* gear.png */,
 				833AE29413495BDE00DFC76D /* Icon-72.png */,
@@ -196,6 +194,32 @@
 				025FBB231350F2DF002717DD /* UIColor+HoughExtensions.m */,
 			);
 			name = Extensions;
+			sourceTree = "<group>";
+		};
+		839C9DC41373BA770074A39C /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				025FBB291350FBF6002717DD /* HoughSettingsViewController.h */,
+				025FBB2A1350FBF6002717DD /* HoughSettingsViewController.m */,
+				28D7ACF60DDB3853001CB0EB /* HoughDemoViewController.h */,
+				28D7ACF70DDB3853001CB0EB /* HoughDemoViewController.m */,
+				839C9DC11373BA680074A39C /* HoughImageViewController.h */,
+				839C9DC21373BA690074A39C /* HoughImageViewController.m */,
+				8353D8411370F701008B125C /* HoughFreeHandViewController.h */,
+				8353D8421370F701008B125C /* HoughFreeHandViewController.m */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		839C9DC51373BA9B0074A39C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				83CBB19D131997300092FE93 /* HoughInputView.h */,
+				83CBB19E131997300092FE93 /* HoughInputView.m */,
+				831BFCBE132C445E00019FBD /* HoughTouchView.h */,
+				831BFCBF132C445E00019FBD /* HoughTouchView.m */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,6 +282,7 @@
 				83D2BF27134D7EBB008F32ED /* Icon-Small-50.png in Resources */,
 				83D2BF28134D7EBB008F32ED /* Icon-Small.png in Resources */,
 				836DE7131370F2AA0010D82A /* test.jpg in Resources */,
+				839C9DC71373BC770074A39C /* hand.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,6 +305,7 @@
 				025FBB241350F2DF002717DD /* UIColor+HoughExtensions.m in Sources */,
 				025FBB2B1350FBF6002717DD /* HoughSettingsViewController.m in Sources */,
 				8353D8431370F701008B125C /* HoughFreeHandViewController.m in Sources */,
+				839C9DC31373BA690074A39C /* HoughImageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

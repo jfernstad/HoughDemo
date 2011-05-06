@@ -60,6 +60,8 @@
     touchRect = CGRectInset(touchRect, 15, 15);
     inputRect = CGRectInset(inputRect, 15, 15);
     
+    statusRect = CGRectZero; // Hide this one for now.
+    
     self.view           = [[[UIView alloc] initWithFrame:totalRect] autorelease];
     self.toolBar        = [[[UIToolbar alloc] initWithFrame:navRect] autorelease];
     self.houghTouchView = [[[HoughTouchView alloc] initWithFrame:touchRect] autorelease];

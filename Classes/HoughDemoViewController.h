@@ -7,22 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "HoughInputView.h"
-#import "HoughTouchView.h"
-#import "HoughFreeHandViewController.h"
-#import "HoughLineOverlayDelegate.h"
-#import "CircleOverlayDelegate.h"
 
-@class Hough;
-@class HoughTouchView;
-//@class HoughSettingsViewController;
+@class HoughFreeHandViewController;
+@class HoughImageViewController;
 
 @interface HoughDemoViewController : UIViewController {
     
-    UIToolbar* toolBar;
     UITabBarController* tabBar;
 	HoughFreeHandViewController* freehandVC;
+    HoughImageViewController* imageVC;
 }
+
+@property (nonatomic, retain) UITabBarController* tabBar;
+@property (nonatomic, retain) HoughFreeHandViewController* freehandVC;
+@property (nonatomic, retain) HoughImageViewController* imageVC;
+
 
 @end
 
