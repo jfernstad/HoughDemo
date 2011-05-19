@@ -9,10 +9,14 @@
 #import "HoughImageViewController.h"
 #import "UIColor+HoughExtensions.h"
 
+@interface HoughImageViewController ()
+-(void)showChooseImageView;
+@end
 
 @implementation HoughImageViewController
 @synthesize toolBar;
 @synthesize imgView;
+@synthesize placeHolder;
 
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 //{
@@ -27,6 +31,7 @@
 {
     self.toolBar = nil;
     self.imgView = nil;
+    self.placeHolder = nil;
     
     [super dealloc];
 }
@@ -63,16 +68,16 @@
 
     CGRect textRect = CGRectZero;
     
-    UILabel* todoText = [[UILabel alloc] initWithFrame:textRect];
-    todoText.numberOfLines = 2;
-    todoText.lineBreakMode = UILineBreakModeWordWrap;
-    todoText.font = [UIFont fontWithName:@"Courier" size:32];
-    todoText.textColor = [UIColor houghGreen];
-    todoText.backgroundColor = [UIColor clearColor];
+    self.placeHolder = [[[UILabel alloc] initWithFrame:textRect] autorelease];
+    self.placeHolder.numberOfLines = 2;
+    self.placeHolder.lineBreakMode = UILineBreakModeWordWrap;
+    self.placeHolder.font = [UIFont fontWithName:@"Courier" size:32];
+    self.placeHolder.textColor = [UIColor houghGreen];
+    self.placeHolder.backgroundColor = [UIColor clearColor];
     
-    todoText.text = @"TODO: Fill this screen with awesome stuff!";
+    self.placeHolder.text = @"TODO: Fill this screen with awesome stuff!";
     
-    CGSize rs = [todoText.text sizeWithFont:[UIFont fontWithName:@"Courier" size:32]
+    CGSize rs = [self.placeHolder.text sizeWithFont:[UIFont fontWithName:@"Courier" size:32]
                           constrainedToSize:CGSizeMake(500, 400)
                               lineBreakMode:UILineBreakModeWordWrap];
     
@@ -81,7 +86,7 @@
     
 //    textRect = CGRectInset(imgRect, 40, 40);
     
-    todoText.frame = textRect;
+    self.placeHolder.frame = textRect;
     
     self.imgView.backgroundColor = [UIColor mainBackgroundColor];
     
@@ -89,7 +94,7 @@
     
     UIBarButtonItem* actionItem    = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                                     target:self
-                                                                                    action:nil] autorelease];
+                                                                                    action:@selector(showChooseImageView)] autorelease];
 
     UIBarButtonItem* titleItem     = [[[UIBarButtonItem alloc] initWithTitle:@"Image" 
                                                                        style:UIBarButtonItemStylePlain
@@ -114,11 +119,21 @@
     [self.view addSubview:self.toolBar];
     [self.view addSubview:self.imgView];
     
-    [self.view addSubview:todoText];
+    [self.view addSubview:self.placeHolder];
 
-    [todoText release];
 }
 
+-(void)showChooseImageView{
+    // TODO: Load popover with settings view
+    UIImagePickerController* imgPicker = [[UIImagePickerController alloc] init];
+    UIPopoverController* pop = [[UIPopoverController alloc] initWithContentViewController:imgPicker];
+    
+    imgPicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    imgPicker.delegate = self;
+    
+    [pop presentPopoverFromBarButtonItem:[self.toolBar.items objectAtIndex:self.toolBar.items.count-1] permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+    
+}
 
 /*
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -140,5 +155,27 @@
     // Return YES for supported orientations
 	return YES;
 }
+
+#pragma mark -
+#pragma Delegates
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
+    NSLog(@"info: %@", info);
+    
+    // Close picker
+    // Show image
+    // Start processing
+    
+    
+    if ([info objectForKey:@"UIImagePickerControllerOriginalImage"]) {
+        self.imgView.image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+        [self.placeHolder removeFromSuperview];
+    }
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
+}
+
+
 
 @end

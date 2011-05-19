@@ -9,12 +9,16 @@
 #import <UIKit/UIKit.h>
 
 
-@interface HoughImageViewController : UIViewController {
+@interface HoughImageViewController : UIViewController <UIImagePickerControllerDelegate>{
     UIToolbar* toolBar;
     UIImageView* imgView;
+    
+    UILabel* placeHolder;
 }
 
 @property (nonatomic, retain) UIToolbar* toolBar;
 @property (nonatomic, retain) UIImageView* imgView;
+@property (nonatomic, retain) UILabel* placeHolder;
+
 
 @end
