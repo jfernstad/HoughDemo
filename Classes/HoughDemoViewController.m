@@ -22,6 +22,7 @@
 @implementation HoughDemoViewController
 @synthesize tabBar;
 @synthesize freehandVC;
+@synthesize imageVC;
 
 /*
  // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -45,6 +46,7 @@
     self.view           = [[[UIView alloc] initWithFrame:totalRect] autorelease];
     
     tabBar              = [[UITabBarController alloc] init];
+//    tabBar.
     
     [self.view addSubview:tabBar.view];
     
@@ -78,7 +80,7 @@
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait) ;
+    return (interfaceOrientation == UIInterfaceOrientationPortrait || interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) ;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -96,8 +98,9 @@
 
 - (void)dealloc {
     
-    self.tabBar = nil;
+    self.tabBar     = nil;
     self.freehandVC = nil;
+    self.imageVC    = nil;
     
     [super dealloc];
 }

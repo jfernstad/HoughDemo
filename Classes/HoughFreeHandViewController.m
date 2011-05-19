@@ -16,6 +16,7 @@
 @interface HoughFreeHandViewController ()
 -(void)layoutViews;
 -(void)showSettingsView;
+-(void)interactionMode:(id)sender;
 @end
 
 @implementation HoughFreeHandViewController
@@ -53,7 +54,7 @@
     
     // TODO: Put constants in enum
     
-    CGRectDivide(totalRect,  &navRect, &touchRect,  44, CGRectMinYEdge);
+    CGRectDivide(totalRect,  &navRect, &touchRect,  50, CGRectMinYEdge);
     CGRectDivide(touchRect,  &touchRect,  &inputRect,  450, CGRectMinYEdge);
     CGRectDivide(inputRect,  &inputRect,  &statusRect, 450, CGRectMinYEdge);
     
@@ -66,60 +67,64 @@
     self.toolBar        = [[[UIToolbar alloc] initWithFrame:navRect] autorelease];
     self.houghTouchView = [[[HoughTouchView alloc] initWithFrame:touchRect] autorelease];
     self.houghInputView = [[[HoughInputView alloc] initWithFrame:inputRect] autorelease];
-    self.status         = [[[UILabel alloc] initWithFrame:statusRect] autorelease];
+//    self.status         = [[[UILabel alloc] initWithFrame:statusRect] autorelease];
     
     self.hough = [[[Hough alloc] init] autorelease];
-    self.hough.interactionMode = kFreeHandDraw; // TODO: Parameterize
+    self.hough.interactionMode   = kFreeHandDraw; // TODO: Parameterize
     self.houghInputView.houghRef = self.hough;
     
-    // TODO: Subclass UINavigationItem 
-    //UINavigationItem* item = [[[UINavigationItem alloc] initWithTitle:@"Free hand"] autorelease];
-    
     // TODO: Clean this mess up..
-    UIBarButtonItem* settingsItem = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"gear.png"]
-                                                                      style:UIBarButtonItemStylePlain
-                                                                     target:self
-                                                                     action:@selector(showSettingsView)] autorelease];
+    UISegmentedControl* modeControl = [[[UISegmentedControl alloc] initWithItems:
+                                        [NSArray arrayWithObjects:@"Draw", @"Tap", nil]] autorelease];
     
-    UIBarButtonItem* clearItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop
-                                                                                target:self
-                                                                                action:@selector(clear)] autorelease];
+    modeControl.segmentedControlStyle = UISegmentedControlStyleBar;
+    modeControl.tintColor = [UIColor houghGreen];
     
-    UIBarButtonItem* spaceItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemFlexibleSpace
-                                                                                target:nil
-                                                                                action:nil] autorelease];
+    [modeControl setSelectedSegmentIndex:(hough.interactionMode==kFreeHandDraw)?0:1];
+    [modeControl addTarget:self
+                    action:@selector(interactionMode:)
+          forControlEvents:UIControlEventValueChanged];
     
-    //    spaceItem.width = 200;
+    UIBarButtonItem* selectionItem = [[[UIBarButtonItem alloc] initWithCustomView:modeControl] autorelease];
     
-    [self.toolBar setItems:[NSArray arrayWithObjects:settingsItem, spaceItem, clearItem, nil] animated:YES];
+    UIBarButtonItem* settingsItem  = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"gear.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(showSettingsView)] autorelease];
+    
+    UIBarButtonItem* clearItem     = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop
+                                                                                    target:self
+                                                                                    action:@selector(clear)] autorelease];
+    
+    UIBarButtonItem* spaceItem     = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                                    target:nil
+                                                                                    action:nil] autorelease];
+    
+    // -- 
+    [self.toolBar setItems:[NSArray arrayWithObjects:settingsItem, spaceItem, selectionItem, spaceItem, clearItem, nil] animated:YES];
     
     self.hough.size = self.houghTouchView.frame.size;
 	self.houghInputView.delegate = self;
 	self.houghTouchView.delegate = self;
     
     self.lineDelegate = [[[HoughLineOverlayDelegate alloc] init] autorelease];
-    self.lineLayer = [CALayer layer];
-    self.lineLayer.frame = self.houghInputView.bounds;
+    self.lineLayer    = [CALayer layer];
+    self.lineLayer.frame    = self.houghInputView.bounds;
     self.lineLayer.delegate = self.lineDelegate;
     
     self.circleDelegate = [[[CircleOverlayDelegate alloc] init] autorelease];
-    self.circleLayer = [CALayer layer];
-    self.circleLayer.frame = self.houghTouchView.bounds;
+    self.circleLayer    = [CALayer layer];
+    self.circleLayer.frame    = self.houghTouchView.bounds;
     self.circleLayer.delegate = self.circleDelegate;
     
     [self.houghInputView.layer addSublayer:self.lineLayer];
     [self.houghTouchView.layer addSublayer:self.circleLayer];
     
-    
-    // Size/position
-    //    self.status.frame = statusRect;
-    //    self.houghInputView.frame = inputRect;
-    //    self.houghTouchView.frame = touchRect;
-    
     [self.view addSubview:self.toolBar];
     [self.view addSubview:self.houghTouchView];
     [self.view addSubview:self.houghInputView];
-    [self.view addSubview:self.status];
+//    [self.view addSubview:self.status];
+    
     
 }
 
@@ -128,20 +133,20 @@
     UIColor* borderColor = [UIColor borderColor];
     
     // Attributes
-    self.view.backgroundColor = [UIColor mainBackgroundColor];
+    self.view.backgroundColor           = [UIColor mainBackgroundColor];
     self.houghTouchView.backgroundColor = [UIColor houghBackgroundColor];
     self.houghInputView.backgroundColor = [UIColor inputBackgroundColor];
     self.houghInputView.pointsColor     = [UIColor whiteColor];
     self.toolBar.tintColor              = [UIColor toolbarTintColor];
     
-    self.houghInputView.layer.cornerRadius = 10;
-    self.houghTouchView.layer.cornerRadius = 10;
-    
-    self.houghTouchView.layer.borderWidth = 2;
-    self.houghTouchView.layer.borderColor = borderColor.CGColor;
-    
-    self.houghInputView.layer.borderWidth = 2;
-    self.houghInputView.layer.borderColor = borderColor.CGColor;
+    self.houghTouchView.layer.borderWidth   = 2;
+    self.houghInputView.layer.borderWidth   = 2;
+    self.houghTouchView.layer.cornerRadius  = 10;
+    self.houghInputView.layer.cornerRadius  = 10;
+    self.houghTouchView.layer.masksToBounds = YES;
+    self.houghInputView.layer.masksToBounds = YES;
+    self.houghTouchView.layer.borderColor   = borderColor.CGColor;
+    self.houghInputView.layer.borderColor   = borderColor.CGColor;
     
     self.lineDelegate.lineColor   = [UIColor lineColor];
     self.circleDelegate.markColor = [UIColor lineColor];
@@ -183,7 +188,7 @@
 	self.hough          = nil;
     self.lineLayer      = nil;
     self.lineDelegate   = nil;
-    self.toolBar         = nil;
+    self.toolBar        = nil;
     
     [super dealloc];
 }
@@ -238,7 +243,7 @@
         
 		CGImageRelease(img);
         
-		self.status.text = [NSString stringWithFormat:@"Time for Hough generation: %3.3f ms (%1.3f ms/curve)", -imgCreation*1000.0, -imgCreation*1000.0/((pointArray.count>0)?pointArray.count:1)];
+//		self.status.text = [NSString stringWithFormat:@"Time for Hough generation: %3.3f ms (%1.3f ms/curve)", -imgCreation*1000.0, -imgCreation*1000.0/((pointArray.count>0)?pointArray.count:1)];
 	}
 	else {
 		NSLog(@" BUSY! Not finished with previous image");
@@ -263,6 +268,11 @@
     self.circleDelegate.points = nil;
 	[self.lineLayer setNeedsDisplay];
     [self.circleLayer setNeedsDisplay];
+}
+
+- (void)interactionMode:(id)sender{
+    
+    hough.interactionMode = (((UISegmentedControl*)sender).selectedSegmentIndex == 0)?kFreeHandDraw:kFreeHandDots;
 }
 
 @end
