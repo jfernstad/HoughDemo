@@ -75,7 +75,7 @@
     
     // TODO: Clean this mess up..
     UISegmentedControl* modeControl = [[[UISegmentedControl alloc] initWithItems:
-                                        [NSArray arrayWithObjects:@"Draw", @"Tap", nil]] autorelease];
+                                        [NSArray arrayWithObjects:@"  Draw  ", @"  Tap  ", nil]] autorelease];
     
     modeControl.segmentedControlStyle = UISegmentedControlStyleBar;
     modeControl.tintColor = [UIColor houghGreen];
@@ -92,16 +92,33 @@
                                                                       target:self
                                                                       action:@selector(showSettingsView)] autorelease];
     
-    UIBarButtonItem* clearItem     = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop
+    UIBarButtonItem* clearItem     = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
                                                                                     target:self
                                                                                     action:@selector(clear)] autorelease];
+    
+    UIBarButtonItem* titleItem     = [[[UIBarButtonItem alloc] initWithTitle:@"Free hand" 
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:nil
+                                                                      action:nil] autorelease];
     
     UIBarButtonItem* spaceItem     = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
                                                                                     target:nil
                                                                                     action:nil] autorelease];
     
+    UIBarButtonItem* fixSpaceItem  = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                                                                    target:nil
+                                                                                    action:nil] autorelease];
+
+    UIBarButtonItem* fixSpaceItem2 = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                                                                    target:nil
+                                                                                    action:nil] autorelease];
+    
+    selectionItem.possibleTitles = [NSSet setWithObjects:@"Draw", @"Tap", @"long titel", nil];
+    fixSpaceItem.width  = 250;
+    fixSpaceItem2.width = 30;
+    
     // -- 
-    [self.toolBar setItems:[NSArray arrayWithObjects:settingsItem, spaceItem, selectionItem, spaceItem, clearItem, nil] animated:YES];
+    [self.toolBar setItems:[NSArray arrayWithObjects:settingsItem, fixSpaceItem, titleItem, spaceItem, selectionItem, fixSpaceItem2, clearItem, nil] animated:YES];
     
     self.hough.size = self.houghTouchView.frame.size;
 	self.houghInputView.delegate = self;

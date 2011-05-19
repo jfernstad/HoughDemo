@@ -11,18 +11,23 @@
 
 
 @implementation HoughImageViewController
+@synthesize toolBar;
+@synthesize imgView;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
+//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+//{
+//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+//    if (self) {
+//        // Custom initialization
+//    }
+//    return self;
+//}
 
 - (void)dealloc
 {
+    self.toolBar = nil;
+    self.imgView = nil;
+    
     [super dealloc];
 }
 
@@ -41,17 +46,29 @@
 {
 
     CGRect totalRect  = [UIScreen mainScreen].applicationFrame;
-    CGRect textRect = CGRectMake(0,0,200,500);
+    CGRect navRect    = CGRectZero;
+    CGRect imgRect    = CGRectZero;
+
+    CGRectDivide(totalRect, &navRect, &imgRect, 50, CGRectMinYEdge);
     
-    self.view = [[UIView alloc] initWithFrame:totalRect];
+    
+    self.view    = [[[UIView alloc] initWithFrame:totalRect] autorelease];
+    self.toolBar = [[[UIToolbar alloc] initWithFrame:navRect] autorelease];
+    self.imgView = [[[UIImageView alloc] initWithFrame:imgRect] autorelease];
+    
     self.view.backgroundColor = [UIColor houghGray];
+    self.toolBar.tintColor = [UIColor toolbarTintColor];
+
+    // --- START OF TEMPORARY STUFF ---
+
+    CGRect textRect = CGRectZero;
     
     UILabel* todoText = [[UILabel alloc] initWithFrame:textRect];
     todoText.numberOfLines = 2;
     todoText.lineBreakMode = UILineBreakModeWordWrap;
     todoText.font = [UIFont fontWithName:@"Courier" size:32];
     todoText.textColor = [UIColor houghGreen];
-    todoText.backgroundColor = [UIColor houghGray];
+    todoText.backgroundColor = [UIColor clearColor];
     
     todoText.text = @"TODO: Fill this screen with awesome stuff!";
     
@@ -62,10 +79,43 @@
     textRect.origin = CGPointMake((totalRect.size.width - rs.width)/2, (totalRect.size.height - rs.height)/2);
     textRect.size = rs;
     
+//    textRect = CGRectInset(imgRect, 40, 40);
+    
     todoText.frame = textRect;
     
-    [self.view addSubview:todoText];
+    self.imgView.backgroundColor = [UIColor mainBackgroundColor];
     
+    // --- END OF TEMPORARY STUFF ---
+    
+    UIBarButtonItem* actionItem    = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                                                    target:self
+                                                                                    action:nil] autorelease];
+
+    UIBarButtonItem* titleItem     = [[[UIBarButtonItem alloc] initWithTitle:@"Image" 
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:nil
+                                                                      action:nil] autorelease];
+
+    UIBarButtonItem* flexSpaceItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                                    target:nil
+                                                                                    action:nil] autorelease];
+    UIBarButtonItem* fixSpaceItem  = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                                                                    target:nil
+                                                                                    action:nil] autorelease];
+    fixSpaceItem.width = 350;
+    titleItem.enabled = NO;
+    
+    // -- 
+    [self.toolBar setItems:[NSArray arrayWithObjects:fixSpaceItem, titleItem, flexSpaceItem, actionItem, nil] animated:YES];
+
+    
+    self.view.backgroundColor = [UIColor mainBackgroundColor];
+
+    [self.view addSubview:self.toolBar];
+    [self.view addSubview:self.imgView];
+    
+    [self.view addSubview:todoText];
+
     [todoText release];
 }
 

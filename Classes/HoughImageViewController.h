@@ -10,7 +10,11 @@
 
 
 @interface HoughImageViewController : UIViewController {
-    
+    UIToolbar* toolBar;
+    UIImageView* imgView;
 }
+
+@property (nonatomic, retain) UIToolbar* toolBar;
+@property (nonatomic, retain) UIImageView* imgView;
 
 @end
