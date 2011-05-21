@@ -124,13 +124,14 @@
 	self.houghInputView.delegate = self;
 	self.houghTouchView.delegate = self;
     
-    self.lineDelegate = [[[HoughLineOverlayDelegate alloc] init] autorelease];
-    self.lineLayer    = [CALayer layer];
-    self.lineLayer.frame    = self.houghInputView.bounds;
-    self.lineLayer.delegate = self.lineDelegate;
+    self.lineDelegate        = [[[HoughLineOverlayDelegate alloc] init] autorelease];
+    self.lineDelegate.yScale = self.hough.yScale;
+    self.lineLayer           = [CALayer layer];
+    self.lineLayer.frame     = self.houghInputView.bounds;
+    self.lineLayer.delegate  = self.lineDelegate;
     
-    self.circleDelegate = [[[CircleOverlayDelegate alloc] init] autorelease];
-    self.circleLayer    = [CALayer layer];
+    self.circleDelegate       = [[[CircleOverlayDelegate alloc] init] autorelease];
+    self.circleLayer          = [CALayer layer];
     self.circleLayer.frame    = self.houghTouchView.bounds;
     self.circleLayer.delegate = self.circleDelegate;
     

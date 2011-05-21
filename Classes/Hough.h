@@ -11,6 +11,7 @@
 typedef enum{
     kFreeHandDots = 0,
     kFreeHandDraw,
+    kManualInteraction,
     
     kNumInteractionModes
 } EInteractionMode;
@@ -30,11 +31,12 @@ typedef enum{
     BOOL isSetup;
     
     CGColorSpaceRef colorSpace;
+    CGFloat yScale;
 }
+@property (nonatomic, assign) CGFloat yScale;
 @property (nonatomic, assign) CGSize size;
 @property (nonatomic, assign) EInteractionMode interactionMode;
 
-+(CGFloat)yScale;
 -(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points; // Completely redraw houghImage
 -(void)clear;
 -(void)makePersistent;  // Stores tmpHoughImage to houghImage;

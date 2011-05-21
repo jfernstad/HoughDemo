@@ -8,6 +8,7 @@
 
 #import "HoughImageViewController.h"
 #import "UIColor+HoughExtensions.h"
+#import "Hough.h"
 
 @interface HoughImageViewController ()
 -(void)showChooseImageView;
@@ -17,6 +18,9 @@
 @synthesize toolBar;
 @synthesize imgView;
 @synthesize placeHolder;
+@synthesize hough;
+@synthesize imgPicker;
+@synthesize popover;
 
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 //{
@@ -29,9 +33,12 @@
 
 - (void)dealloc
 {
+    self.hough = nil;
     self.toolBar = nil;
     self.imgView = nil;
+    self.imgPicker = nil;
     self.placeHolder = nil;
+    self.popover = nil; // TODO: Keep an eye on this 
     
     [super dealloc];
 }
@@ -64,6 +71,11 @@
     self.view.backgroundColor = [UIColor houghGray];
     self.toolBar.tintColor = [UIColor toolbarTintColor];
 
+    self.hough = [[[Hough alloc] init] autorelease];
+    self.hough.interactionMode   = kManualInteraction;
+    self.hough.size = imgRect.size; // Setup hough size
+
+    
     // --- START OF TEMPORARY STUFF ---
 
     CGRect textRect = CGRectZero;
@@ -125,14 +137,21 @@
 
 -(void)showChooseImageView{
     // TODO: Load popover with settings view
-    UIImagePickerController* imgPicker = [[UIImagePickerController alloc] init];
-    UIPopoverController* pop = [[UIPopoverController alloc] initWithContentViewController:imgPicker];
+
+    if (!self.imgPicker) {
+        self.imgPicker = [[[UIImagePickerController alloc] init] autorelease];
+        self.imgPicker.delegate = self;
+    }
+
+    if (!self.popover) {
+        self.popover = [[[UIPopoverController alloc] initWithContentViewController:imgPicker] autorelease];
+        self.popover.delegate = self;
+        NSLog(@"recreating popover");
+    }
     
-    imgPicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    imgPicker.delegate = self;
+    self.imgPicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     
-    [pop presentPopoverFromBarButtonItem:[self.toolBar.items objectAtIndex:self.toolBar.items.count-1] permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
-    
+    [self.popover presentPopoverFromBarButtonItem:[self.toolBar.items objectAtIndex:self.toolBar.items.count-1] permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
 }
 
 /*
@@ -165,7 +184,7 @@
     // Close picker
     // Show image
     // Start processing
-    
+    [self.popover dismissPopoverAnimated:YES];
     
     if ([info objectForKey:@"UIImagePickerControllerOriginalImage"]) {
         self.imgView.image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
@@ -176,6 +195,8 @@
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
 }
 
-
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController{
+    NSLog(@"popoverControllerDidDismissPopover");
+}
 
 @end

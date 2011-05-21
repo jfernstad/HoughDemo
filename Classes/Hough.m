@@ -24,7 +24,7 @@
 @end
 
 @implementation Hough
-@synthesize size, pointsCopy, tmpPointsCopy, curves, interactionMode;
+@synthesize size, pointsCopy, tmpPointsCopy, curves, interactionMode, yScale;
 
 -(id)init{
 
@@ -32,13 +32,10 @@
 		self.curves = [NSMutableArray arrayWithCapacity:0];
         self.interactionMode = kFreeHandDots;
         isSetup = NO;
+        self.yScale = Y_SCALE;
     }
 	
 	return self;
-}
-
-+(CGFloat)yScale{
-	return Y_SCALE;
 }
 
 -(void)clear{
@@ -81,7 +78,7 @@
 
 -(void)setSize:(CGSize)rectSize{
     int maxDist = round(sqrt(powf(rectSize.height, 2) +
-							 powf(rectSize.width,  2))/[Hough yScale]+0.5f);
+							 powf(rectSize.width,  2))/self.yScale+0.5f);
     int maxVals = rectSize.width;
 
     size = CGSizeMake(maxVals, maxDist);
@@ -142,17 +139,13 @@
 	float xAmp	 = 0.0;
 	float yAmp	 = 0.0;
 	
-	float compressedOffset = (self.size.height - self.size.height/[Hough yScale])/2.0f; // To see the entire wave we need to scale and offset the amplitude. 
+	float compressedOffset = (self.size.height - self.size.height/self.yScale)/2.0f; // To see the entire wave we need to scale and offset the amplitude. 
 	
     NSMutableArray* outArray = [NSMutableArray arrayWithCapacity:points.count];
     
 	for (NSValue* val in points) {
 		
 		p = [val CGPointValue];
-
-//		if ([self isPointAlreadyInArray:p]) { // Extreme difference in performance
-//			continue;
-//		}
 
 		xAmp	 = p.x - self.size.width/2;
 		yAmp	 = p.y - offset;
@@ -170,7 +163,7 @@
 		// TODO: SIMD this
 		for(k = 0; k < maxVals; k++){
 			p2.x = k;
-			p2.y = (int)(yOffset[k]/[Hough yScale] + compressedOffset);
+			p2.y = (int)(yOffset[k]/self.yScale + compressedOffset);
 			
 			[tmpArray addObject:[NSValue valueWithCGPoint:p2]];
 		}
@@ -189,8 +182,6 @@
 	int maxDist = self.size.height;
 	int maxVals = self.size.width;
 	
-	//unsigned char* houghSpace = (unsigned char*)malloc(maxDist * maxVals); // MaxDist x angle
-    
     unsigned char* pointer = tmpHoughSpace;
     
     if (self.interactionMode == kFreeHandDraw) {

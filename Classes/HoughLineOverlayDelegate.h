@@ -12,10 +12,13 @@
 @interface HoughLineOverlayDelegate : NSObject {
     NSArray* lines;
     UIColor* lineColor;
+    
+    CGFloat yScale;
 }
 
 // NSValue containing a CGRect with origin as theta, distance and size as source image size
 @property (nonatomic, retain) NSArray* lines;
 @property (nonatomic, retain) UIColor* lineColor;
+@property (nonatomic, assign) CGFloat yScale;
 
 @end
