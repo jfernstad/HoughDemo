@@ -7,6 +7,7 @@
 //
 
 #import "HoughImageViewController.h"
+#import "LoadingView.h"
 #import "UIColor+HoughExtensions.h"
 #import "Hough.h"
 
@@ -21,6 +22,7 @@
 @synthesize hough;
 @synthesize imgPicker;
 @synthesize popover;
+@synthesize loadingView;
 
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 //{
@@ -39,6 +41,7 @@
     self.imgPicker = nil;
     self.placeHolder = nil;
     self.popover = nil; // TODO: Keep an eye on this 
+    self.loadingView = nil;
     
     [super dealloc];
 }
@@ -67,6 +70,7 @@
     self.view    = [[[UIView alloc] initWithFrame:totalRect] autorelease];
     self.toolBar = [[[UIToolbar alloc] initWithFrame:navRect] autorelease];
     self.imgView = [[[UIImageView alloc] initWithFrame:imgRect] autorelease];
+    self.loadingView = [[[LoadingView alloc] initWithFrame:imgRect] autorelease];
     
     self.view.backgroundColor = [UIColor houghGray];
     self.toolBar.tintColor = [UIColor toolbarTintColor];
@@ -75,7 +79,9 @@
     self.hough.interactionMode   = kManualInteraction;
     self.hough.size = imgRect.size; // Setup hough size
 
+    self.imgView.contentMode = UIViewContentModeScaleAspectFit;
     
+    self.loadingView.text = @"Loading image... ";
     // --- START OF TEMPORARY STUFF ---
 
     CGRect textRect = CGRectZero;
@@ -132,6 +138,7 @@
     [self.view addSubview:self.imgView];
     
     [self.view addSubview:self.placeHolder];
+    [self.view addSubview:self.loadingView];
 
 }
 
@@ -185,6 +192,8 @@
     // Show image
     // Start processing
     [self.popover dismissPopoverAnimated:YES];
+    [self.loadingView startProgress];
+    [self.loadingView performSelector:@selector(stopProgress) withObject:nil afterDelay:5.0];
     
     if ([info objectForKey:@"UIImagePickerControllerOriginalImage"]) {
         self.imgView.image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];

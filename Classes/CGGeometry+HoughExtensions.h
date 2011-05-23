@@ -9,3 +9,4 @@
 #include <CoreGraphics/CGGeometry.h>
 
 CGRect CGRectWithCenter(CGPoint p, CGFloat radius);
+CGRect CGRectCenteredInRect(CGRect referenceRect, CGSize sizeToCenter);

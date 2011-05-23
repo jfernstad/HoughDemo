@@ -10,13 +10,15 @@
 
 @class Hough;
 @class HoughLineOverlayDelegate;
+@class LoadingView;
 
 @interface HoughImageViewController : UIViewController <UIImagePickerControllerDelegate, UIPopoverControllerDelegate>{
     UIToolbar* toolBar;
     UIImageView* imgView;
     
     UILabel* placeHolder;
-
+    LoadingView* loadingView;
+    
     UIImagePickerController* imgPicker;
     UIPopoverController* popover;
 
@@ -32,6 +34,7 @@
 @property (nonatomic, retain) UIImagePickerController* imgPicker;
 @property (nonatomic, retain) UIPopoverController* popover;
 @property (nonatomic, retain) Hough* hough;
+@property (nonatomic, retain) LoadingView* loadingView;
 //@property (nonatomic, retain) CALayer* lineLayer; // TODO
 //@property (nonatomic, retain) HoughLineOverlayDelegate* lineDelegate; // TODO
 
