@@ -125,7 +125,7 @@
 	self.houghTouchView.delegate = self;
     
     self.lineDelegate        = [[[HoughLineOverlayDelegate alloc] init] autorelease];
-    self.lineDelegate.yScale = self.hough.yScale;
+    self.lineDelegate.houghRef = self.hough;
     self.lineLayer           = [CALayer layer];
     self.lineLayer.frame     = self.houghInputView.bounds;
     self.lineLayer.delegate  = self.lineDelegate;

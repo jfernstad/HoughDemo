@@ -17,13 +17,12 @@
 @implementation HoughLineOverlayDelegate
 @synthesize lines;
 @synthesize lineColor;
-@synthesize yScale;
+@synthesize houghRef;
 
 -(id)init{
 
     if ((self == [super init])) {
         self.lineColor = [UIColor redColor];
-        self.yScale = 1.0;
     }
     return self;
 }
@@ -34,6 +33,7 @@
     CGRect drawRect = CGRectZero;
     CGFloat theta   = 0.0;
     CGFloat len     = 0.0;
+    CGPoint eq      = CGPointZero;
     CGPoint vec     = CGPointZero;
     CGPoint orto    = CGPointZero;
     CGPoint center  = CGPointZero;
@@ -49,8 +49,10 @@
     for (NSValue* v in self.lines) {
         
         rect    = [v CGRectValue];
-        theta   = M_PI - rect.origin.x * M_PI/rect.size.width;
-        len     = (rect.size.height - rect.origin.y*self.yScale); // * Y_SCALE = 2
+        
+        eq      = [houghRef equationForPoint:rect];
+        theta   = eq.x;
+        len     = eq.y;
         
         vec    = CGPointMake(cosf(theta), -sinf(theta));
         orto   = CGPointMake(-vec.y, vec.x); // 2D orthogonal vector

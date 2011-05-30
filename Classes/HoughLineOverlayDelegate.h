@@ -9,16 +9,18 @@
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 
+@class Hough;
+
 @interface HoughLineOverlayDelegate : NSObject {
     NSArray* lines;
     UIColor* lineColor;
     
-    CGFloat yScale;
+    Hough* houghRef;
 }
 
 // NSValue containing a CGRect with origin as theta, distance and size as source image size
 @property (nonatomic, retain) NSArray* lines;
 @property (nonatomic, retain) UIColor* lineColor;
-@property (nonatomic, assign) CGFloat yScale;
+@property (nonatomic, assign) Hough* houghRef;
 
 @end

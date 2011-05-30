@@ -291,6 +291,25 @@
     return outSpace;
     
 }
+
+//
+// Input format: .origin = Position in Hough Space with size .size
+//
+
+-(CGPoint)equationForPoint:(CGRect)pointInRect{
+    CGPoint outp  = CGPointZero;
+    CGFloat theta = 0;
+    CGFloat len   = 0;
+    
+    theta   = M_PI - pointInRect.origin.x * M_PI/pointInRect.size.width;
+    len     = (pointInRect.size.height - pointInRect.origin.y*self.yScale); // * Y_SCALE = 2
+
+    outp.x  = theta;
+    outp.y  = len;
+    
+    return outp;    
+}
+
 -(void)dealloc{
 
 	self.pointsCopy = nil;

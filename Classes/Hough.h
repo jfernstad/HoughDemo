@@ -40,5 +40,6 @@ typedef enum{
 -(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points; // Completely redraw houghImage
 -(void)clear;
 -(void)makePersistent;  // Stores tmpHoughImage to houghImage;
+-(CGPoint)equationForPoint:(CGRect)pointInRect;
 
 @end
