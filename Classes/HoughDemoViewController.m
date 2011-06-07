@@ -52,11 +52,11 @@
     
     freehandVC = [[HoughFreeHandViewController alloc] init];
     freehandVC.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Freehand" image:[UIImage imageNamed:@"gear.png"] tag:0] autorelease];
-    freehandVC.tabBarItem.badgeValue = @"F";
+//    freehandVC.tabBarItem.badgeValue = @"F";
     
     imageVC = [[HoughImageViewController alloc] init];
     imageVC.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Image" image:[UIImage imageNamed:@"gear.png"] tag:1] autorelease];
-    imageVC.tabBarItem.badgeValue = @"I";
+//    imageVC.tabBarItem.badgeValue = @"I";
     
     NSArray* vcs = [NSArray arrayWithObjects:freehandVC, imageVC, nil];
     

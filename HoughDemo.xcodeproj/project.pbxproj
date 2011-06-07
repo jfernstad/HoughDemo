@@ -20,7 +20,7 @@
 		28D7ACF80DDB3853001CB0EB /* HoughDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* HoughDemoViewController.m */; };
 		831BFCC0132C445E00019FBD /* HoughTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 831BFCBF132C445E00019FBD /* HoughTouchView.m */; };
 		833AE29813495BDE00DFC76D /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 833AE29413495BDE00DFC76D /* Icon-72.png */; };
-		833AE29B13495BDE00DFC76D /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 833AE29713495BDE00DFC76D /* iTunesArtwork.png */; };
+		833AE29B13495BDE00DFC76D /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 833AE29713495BDE00DFC76D /* iTunesArtwork */; };
 		83492F1A1347DE0E002BD8BF /* CircleOverlayDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 83492F191347DE0D002BD8BF /* CircleOverlayDelegate.m */; };
 		83492F1F1347E080002BD8BF /* CGGeometry+HoughExtensions.c in Sources */ = {isa = PBXBuildFile; fileRef = 83492F1D1347E080002BD8BF /* CGGeometry+HoughExtensions.c */; };
 		8353D8431370F701008B125C /* HoughFreeHandViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8353D8421370F701008B125C /* HoughFreeHandViewController.m */; };
@@ -47,7 +47,7 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* HoughDemoAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughDemoAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughDemoAppDelegate.m; sourceTree = "<group>"; };
-		1D6058910D05DD3D006BFB54 /* HoughDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HoughDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* HoughStuff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HoughStuff.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		2899E5210DE3E06400AC0155 /* HoughDemoViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HoughDemoViewController.xib; sourceTree = "<group>"; };
@@ -59,7 +59,7 @@
 		831BFCBE132C445E00019FBD /* HoughTouchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughTouchView.h; sourceTree = "<group>"; };
 		831BFCBF132C445E00019FBD /* HoughTouchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughTouchView.m; sourceTree = "<group>"; };
 		833AE29413495BDE00DFC76D /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
-		833AE29713495BDE00DFC76D /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesArtwork.png; sourceTree = "<group>"; };
+		833AE29713495BDE00DFC76D /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		83492F181347DE0D002BD8BF /* CircleOverlayDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircleOverlayDelegate.h; sourceTree = "<group>"; };
 		83492F191347DE0D002BD8BF /* CircleOverlayDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircleOverlayDelegate.m; sourceTree = "<group>"; };
 		83492F1D1347E080002BD8BF /* CGGeometry+HoughExtensions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "CGGeometry+HoughExtensions.c"; sourceTree = "<group>"; };
@@ -121,7 +121,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* HoughDemo.app */,
+				1D6058910D05DD3D006BFB54 /* HoughStuff.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -156,7 +156,7 @@
 				833AE29413495BDE00DFC76D /* Icon-72.png */,
 				83D2BF25134D7EBB008F32ED /* Icon-Small-50.png */,
 				83D2BF26134D7EBB008F32ED /* Icon-Small.png */,
-				833AE29713495BDE00DFC76D /* iTunesArtwork.png */,
+				833AE29713495BDE00DFC76D /* iTunesArtwork */,
 				2899E5210DE3E06400AC0155 /* HoughDemoViewController.xib */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* HoughDemo-Info.plist */,
@@ -230,9 +230,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* HoughDemo */ = {
+		1D6058900D05DD3D006BFB54 /* HoughStuff */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "HoughDemo" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "HoughStuff" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -242,9 +242,9 @@
 			);
 			dependencies = (
 			);
-			name = HoughDemo;
+			name = HoughStuff;
 			productName = HoughDemo;
-			productReference = 1D6058910D05DD3D006BFB54 /* HoughDemo.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* HoughStuff.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -269,7 +269,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* HoughDemo */,
+				1D6058900D05DD3D006BFB54 /* HoughStuff */,
 			);
 		};
 /* End PBXProject section */
@@ -282,7 +282,7 @@
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				2899E5220DE3E06400AC0155 /* HoughDemoViewController.xib in Resources */,
 				833AE29813495BDE00DFC76D /* Icon-72.png in Resources */,
-				833AE29B13495BDE00DFC76D /* iTunesArtwork.png in Resources */,
+				833AE29B13495BDE00DFC76D /* iTunesArtwork in Resources */,
 				83D2BF24134D5226008F32ED /* gear.png in Resources */,
 				83D2BF27134D7EBB008F32ED /* Icon-Small-50.png in Resources */,
 				83D2BF28134D7EBB008F32ED /* Icon-Small.png in Resources */,
@@ -329,7 +329,7 @@
 				GCC_PREFIX_HEADER = HoughDemo_Prefix.pch;
 				INFOPLIST_FILE = "HoughDemo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = HoughDemo;
+				PRODUCT_NAME = HoughStuff;
 			};
 			name = Debug;
 		};
@@ -342,10 +342,45 @@
 				GCC_PREFIX_HEADER = HoughDemo_Prefix.pch;
 				INFOPLIST_FILE = "HoughDemo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = HoughDemo;
+				PRODUCT_NAME = HoughStuff;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
+		};
+		8341D08E139DC3C400336194 /* AdHoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Joakim Fernstad";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Joakim Fernstad (S8PJ9N4JZW)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PREBINDING = NO;
+				PROVISIONING_PROFILE = "F6856645-9B86-4551-846B-86F56BB8FE75";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "187E49DA-170F-4CC3-8756-75BAA67A7862";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = AdHoc;
+		};
+		8341D08F139DC3C400336194 /* AdHoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = HoughDemo_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				INFOPLIST_FILE = "HoughDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				PRODUCT_NAME = HoughStuffAdHoc;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = AdHoc;
 		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -355,6 +390,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PREBINDING = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -369,6 +405,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
 				SDKROOT = iphoneos;
@@ -379,11 +416,12 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "HoughDemo" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "HoughStuff" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
 				1D6058950D05DD3E006BFB54 /* Release */,
+				8341D08F139DC3C400336194 /* AdHoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -393,6 +431,7 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+				8341D08E139DC3C400336194 /* AdHoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
