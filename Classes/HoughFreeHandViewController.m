@@ -51,11 +51,12 @@
     CGRect touchRect  = CGRectZero;
     CGRect inputRect  = CGRectZero;
     CGRect statusRect = CGRectZero;
+    CGRect tileRect   = CGRectZero;
     
     // TODO: Put constants in enum
     
-    CGRectDivide(totalRect,  &navRect, &touchRect,  50, CGRectMinYEdge);
-    CGRectDivide(touchRect,  &touchRect,  &inputRect,  450, CGRectMinYEdge);
+    CGRectDivide(totalRect,  &navRect, &tileRect,  50, CGRectMinYEdge);
+    CGRectDivide(tileRect,  &touchRect,  &inputRect,  450, CGRectMinYEdge);
     CGRectDivide(inputRect,  &inputRect,  &statusRect, 450, CGRectMinYEdge);
     
     touchRect = CGRectInset(touchRect, 15, 15);
@@ -69,6 +70,10 @@
     self.houghInputView = [[[HoughInputView alloc] initWithFrame:inputRect] autorelease];
 //    self.status         = [[[UILabel alloc] initWithFrame:statusRect] autorelease];
     
+    UIImageView* tilePattern = [[[UIImageView alloc] initWithFrame:tileRect] autorelease];
+    tilePattern.image = [UIImage imageNamed:@"tilepattern.png"];
+    //    UIImageView* tilePattern = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tilepattern.png"]] autorelease];
+
     self.hough = [[[Hough alloc] init] autorelease];
     self.hough.interactionMode   = kFreeHandDraw; // TODO: Parameterize
     self.houghInputView.houghRef = self.hough;
@@ -114,11 +119,11 @@
                                                                                     action:nil] autorelease];
     
     selectionItem.possibleTitles = [NSSet setWithObjects:@"Draw", @"Tap", @"long titel", nil];
-    fixSpaceItem.width  = 250;
+    fixSpaceItem.width  = 330;
     fixSpaceItem2.width = 30;
     
     // -- 
-    [self.toolBar setItems:[NSArray arrayWithObjects:settingsItem, fixSpaceItem, titleItem, spaceItem, selectionItem, fixSpaceItem2, clearItem, nil] animated:YES];
+    [self.toolBar setItems:[NSArray arrayWithObjects:fixSpaceItem, titleItem, spaceItem, selectionItem, fixSpaceItem2, clearItem, nil] animated:YES];
     
     self.hough.size = self.houghTouchView.frame.size;
 	self.houghInputView.delegate = self;
@@ -139,6 +144,7 @@
     [self.houghTouchView.layer addSublayer:self.circleLayer];
     
     [self.view addSubview:self.toolBar];
+    [self.view addSubview:tilePattern];
     [self.view addSubview:self.houghTouchView];
     [self.view addSubview:self.houghInputView];
 //    [self.view addSubview:self.status];

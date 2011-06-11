@@ -72,7 +72,12 @@
     self.imgView = [[[UIImageView alloc] initWithFrame:imgRect] autorelease];
     self.loadingView = [[[LoadingView alloc] initWithFrame:imgRect] autorelease];
     
-    self.view.backgroundColor = [UIColor houghGray];
+    UIImageView* tilePattern = [[[UIImageView alloc] initWithFrame:imgRect] autorelease];
+    tilePattern.image = [UIImage imageNamed:@"tilepattern.png"];
+//    UIImageView* tilePattern = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tilepattern.png"]] autorelease];
+    
+    
+    self.view.backgroundColor = [UIColor clearColor];
     self.toolBar.tintColor = [UIColor toolbarTintColor];
 
     self.hough = [[[Hough alloc] init] autorelease];
@@ -90,8 +95,8 @@
     self.placeHolder.numberOfLines = 2;
     self.placeHolder.lineBreakMode = UILineBreakModeWordWrap;
     self.placeHolder.font = [UIFont fontWithName:@"Courier" size:32];
-    self.placeHolder.textColor = [UIColor houghGreen];
-    self.placeHolder.backgroundColor = [UIColor clearColor];
+    self.placeHolder.textColor = [UIColor houghWhite];
+    self.placeHolder.backgroundColor = [UIColor houghLightGreen];
     
     self.placeHolder.text = @"TODO: Fill this screen with awesome stuff!";
     
@@ -102,11 +107,9 @@
     textRect.origin = CGPointMake((totalRect.size.width - rs.width)/2, (totalRect.size.height - rs.height)/2);
     textRect.size = rs;
     
-//    textRect = CGRectInset(imgRect, 40, 40);
-    
     self.placeHolder.frame = textRect;
     
-    self.imgView.backgroundColor = [UIColor mainBackgroundColor];
+    self.imgView.backgroundColor = [UIColor clearColor]; // mainBackgroundColor
     
     // --- END OF TEMPORARY STUFF ---
     
@@ -126,7 +129,7 @@
                                                                                     target:nil
                                                                                     action:nil] autorelease];
     fixSpaceItem.width = 350;
-    titleItem.enabled = NO;
+//    titleItem.enabled = NO;
     
     // -- 
     [self.toolBar setItems:[NSArray arrayWithObjects:fixSpaceItem, titleItem, flexSpaceItem, actionItem, nil] animated:YES];
@@ -135,13 +138,13 @@
     self.view.backgroundColor = [UIColor mainBackgroundColor];
 
     [self.view addSubview:self.toolBar];
+    [self.view addSubview:tilePattern];
     [self.view addSubview:self.imgView];
     
-    [self.view addSubview:self.placeHolder];
+//    [self.view addSubview:self.placeHolder];
     [self.view addSubview:self.loadingView];
 
 }
-
 -(void)showChooseImageView{
     // TODO: Load popover with settings view
 
