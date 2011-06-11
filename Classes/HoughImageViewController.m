@@ -164,6 +164,12 @@
     [self.popover presentPopoverFromBarButtonItem:[self.toolBar.items objectAtIndex:self.toolBar.items.count-1] permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
 }
 
+- (void) viewDidAppear:(BOOL)animated{
+    if (!imgView.image) {
+        [self showChooseImageView];
+    }
+}
+
 /*
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad

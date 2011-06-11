@@ -7,24 +7,40 @@
 //
 
 #import "HoughDemoAppDelegate.h"
-#import "HoughDemoViewController.h"
+#import "HoughFreeHandViewController.h"
+#import "HoughImageViewController.h"
 
 @implementation HoughDemoAppDelegate
 
 @synthesize window;
-@synthesize viewController;
-@synthesize settingsController;
+@synthesize tabBar;
+@synthesize freehandVC;
+@synthesize imageVC;
 
 #pragma mark -
 #pragma mark Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
-	viewController = [[HoughDemoViewController alloc] init];
+    CGRect totalRect  = [UIScreen mainScreen].applicationFrame;
+
+    tabBar              = [[UITabBarController alloc] init];
+    
+    freehandVC = [[HoughFreeHandViewController alloc] init];
+    freehandVC.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Freehand" image:[UIImage imageNamed:@"gear.png"] tag:0] autorelease];
+    
+    imageVC = [[HoughImageViewController alloc] init];
+    imageVC.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Image" image:[UIImage imageNamed:@"gear.png"] tag:1] autorelease];
+
+    NSArray* vcs = [NSArray arrayWithObjects:freehandVC, imageVC, nil];
+    
+    [tabBar setViewControllers:vcs animated:NO];
+    
+
     [UIApplication sharedApplication].statusBarHidden = YES;
     
     // Override point for customization after app launch. 
-    [self.window addSubview:viewController.view];
+    [self.window addSubview:tabBar.view];
     [self.window makeKeyAndVisible];
 
 	return YES;
@@ -65,7 +81,9 @@
 
 
 - (void)dealloc {
-    [viewController release];
+    self.freehandVC = nil;
+    self.imageVC = nil;
+    self.tabBar = nil;
     [window release];
     [super dealloc];
 }

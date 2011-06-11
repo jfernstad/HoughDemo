@@ -10,12 +10,10 @@
 #import "Hough.h"
 #import "HoughLineOverlayDelegate.h"
 #import "UIColor+HoughExtensions.h"
-#import "HoughSettingsViewController.h"
 #import <objc/runtime.h>
 
 @interface HoughFreeHandViewController ()
 -(void)layoutViews;
--(void)showSettingsView;
 -(void)interactionMode:(id)sender;
 @end
 
@@ -92,10 +90,10 @@
     
     UIBarButtonItem* selectionItem = [[[UIBarButtonItem alloc] initWithCustomView:modeControl] autorelease];
     
-    UIBarButtonItem* settingsItem  = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"gear.png"]
-                                                                       style:UIBarButtonItemStylePlain
-                                                                      target:self
-                                                                      action:@selector(showSettingsView)] autorelease];
+//    UIBarButtonItem* settingsItem  = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"gear.png"]
+//                                                                       style:UIBarButtonItemStylePlain
+//                                                                      target:self
+//                                                                      action:@selector(showSettingsView)] autorelease];
     
     UIBarButtonItem* clearItem     = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
                                                                                     target:self
@@ -216,21 +214,6 @@
     
     [super dealloc];
 }
-
-#pragma mark -
-
--(void)showSettingsView{
-    
-    // TODO: Load popover with settings view
-    HoughSettingsViewController* settings = [[[HoughSettingsViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease];
-    settings.houghRef = self.hough;
-    
-    UIPopoverController* pop = [[UIPopoverController alloc] initWithContentViewController:settings];
-    
-    [pop presentPopoverFromBarButtonItem:[toolBar.items objectAtIndex:0] permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
-    
-}
-
 
 #pragma mark -
 #pragma mark Delegates

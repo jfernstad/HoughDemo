@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		025FBB241350F2DF002717DD /* UIColor+HoughExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 025FBB231350F2DF002717DD /* UIColor+HoughExtensions.m */; };
-		025FBB2B1350FBF6002717DD /* HoughSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 025FBB2A1350FBF6002717DD /* HoughSettingsViewController.m */; };
 		028778CF13574A31009D30F2 /* libobjc.A.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 028778CE13574A31009D30F2 /* libobjc.A.dylib */; };
 		1D3623260D0F684500981E51 /* HoughDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
@@ -17,7 +16,6 @@
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		2899E5220DE3E06400AC0155 /* HoughDemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2899E5210DE3E06400AC0155 /* HoughDemoViewController.xib */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
-		28D7ACF80DDB3853001CB0EB /* HoughDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* HoughDemoViewController.m */; };
 		831BFCC0132C445E00019FBD /* HoughTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 831BFCBF132C445E00019FBD /* HoughTouchView.m */; };
 		833AE29813495BDE00DFC76D /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 833AE29413495BDE00DFC76D /* Icon-72.png */; };
 		833AE29B13495BDE00DFC76D /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 833AE29713495BDE00DFC76D /* iTunesArtwork */; };
@@ -42,8 +40,6 @@
 /* Begin PBXFileReference section */
 		025FBB221350F2DF002717DD /* UIColor+HoughExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+HoughExtensions.h"; sourceTree = "<group>"; };
 		025FBB231350F2DF002717DD /* UIColor+HoughExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HoughExtensions.m"; sourceTree = "<group>"; };
-		025FBB291350FBF6002717DD /* HoughSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughSettingsViewController.h; sourceTree = "<group>"; };
-		025FBB2A1350FBF6002717DD /* HoughSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughSettingsViewController.m; sourceTree = "<group>"; };
 		028778CE13574A31009D30F2 /* libobjc.A.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libobjc.A.dylib; path = usr/lib/libobjc.A.dylib; sourceTree = SDKROOT; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* HoughDemoAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughDemoAppDelegate.h; sourceTree = "<group>"; };
@@ -53,8 +49,6 @@
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		2899E5210DE3E06400AC0155 /* HoughDemoViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HoughDemoViewController.xib; sourceTree = "<group>"; };
 		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
-		28D7ACF60DDB3853001CB0EB /* HoughDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughDemoViewController.h; sourceTree = "<group>"; };
-		28D7ACF70DDB3853001CB0EB /* HoughDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughDemoViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* HoughDemo_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughDemo_Prefix.pch; sourceTree = "<group>"; };
 		831BFCBE132C445E00019FBD /* HoughTouchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughTouchView.h; sourceTree = "<group>"; };
@@ -205,10 +199,6 @@
 		839C9DC41373BA770074A39C /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				025FBB291350FBF6002717DD /* HoughSettingsViewController.h */,
-				025FBB2A1350FBF6002717DD /* HoughSettingsViewController.m */,
-				28D7ACF60DDB3853001CB0EB /* HoughDemoViewController.h */,
-				28D7ACF70DDB3853001CB0EB /* HoughDemoViewController.m */,
 				839C9DC11373BA680074A39C /* HoughImageViewController.h */,
 				839C9DC21373BA690074A39C /* HoughImageViewController.m */,
 				8353D8411370F701008B125C /* HoughFreeHandViewController.h */,
@@ -304,7 +294,6 @@
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* HoughDemoAppDelegate.m in Sources */,
-				28D7ACF80DDB3853001CB0EB /* HoughDemoViewController.m in Sources */,
 				83CBB19F131997300092FE93 /* HoughInputView.m in Sources */,
 				83CBB2261319B9160092FE93 /* Hough.m in Sources */,
 				831BFCC0132C445E00019FBD /* HoughTouchView.m in Sources */,
@@ -312,7 +301,6 @@
 				83492F1A1347DE0E002BD8BF /* CircleOverlayDelegate.m in Sources */,
 				83492F1F1347E080002BD8BF /* CGGeometry+HoughExtensions.c in Sources */,
 				025FBB241350F2DF002717DD /* UIColor+HoughExtensions.m in Sources */,
-				025FBB2B1350FBF6002717DD /* HoughSettingsViewController.m in Sources */,
 				8353D8431370F701008B125C /* HoughFreeHandViewController.m in Sources */,
 				839C9DC31373BA690074A39C /* HoughImageViewController.m in Sources */,
 				83FD84141389FB20000D4F48 /* LoadingView.m in Sources */,

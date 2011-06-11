@@ -8,17 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
-@class HoughDemoViewController;
+@class HoughFreeHandViewController;
+@class HoughImageViewController;
 
 @interface HoughDemoAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow *window;
-	UIViewController* settingsController;
-    HoughDemoViewController *viewController;
+
+    UITabBarController* tabBar;
+	HoughFreeHandViewController* freehandVC;
+    HoughImageViewController* imageVC;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet HoughDemoViewController *viewController;
-@property (nonatomic, retain) IBOutlet UIViewController* settingsController;
+@property (nonatomic, retain) UITabBarController* tabBar;
+@property (nonatomic, retain) HoughFreeHandViewController* freehandVC;
+@property (nonatomic, retain) HoughImageViewController* imageVC;
+
 
 @end
 
