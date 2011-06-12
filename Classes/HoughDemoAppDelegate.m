@@ -22,8 +22,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
-    CGRect totalRect  = [UIScreen mainScreen].applicationFrame;
-
     tabBar              = [[UITabBarController alloc] init];
     
     freehandVC = [[HoughFreeHandViewController alloc] init];
