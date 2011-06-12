@@ -18,7 +18,7 @@
 
 -(id)init{
     if((self = [super init])){
-        self.bucketAccuracy = CGPointMake(1.0, 10); // Theta accuracy, length accuracy
+        self.bucketAccuracy = CGPointMake(M_PI_2, 30); // Theta accuracy, length accuracy
         self.buckets = [NSMutableDictionary dictionaryWithCapacity:0];
     }
     return self;
@@ -34,11 +34,11 @@
 
 -(void)addIntersection:(HoughIntersection*)intersection{
     CGPoint roundedPosition = CGPointZero;
-    roundedPosition.x = round(intersection.theta  / self.bucketAccuracy.x) * self.bucketAccuracy.x;
-    roundedPosition.y = round(intersection.length / self.bucketAccuracy.y) * self.bucketAccuracy.y;
+    roundedPosition.x = round(intersection.theta  / self.bucketAccuracy.x + self.bucketAccuracy.x/2.0f) * self.bucketAccuracy.x;
+    roundedPosition.y = round(intersection.length / self.bucketAccuracy.y + self.bucketAccuracy.x/2.0f) * self.bucketAccuracy.y;
 
-    // Lazy mans hashing, rounded position + half accuracy = middle point in 2D bucket. Not same as COG.
-    NSString* bucketKey = [NSString stringWithFormat:@"%f,%f", roundedPosition.x + self.bucketAccuracy.x/2.0f, roundedPosition.y + self.bucketAccuracy.y/2.0f];
+    // Lazy mans hashing, rounded position = middle point in 2D bucket. Not same as COG.
+    NSString* bucketKey = [NSString stringWithFormat:@"%f,%f", roundedPosition.x, roundedPosition.y];
     NSMutableSet* bucket = [buckets objectForKey:bucketKey];
     
     if (!bucket) {
@@ -46,7 +46,7 @@
         [self.buckets setValue:bucket forKey:bucketKey];
     }
     
-    NSLog(@"Adding TO Bucket: %@ -> %@", bucketKey, intersection);
+//    NSLog(@"Adding TO Bucket: %@ -> %@", bucketKey, intersection);
     [bucket addObject:intersection];
 }
 
@@ -67,14 +67,18 @@
     
         totalIntensity += i.intensity;
         
+//        NSLog(@"%f * %d = %f", i.length, i.intensity, i.length * i.intensity);
 //        if (i.intensity > maxIntensity) {
 //            maxIntensity = i.intensity;
 //        }
     }
+
+//    NSLog(@"------");
+//    NSLog(@"cog.y / totalIntensity =  %f / %d = %f", cog.y, totalIntensity, cog.y / (float)totalIntensity);
     
     if (totalIntensity) {
-        cog.x /= totalIntensity;
-        cog.y /= totalIntensity;
+        cog.x /= (float)totalIntensity;
+        cog.y /= (float)totalIntensity;
     }
     
     return [HoughIntersection houghIntersectionWithTheta:cog.x

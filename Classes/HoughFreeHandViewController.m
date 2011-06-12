@@ -297,19 +297,20 @@
 -(void)houghDidFinishOperationWithDictionary:(NSDictionary*)dict{ // Operation in kOperationNameKey
 //    NSLog(@"Intersections (%d): %@", [self.hough allIntersections].count, [self.hough allIntersections]);
 
-    NSPredicate* pred = [NSPredicate predicateWithFormat:@"intensity > 10"];
-    NSArray* filteredArray = [[self.hough allIntersections] sortedArrayUsingDescriptors:
-                              [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"intensity"
-                                                                                     ascending:YES]]];
-//    NSArray* filteredArray = [self.hough allIntersections];
+//    NSPredicate* pred = [NSPredicate predicateWithFormat:@"intensity > 10"];
+//    NSArray* filteredArray = [[self.hough allIntersections] sortedArrayUsingDescriptors:
+//                              [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"intensity"
+//                                                                                     ascending:YES]]];
+    NSArray* filteredArray = [self.hough allIntersections];
 //    NSLog(@"Intersections: %@", [[self.hough allIntersections] filteredArrayUsingPredicate:pred]);
 //    NSLog(@"Intersections: %@", filteredArray);
     // Add objects not already in the bucket. 
-    NSMutableSet* filteredSet = [NSMutableSet setWithArray:filteredArray];
+//    NSMutableSet* filteredSet = [NSMutableSet setWithArray:filteredArray];
 //    [filteredSet minusSet:[self.bucket allBuckets]];
+    [self.bucket clearBuckets];
     
     // Add points to buckets
-    for (HoughIntersection* i in filteredSet) {
+    for (HoughIntersection* i in filteredArray) {
         [self.bucket addIntersection:i];
     }
     

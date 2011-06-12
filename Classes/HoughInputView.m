@@ -13,6 +13,7 @@
 #import "Hough.h"
 
 @interface HoughInputView ()
+- (CGPoint)convertPoint:(CGPoint)point withAccuracy:(CGPoint)accuracy;
 - (void)handleGesture:(UIGestureRecognizer *)gestureRecognizer;
 - (void)setup;
 @end
@@ -39,6 +40,14 @@
         [self setup];
 	}
 	return self;
+}
+- (CGPoint)convertPoint:(CGPoint)point withAccuracy:(CGPoint)accuracy{
+    CGPoint o = CGPointZero;
+    
+    o.x = roundf(point.x / accuracy.x) * accuracy.x;
+    o.y = roundf(point.y / accuracy.y) * accuracy.y;
+    
+    return o;
 }
 
 - (void)setup{
@@ -105,6 +114,7 @@
     
     for (NSUInteger i = 0; i < gestureRecognizer.numberOfTouches; i++) {
         p = [gestureRecognizer locationOfTouch:i inView:self];
+        p = [self convertPoint:p withAccuracy:CGPointMake(3.0, 3.0)]; 
 
         [tmpPoints addObject:[NSValue valueWithCGPoint:p]];
     }

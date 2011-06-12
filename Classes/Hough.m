@@ -10,7 +10,7 @@
 #import <Accelerate/Accelerate.h>
 
 #define Y_SCALE 2.0f
-#define MIN_INTENSITY 2
+#define MIN_INTENSITY 10
 
 @implementation HoughIntersection
 @synthesize theta;
@@ -33,6 +33,11 @@
 -(NSString*)description{
     return [NSString stringWithFormat:@"HoughIntersection: theta: %3.2f, length: %3.2f, intensity: %d", self.theta, self.length, self.intensity];
 }
+//-(NSUInteger)hash{
+//    NSUInteger h = (NSUInteger)(self.theta * self.theta * 2048 + self.length * self.length * 1024);
+////    NSLog(@"Hash: %X", h);
+//    return h;
+//}
 @end
 
 
@@ -399,7 +404,6 @@
     
     return outp;    
 }
-
 -(void)dealloc{
     
 	self.curves = nil;
@@ -413,5 +417,4 @@
     
 	[super dealloc];
 }
-
 @end
