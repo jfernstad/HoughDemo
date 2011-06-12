@@ -102,6 +102,7 @@
 
 - (void) setText:(NSString *)text{
     loadingLabel.text = text;
+    [self setNeedsLayout];
 }
 
 - (NSString*) text{
