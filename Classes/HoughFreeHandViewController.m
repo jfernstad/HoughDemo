@@ -73,6 +73,7 @@
     //    UIImageView* tilePattern = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tilepattern.png"]] autorelease];
 
     self.hough = [[[Hough alloc] init] autorelease];
+    self.hough.operationDelegate = self;
     self.hough.interactionMode   = kFreeHandDraw; // TODO: Parameterize
     self.houghInputView.houghRef = self.hough;
     
@@ -236,7 +237,7 @@
         objc_setAssociatedObject(pointArray, kHoughInputGestureState, nil, OBJC_ASSOCIATION_RETAIN); // Clear association
         
         if (hough.interactionMode == kFreeHandDots && [gestureState intValue] == (int)UIGestureRecognizerStateEnded) {
-            [hough makePersistent]; // Store temporary image as 
+            [hough makePersistent]; // Store temporary image as
         }
         
         start = [NSDate date];
@@ -247,6 +248,8 @@
         
         // Show hough image
 		self.houghTouchView.layer.contents = (id)img;
+        
+        [self.hough performSelectorInBackground:@selector(analyzeHoughSpace) withObject:nil];
         
 		CGImageRelease(img);
         
@@ -270,7 +273,7 @@
     [self.houghInputView clear];
     self.houghTouchView.layer.contents = nil;
 	[self.houghInputView setNeedsDisplay];
-    
+
     self.lineDelegate.lines = nil;
     self.circleDelegate.points = nil;
 	[self.lineLayer setNeedsDisplay];
@@ -280,6 +283,19 @@
 - (void)interactionMode:(id)sender{
     
     hough.interactionMode = (((UISegmentedControl*)sender).selectedSegmentIndex == 0)?kFreeHandDraw:kFreeHandDots;
+}
+
+-(void)houghWillBeginOperation:(NSString*)operation{
+}
+-(void)houghDidFinishOperationWithDictionary:(NSDictionary*)dict{ // Operation in kOperationNameKey
+//    NSLog(@"Intersections (%d): %@", [self.hough allIntersections].count, [self.hough allIntersections]);
+
+    NSPredicate* pred = [NSPredicate predicateWithFormat:@"intensity > 10"];
+//    NSLog(@"Intersections: %@", [[self.hough allIntersections] filteredArrayUsingPredicate:pred]);
+    NSLog(@"Intersections: %@", [[[self.hough allIntersections] filteredArrayUsingPredicate:pred] sortedArrayUsingDescriptors:
+                                 [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"intensity"
+                                                                                        ascending:YES]]]);
+  
 }
 
 @end

@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Hough.h"
 
-@class Hough;
 @class HoughLineOverlayDelegate;
 @class LoadingView;
 
-@interface HoughImageViewController : UIViewController <UIImagePickerControllerDelegate, UIPopoverControllerDelegate>{
+@interface HoughImageViewController : UIViewController <UIImagePickerControllerDelegate, UIPopoverControllerDelegate, HoughOperationDelegate>{
     UIToolbar* toolBar;
     UIImageView* imgView;
     

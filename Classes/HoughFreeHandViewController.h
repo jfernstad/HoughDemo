@@ -7,15 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Hough.h"
 #import "HoughInputView.h"
 #import "HoughTouchView.h"
 #import "HoughLineOverlayDelegate.h"
 #import "CircleOverlayDelegate.h"
 
-@class Hough;
 @class HoughTouchView;
 
-@interface HoughFreeHandViewController : UIViewController <HoughInputProtocol, HoughOverlayProtocol>{
+@interface HoughFreeHandViewController : UIViewController <HoughInputProtocol, HoughOverlayProtocol, HoughOperationDelegate>{
     // View elements
     UIToolbar* toolBar;
 	HoughInputView* houghInputView;

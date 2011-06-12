@@ -81,8 +81,9 @@
     self.toolBar.tintColor = [UIColor toolbarTintColor];
 
     self.hough = [[[Hough alloc] init] autorelease];
-    self.hough.interactionMode   = kManualInteraction;
+    self.hough.interactionMode   = kFreeHandDraw;// kManualInteraction;
     self.hough.size = imgRect.size; // Setup hough size
+    self.hough.operationDelegate = self;
 
     self.imgView.contentMode = UIViewContentModeScaleAspectFit;
     
@@ -194,6 +195,16 @@
 #pragma mark -
 #pragma Delegates
 
+-(void)houghWillBeginOperation:(NSString*)operation{
+    self.loadingView.text = [NSString stringWithFormat:@"Starting %@...", operation];
+    NSLog(@"houghWillBeginOperation: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+}
+-(void)houghDidFinishOperationWithDictionary:(NSDictionary*)dict{ // Operation in kOperationNameKey
+    self.loadingView.text = [NSString stringWithFormat:@"Finished operation %@...", [dict objectForKey:kOperationNameKey]];
+    
+    NSLog(@"houghDidFinishOperationWithDictionary: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+    NSLog(@"Intersections (%d): %@", [self.hough allIntersections].count, [self.hough allIntersections]);
+}
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
     NSLog(@"info: %@", info);
     
@@ -203,6 +214,21 @@
     [self.popover dismissPopoverAnimated:YES];
     [self.loadingView startProgress];
     [self.loadingView performSelector:@selector(stopProgress) withObject:nil afterDelay:5.0];
+
+    // TEMP: Add some data to Hough
+    
+    NSArray* points = [NSArray arrayWithObjects:
+//                      [NSValue valueWithCGPoint:CGPointMake(10, 50)], 
+                      [NSValue valueWithCGPoint:CGPointMake( 80, 30)],
+                      [NSValue valueWithCGPoint:CGPointMake( 95, 40)],
+                      [NSValue valueWithCGPoint:CGPointMake(110, 50)],
+                       nil];
+    
+    CGImageRelease([self.hough newHoughSpaceFromPoints:points]); 
+    
+    //
+    NSLog(@"imagePickerController: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+    [self.hough performSelectorInBackground:@selector(analyzeHoughSpace) withObject:nil];
     
     if ([info objectForKey:@"UIImagePickerControllerOriginalImage"]) {
         self.imgView.image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
