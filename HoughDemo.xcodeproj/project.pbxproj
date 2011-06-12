@@ -23,6 +23,7 @@
 		83492F1F1347E080002BD8BF /* CGGeometry+HoughExtensions.c in Sources */ = {isa = PBXBuildFile; fileRef = 83492F1D1347E080002BD8BF /* CGGeometry+HoughExtensions.c */; };
 		8353D8431370F701008B125C /* HoughFreeHandViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8353D8421370F701008B125C /* HoughFreeHandViewController.m */; };
 		836DE7131370F2AA0010D82A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 836DE7121370F2AA0010D82A /* test.jpg */; };
+		837A9CBA13A44F7E00B4CE95 /* Bucket2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A9CB913A44F7D00B4CE95 /* Bucket2D.m */; };
 		839C9DC31373BA690074A39C /* HoughImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 839C9DC21373BA690074A39C /* HoughImageViewController.m */; };
 		839C9DC71373BC770074A39C /* hand.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 839C9DC61373BC770074A39C /* hand.jpg */; };
 		83CBB19F131997300092FE93 /* HoughInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBB19E131997300092FE93 /* HoughInputView.m */; };
@@ -62,6 +63,8 @@
 		8353D8411370F701008B125C /* HoughFreeHandViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughFreeHandViewController.h; sourceTree = "<group>"; };
 		8353D8421370F701008B125C /* HoughFreeHandViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughFreeHandViewController.m; sourceTree = "<group>"; };
 		836DE7121370F2AA0010D82A /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
+		837A9CB813A44F7D00B4CE95 /* Bucket2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bucket2D.h; sourceTree = "<group>"; };
+		837A9CB913A44F7D00B4CE95 /* Bucket2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Bucket2D.m; sourceTree = "<group>"; };
 		839C9DC11373BA680074A39C /* HoughImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughImageViewController.h; sourceTree = "<group>"; };
 		839C9DC21373BA690074A39C /* HoughImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughImageViewController.m; sourceTree = "<group>"; };
 		839C9DC61373BC770074A39C /* hand.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = hand.jpg; sourceTree = "<group>"; };
@@ -102,14 +105,13 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				837A9CBB13A4570800B4CE95 /* Algorithms */,
 				839C9DC51373BA9B0074A39C /* Views */,
 				839C9DC41373BA770074A39C /* View Controllers */,
 				836DE7111370F0300010D82A /* Extensions */,
 				83492F1C1347DE2E002BD8BF /* Layer delegates */,
 				1D3623240D0F684500981E51 /* HoughDemoAppDelegate.h */,
 				1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */,
-				83CBB2241319B9160092FE93 /* Hough.h */,
-				83CBB2251319B9160092FE93 /* Hough.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -194,6 +196,17 @@
 				025FBB231350F2DF002717DD /* UIColor+HoughExtensions.m */,
 			);
 			name = Extensions;
+			sourceTree = "<group>";
+		};
+		837A9CBB13A4570800B4CE95 /* Algorithms */ = {
+			isa = PBXGroup;
+			children = (
+				83CBB2241319B9160092FE93 /* Hough.h */,
+				83CBB2251319B9160092FE93 /* Hough.m */,
+				837A9CB813A44F7D00B4CE95 /* Bucket2D.h */,
+				837A9CB913A44F7D00B4CE95 /* Bucket2D.m */,
+			);
+			name = Algorithms;
 			sourceTree = "<group>";
 		};
 		839C9DC41373BA770074A39C /* View Controllers */ = {
@@ -304,6 +317,7 @@
 				8353D8431370F701008B125C /* HoughFreeHandViewController.m in Sources */,
 				839C9DC31373BA690074A39C /* HoughImageViewController.m in Sources */,
 				83FD84141389FB20000D4F48 /* LoadingView.m in Sources */,
+				837A9CBA13A44F7E00B4CE95 /* Bucket2D.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

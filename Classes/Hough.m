@@ -30,7 +30,7 @@
     
     return intersection;
 }
--(NSArray*)description{
+-(NSString*)description{
     return [NSString stringWithFormat:@"HoughIntersection: theta: %3.2f, length: %3.2f, intensity: %d", self.theta, self.length, self.intensity];
 }
 @end
@@ -326,7 +326,7 @@
     
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
-    NSLog(@"analyzeHoughSpace: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+//    NSLog(@"analyzeHoughSpace: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
 
 	int imgHeight = (int)self.size.height;
 	int imgWidth  = (int)self.size.width;

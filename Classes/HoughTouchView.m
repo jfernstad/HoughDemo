@@ -17,6 +17,7 @@
 
 @implementation HoughTouchView
 @synthesize delegate;
+@synthesize houghRef;
 
 - (id)initWithFrame:(CGRect)frame {
     
@@ -65,6 +66,7 @@
 
 - (void)dealloc {
 	self.delegate = nil;
+    self.houghRef = nil;
     [super dealloc];
 }
 
@@ -78,26 +80,33 @@
 
     //p.y = self.frame.size.height - p.y;
     
-	CGRect r = CGRectZero;
-	
+	CGRect r  = CGRectZero;
+	CGPoint e = CGPointZero;
+    
     if (gestureRecognizer.numberOfTouches == 0) {
         return;
     }
     
-	NSMutableArray* points = [NSMutableArray arrayWithCapacity:gestureRecognizer.numberOfTouches];
-	NSMutableArray* rects  = [NSMutableArray arrayWithCapacity:gestureRecognizer.numberOfTouches];
+	NSMutableArray* points          = [NSMutableArray arrayWithCapacity:gestureRecognizer.numberOfTouches];
+	NSMutableArray* intersections   = [NSMutableArray arrayWithCapacity:gestureRecognizer.numberOfTouches];
+    HoughIntersection* intersection = nil;
     
     for (NSUInteger i = 0; i < gestureRecognizer.numberOfTouches; i++) {
         p = [gestureRecognizer locationOfTouch:i inView:self];
         r.origin = p;
         r.size   = self.frame.size;
 
+        e = [self.houghRef equationForPoint:r];
+        intersection = [HoughIntersection houghIntersectionWithTheta:e.x
+                                                              length:e.y
+                                                        andIntensity:100];
+        
         [points addObject:[NSValue valueWithCGPoint:p]];
-        [rects  addObject:[NSValue valueWithCGRect:r]];
+        [intersections addObject:intersection];
     }
     
-	if (delegate && [delegate respondsToSelector:@selector(overlayLines:)]) { // TODO: handle multitouch
-		[delegate performSelector:@selector(overlayLines:) withObject:rects afterDelay:0.0];
+	if (delegate && [delegate respondsToSelector:@selector(overlayLines:)]) {
+		[delegate performSelector:@selector(overlayLines:) withObject:intersections afterDelay:0.0];
     }
 
 	if (delegate && [delegate respondsToSelector:@selector(overlayCircles:)]) {

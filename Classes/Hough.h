@@ -41,6 +41,8 @@ typedef enum{
 @property (nonatomic, assign) CGFloat length;
 @property (nonatomic, assign) NSUInteger intensity;
 
++(id)houghIntersectionWithTheta:(CGFloat)t length:(CGFloat)l andIntensity:(NSUInteger)i;
+
 @end
 
 @interface Hough : NSObject {

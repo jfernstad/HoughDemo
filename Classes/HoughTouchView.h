@@ -13,11 +13,14 @@
 -(void)overlayCircles:(NSArray*)circles;
 @end
 
+@class Hough;
 
 @interface HoughTouchView : UIView {
+    Hough* houghRef;
 	NSObject<HoughOverlayProtocol>* delegate;
 }
 
 @property (nonatomic, assign) NSObject<HoughOverlayProtocol>* delegate;
+@property (nonatomic, assign) Hough* houghRef;
 
 @end

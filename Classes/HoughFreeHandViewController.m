@@ -8,6 +8,7 @@
 
 #import "HoughFreeHandViewController.h"
 #import "Hough.h"
+#import "Bucket2D.h"
 #import "HoughLineOverlayDelegate.h"
 #import "UIColor+HoughExtensions.h"
 #import <objc/runtime.h>
@@ -21,6 +22,7 @@
 @synthesize houghInputView;
 @synthesize houghTouchView;
 @synthesize hough;
+@synthesize bucket;
 @synthesize busy;
 @synthesize status;
 @synthesize lineLayer;
@@ -76,6 +78,9 @@
     self.hough.operationDelegate = self;
     self.hough.interactionMode   = kFreeHandDraw; // TODO: Parameterize
     self.houghInputView.houghRef = self.hough;
+    self.houghTouchView.houghRef = self.hough;
+    
+    self.bucket = [[[Bucket2D alloc] init] autorelease];
     
     // TODO: Clean this mess up..
     UISegmentedControl* modeControl = [[[UISegmentedControl alloc] initWithItems:
@@ -209,6 +214,7 @@
 	self.houghTouchView = nil;
     self.status         = nil;
 	self.hough          = nil;
+    self.bucket         = nil;
     self.lineLayer      = nil;
     self.lineDelegate   = nil;
     self.toolBar        = nil;
@@ -273,7 +279,8 @@
     [self.houghInputView clear];
     self.houghTouchView.layer.contents = nil;
 	[self.houghInputView setNeedsDisplay];
-
+    [self.bucket clearBuckets];
+    
     self.lineDelegate.lines = nil;
     self.circleDelegate.points = nil;
 	[self.lineLayer setNeedsDisplay];
@@ -291,11 +298,33 @@
 //    NSLog(@"Intersections (%d): %@", [self.hough allIntersections].count, [self.hough allIntersections]);
 
     NSPredicate* pred = [NSPredicate predicateWithFormat:@"intensity > 10"];
+    NSArray* filteredArray = [[self.hough allIntersections] sortedArrayUsingDescriptors:
+                              [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"intensity"
+                                                                                     ascending:YES]]];
+//    NSArray* filteredArray = [self.hough allIntersections];
 //    NSLog(@"Intersections: %@", [[self.hough allIntersections] filteredArrayUsingPredicate:pred]);
-    NSLog(@"Intersections: %@", [[[self.hough allIntersections] filteredArrayUsingPredicate:pred] sortedArrayUsingDescriptors:
-                                 [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"intensity"
-                                                                                        ascending:YES]]]);
-  
+//    NSLog(@"Intersections: %@", filteredArray);
+    // Add objects not already in the bucket. 
+    NSMutableSet* filteredSet = [NSMutableSet setWithArray:filteredArray];
+//    [filteredSet minusSet:[self.bucket allBuckets]];
+    
+    // Add points to buckets
+    for (HoughIntersection* i in filteredSet) {
+        [self.bucket addIntersection:i];
+    }
+    
+    // get buckets
+    NSSet* buckets = [self.bucket allBuckets];
+    NSMutableArray* lines = [NSMutableArray arrayWithCapacity:buckets.count];
+    // calc COG for each bucket
+    HoughIntersection* cog = nil;
+    
+    for (NSSet* cogSet in buckets) {
+        cog = [self.bucket cogIntersectionForBucket:cogSet];
+        [lines addObject:cog];
+    }
+    // Send to overlay delegates
+    [self overlayLines:lines];
 }
 
 @end

@@ -14,6 +14,7 @@
 #import "CircleOverlayDelegate.h"
 
 @class HoughTouchView;
+@class Bucket2D;
 
 @interface HoughFreeHandViewController : UIViewController <HoughInputProtocol, HoughOverlayProtocol, HoughOperationDelegate>{
     // View elements
@@ -28,6 +29,7 @@
     HoughLineOverlayDelegate* lineDelegate; // Layer delegate, add to lineLayer 
     CircleOverlayDelegate* circleDelegate; // Layer delegate, add to circleLayer 
     
+    Bucket2D* bucket;
 	Hough* hough;
 	BOOL busy;
 }
@@ -37,6 +39,7 @@
 @property (nonatomic, retain) HoughTouchView* houghTouchView;
 @property (nonatomic, retain) UILabel* status;
 @property (nonatomic, retain) Hough* hough;
+@property (nonatomic, retain) Bucket2D* bucket;
 @property (nonatomic, assign) BOOL busy;
 @property (nonatomic, retain) CALayer* lineLayer;
 @property (nonatomic, retain) CALayer* circleLayer;

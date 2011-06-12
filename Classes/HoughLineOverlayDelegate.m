@@ -29,11 +29,11 @@
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx{
 
     // TODO: Make sure the context size is same as image size
-    CGRect rect     = CGRectZero;
+//    CGRect rect     = CGRectZero;
     CGRect drawRect = CGRectZero;
     CGFloat theta   = 0.0;
     CGFloat len     = 0.0;
-    CGPoint eq      = CGPointZero;
+//    CGPoint eq      = CGPointZero;
     CGPoint vec     = CGPointZero;
     CGPoint orto    = CGPointZero;
     CGPoint center  = CGPointZero;
@@ -46,17 +46,15 @@
     CGContextSetStrokeColorWithColor(ctx, lineColor.CGColor);
     CGContextSetLineWidth(ctx, 2.0); // TODO: Parametrize
     
-    for (NSValue* v in self.lines) {
+    for (HoughIntersection* i in self.lines) {
         
-        rect    = [v CGRectValue];
-        
-        eq      = [houghRef equationForPoint:rect];
-        theta   = eq.x;
-        len     = eq.y;
+//        eq      = [houghRef equationForPoint:rect];
+        theta   = i.theta;
+        len     = i.length;
         
         vec    = CGPointMake(cosf(theta), -sinf(theta));
         orto   = CGPointMake(-vec.y, vec.x); // 2D orthogonal vector
-        center = CGPointMake(rect.size.width/2, rect.size.height/2);
+        center = CGPointMake(layer.bounds.size.width/2, layer.bounds.size.height/2);
         peak   = CGPointMake(center.x + len * vec.x, center.y + len * vec.y);
 
     	drawRect = CGRectMake(peak.x - 1000 * orto.x, 
