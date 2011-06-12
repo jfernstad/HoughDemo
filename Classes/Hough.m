@@ -10,11 +10,37 @@
 #import <Accelerate/Accelerate.h>
 
 #define Y_SCALE 2.0f
+#define MIN_INTENSITY 2
+
+@implementation HoughIntersection
+@synthesize theta;
+@synthesize length;
+@synthesize intensity;
+
+-(id)init{
+    if ((self = [super init])) {
+    }
+    return self;
+}
++(id)houghIntersectionWithTheta:(CGFloat)t length:(CGFloat)l andIntensity:(NSUInteger)i{
+    HoughIntersection* intersection = [[[HoughIntersection alloc] init] autorelease];
+    intersection.theta = t;
+    intersection.length = l;
+    intersection.intensity = i;
+    
+    return intersection;
+}
+-(NSArray*)description{
+    return [NSString stringWithFormat:@"HoughIntersection: theta: %3.2f, length: %3.2f, intensity: %d", self.theta, self.length, self.intensity];
+}
+@end
+
 
 @interface Hough ()
 @property (nonatomic, copy)   NSArray* pointsCopy;
 @property (nonatomic, copy)   NSArray* tmpPointsCopy;
 @property (nonatomic, retain) NSMutableArray* curves;
+@property (retain) NSMutableArray* intersections;
 
 -(BOOL) isPointAlreadyInArray:(CGPoint)p;
 -(void) setupHough;
@@ -24,10 +50,10 @@
 @end
 
 @implementation Hough
-@synthesize size, pointsCopy, tmpPointsCopy, curves, interactionMode, yScale;
+@synthesize size, pointsCopy, tmpPointsCopy, curves, interactionMode, yScale, intersections, operationDelegate;
 
 -(id)init{
-
+    
 	if (self == [super init]) {
 		self.curves = [NSMutableArray arrayWithCapacity:0];
         self.interactionMode = kFreeHandDots;
@@ -56,7 +82,7 @@
 	int maxVals = self.size.width;
     NSUInteger area = maxDist * maxVals;
     
-//    memcpy(tmpHoughSpace, houghSpace, size);
+    //    memcpy(tmpHoughSpace, houghSpace, size);
     memcpy(houghSpace, tmpHoughSpace, area);
 }
 -(BOOL) isPointAlreadyInArray:(CGPoint) p{
@@ -80,7 +106,7 @@
     int maxDist = round(sqrt(powf(rectSize.height, 2) +
 							 powf(rectSize.width,  2))/self.yScale+0.5f);
     int maxVals = rectSize.width;
-
+    
     size = CGSizeMake(maxVals, maxDist);
     
     
@@ -88,15 +114,15 @@
 }
 
 -(void)setupHough{
-
+    
     NSLog(@"Setting up Hough!");
     
     NSUInteger area = self.size.width * self.size.height;
-
+    
     houghSpace    = (unsigned char*)malloc(area);
     tmpHoughSpace = (unsigned char*)malloc(area);
     colorSpace    = [self createColorSpace];
-
+    
     isSetup = YES;
     // TODO: verify we have memory
 }
@@ -105,9 +131,9 @@
 -(NSArray*)createCurvesForPoints: (NSArray*)points{
     
     NSAssert(isSetup, @"! Hough doesn't have a frame! call .frame = rect. ");
-
+    
     int maxVals = self.size.width;
-
+    
 	float startVal	= 0.0f;
 	float thetaInc	= M_PI/self.size.width;
 	float angles   [ maxVals ] __attribute__((aligned));
@@ -119,7 +145,7 @@
 	float yOffset  [ maxVals ] __attribute__((aligned));
 	
 	vDSP_vramp(&startVal, &thetaInc, angles, 1, maxVals); // Create angles used in cos/sin
-
+    
 #ifdef __i386__
 	vvcosf(cosValues, angles, &maxVals);
 	vvsinf(sinValues, angles, &maxVals);
@@ -130,7 +156,7 @@
 		sinValues[i] = sin(angles[i]);
 	}
 #endif
-
+    
 	NSMutableArray* tmpArray = nil;
 	CGPoint p, p2;
 	int k			= 0;
@@ -146,7 +172,7 @@
 	for (NSValue* val in points) {
 		
 		p = [val CGPointValue];
-
+        
 		xAmp	 = p.x - self.size.width/2;
 		yAmp	 = p.y - offset;
 		
@@ -167,18 +193,18 @@
 			
 			[tmpArray addObject:[NSValue valueWithCGPoint:p2]];
 		}
-
+        
         [outArray addObject:tmpArray];
 	}
-
+    
     return outArray;
 }
 
 -(CGImageRef)houghImageFromCurves:(NSArray*)newCurves{
 	CGImageRef outImg = NULL; // 8 bit grayscale
-
+    
     NSAssert(isSetup, @"! Hough doesn't have a frame! call .frame = rect. ");
-
+    
 	int maxDist = self.size.height;
 	int maxVals = self.size.width;
 	
@@ -216,7 +242,7 @@
 	
 	
 	CGImageRef tmp = CGImageCreate(maxVals, maxDist, 8, 8, maxVals, colorSpace, kCGImageAlphaNone, dataProvider, decode, NO, kCGRenderingIntentDefault);
-
+    
 	CGColorSpaceRef scpr = CGColorSpaceCreateDeviceRGB();
 	
 	CGContextRef cr = CGBitmapContextCreate(NULL, 
@@ -226,7 +252,7 @@
 											4*maxVals, 
 											scpr, 
 											kCGImageAlphaPremultipliedLast);
-
+    
 	
 	// Convert to 8 bit from whatever.. 
 	CGContextDrawImage(cr, CGRectMake(0, 0, maxVals, maxDist), tmp);
@@ -247,25 +273,25 @@
 	NSArray* newCurves = [self createCurvesForPoints:points];
     
     CGImageRef outImage = [self houghImageFromCurves:newCurves];
-
+    
     if (self.interactionMode == kFreeHandDots) {
         self.tmpPointsCopy = points;
-    
+        
     }else{
-
+        
         // Ugh.. Redo this.
         NSMutableArray* totalPoints = [NSMutableArray arrayWithArray:self.pointsCopy];
         [totalPoints addObjectsFromArray:points];
         self.pointsCopy = totalPoints;
     }
-
+    
     [self.curves addObjectsFromArray:newCurves];
     
 	return outImage;
 }
 
 -(CGColorSpaceRef)createColorSpace{
-
+    
     CGColorSpaceRef outSpace = NULL;
     
     NSUInteger i = 0;
@@ -281,9 +307,9 @@
         colorTable[i * 3 + 0] = 255;
         colorTable[i * 3 + 1] = 255-(i-1)*255/10;
         colorTable[i * 3 + 2] = 255-(i-1)*255/10;
-//        colorTable[i * 3 + 0] = MIN(128 + i * 10, 255);
-//        colorTable[i * 3 + 1] = MAX(128 + i, 0);
-//        colorTable[i * 3 + 2] = MAX(128 + i, 0);
+        //        colorTable[i * 3 + 0] = MIN(128 + i * 10, 255);
+        //        colorTable[i * 3 + 1] = MAX(128 + i, 0);
+        //        colorTable[i * 3 + 2] = MAX(128 + i, 0);
     }
     
     outSpace = CGColorSpaceCreateIndexed(CGColorSpaceCreateDeviceRGB(), 255, colorTable);
@@ -292,6 +318,70 @@
     
 }
 
+//
+// Analyze hough space threaded. 
+//
+
+-(void)analyzeHoughSpace{
+    
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    
+    NSLog(@"analyzeHoughSpace: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+
+	int imgHeight = (int)self.size.height;
+	int imgWidth  = (int)self.size.width;
+    
+    if (self.operationDelegate) {
+        [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationAnalyzeHoughSpace waitUntilDone:NO];
+    }
+    
+    self.intersections = [[[NSMutableArray alloc] init] autorelease];
+    
+	int maxPoint = 0;
+	int n = 0, x = 0, y = 0;
+    NSUInteger idx = 0;
+    NSUInteger intensity = 0;
+	CGPoint maxPos   = CGPointZero;
+    CGPoint equation = CGPointZero;
+	CGRect pointRect = CGRectZero;
+    pointRect.size   = self.size;
+    
+	// Get Positions from Maxima in Houghspace
+//	for( n = 0; n < imgHeight * imgWidth; n++){
+		maxPoint = 0;
+		for( y = 0; y < imgHeight; y++){
+			for( x = 0; x < imgWidth; x++){
+                
+                idx = x + y*imgWidth;
+				intensity = houghSpace[idx];
+                if( intensity > MIN_INTENSITY ){
+					pointRect.origin.x = x;
+                    pointRect.origin.y = y;
+                    
+                    equation = [self equationForPoint:pointRect];
+                    maxPoint = intensity;
+                    
+                    [self.intersections addObject:
+                     [HoughIntersection houghIntersectionWithTheta:equation.x 
+                                                            length:equation.y 
+                                                      andIntensity:maxPoint]];
+				}
+			}
+		}
+//	}
+	
+    if (self.operationDelegate) {
+        NSDictionary* dic = [NSDictionary dictionaryWithObject:kOperationAnalyzeHoughSpace forKey:kOperationNameKey];
+        [self.operationDelegate performSelectorOnMainThread:@selector(houghDidFinishOperationWithDictionary:) withObject:dic waitUntilDone:NO];
+    }
+    
+    [pool drain];
+}
+
+
+-(NSArray*)allIntersections{
+    return self.intersections;
+}
 //
 // Input format: .origin = Position in Hough Space with size .size
 //
@@ -303,7 +393,7 @@
     
     theta   = M_PI - pointInRect.origin.x * M_PI/pointInRect.size.width;
     len     = (pointInRect.size.height - pointInRect.origin.y*self.yScale); // * Y_SCALE = 2
-
+    
     outp.x  = theta;
     outp.y  = len;
     
@@ -311,10 +401,12 @@
 }
 
 -(void)dealloc{
-
-	self.pointsCopy = nil;
+    
 	self.curves = nil;
-	
+	self.pointsCopy = nil;
+	self.intersections = nil;
+    self.operationDelegate = nil;
+    
     CGColorSpaceRelease(colorSpace);
     free(houghSpace);
     free(tmpHoughSpace);
