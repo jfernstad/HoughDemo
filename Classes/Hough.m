@@ -44,7 +44,7 @@
 @interface Hough ()
 @property (nonatomic, copy)   NSArray* pointsCopy;
 @property (nonatomic, copy)   NSArray* tmpPointsCopy;
-@property (nonatomic, retain) NSMutableArray* curves;
+@property (retain) NSMutableArray* curves;
 @property (retain) NSMutableArray* intersections;
 
 -(BOOL) isPointAlreadyInArray:(CGPoint)p;

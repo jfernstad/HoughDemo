@@ -63,9 +63,10 @@
     CGRect totalRect  = [UIScreen mainScreen].applicationFrame;
     CGRect navRect    = CGRectZero;
     CGRect imgRect    = CGRectZero;
+    CGRect tmpRect    = CGRectZero;
 
     CGRectDivide(totalRect, &navRect, &imgRect, 50, CGRectMinYEdge);
-    
+    CGRectDivide(imgRect, &tmpRect, &imgRect, 50, CGRectMaxYEdge);
     
     self.view    = [[[UIView alloc] initWithFrame:totalRect] autorelease];
     self.toolBar = [[[UIToolbar alloc] initWithFrame:navRect] autorelease];

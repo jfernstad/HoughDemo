@@ -42,8 +42,9 @@
     if (!self.lines) return;
 
 //    NSLog(@"layerDelegate is being used!");
-    
-    CGContextSetStrokeColorWithColor(ctx, lineColor.CGColor);
+    CGColorRef color = lineColor.CGColor;
+    const CGFloat *components = NULL;
+    //    CGContextSetStrokeColorWithColor(ctx, lineColor.CGColor);
     CGContextSetLineWidth(ctx, 2.0); // TODO: Parametrize
     
     for (HoughIntersection* i in self.lines) {
@@ -62,7 +63,8 @@
                               2000 * orto.x, 
                               2000 * orto.y);
 
-        
+        components = CGColorGetComponents(color);
+        CGContextSetRGBStrokeColor(ctx, components[0], components[1], components[2], MAX(MIN(1.0, 1-1/(float)(i.intensity-10)), 0));
         CGContextMoveToPoint(ctx, drawRect.origin.x, drawRect.origin.y);
         CGContextAddLineToPoint(ctx, drawRect.origin.x + drawRect.size.width, 
                                      drawRect.origin.y + drawRect.size.height);

@@ -58,6 +58,9 @@
     CGRectDivide(totalRect,  &navRect, &tileRect,  50, CGRectMinYEdge);
     CGRectDivide(tileRect,  &touchRect,  &inputRect,  450, CGRectMinYEdge);
     CGRectDivide(inputRect,  &inputRect,  &statusRect, 450, CGRectMinYEdge);
+
+    inputRect = CGRectOffset(inputRect, 0, 20);
+    touchRect = CGRectOffset(touchRect, 0, 20);
     
     touchRect = CGRectInset(touchRect, 15, 15);
     inputRect = CGRectInset(inputRect, 15, 15);
@@ -70,6 +73,9 @@
     self.houghInputView = [[[HoughInputView alloc] initWithFrame:inputRect] autorelease];
 //    self.status         = [[[UILabel alloc] initWithFrame:statusRect] autorelease];
     
+    CGRect tmpRect    = CGRectZero;
+    CGRectDivide(tileRect, &tmpRect, &tileRect, 50, CGRectMaxYEdge);
+
     UIImageView* tilePattern = [[[UIImageView alloc] initWithFrame:tileRect] autorelease];
     tilePattern.image = [UIImage imageNamed:@"tilepattern.png"];
     //    UIImageView* tilePattern = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tilepattern.png"]] autorelease];
@@ -250,15 +256,14 @@
 		img   = [hough newHoughSpaceFromPoints:pointArray];
 		imgCreation = [start timeIntervalSinceNow];
 		
-		self.busy = NO;
-        
         // Show hough image
 		self.houghTouchView.layer.contents = (id)img;
         
         [self.hough performSelectorInBackground:@selector(analyzeHoughSpace) withObject:nil];
         
 		CGImageRelease(img);
-        
+
+		self.busy = NO;
 //		self.status.text = [NSString stringWithFormat:@"Time for Hough generation: %3.3f ms (%1.3f ms/curve)", -imgCreation*1000.0, -imgCreation*1000.0/((pointArray.count>0)?pointArray.count:1)];
 	}
 	else {
@@ -322,6 +327,7 @@
     
     for (NSSet* cogSet in buckets) {
         cog = [self.bucket cogIntersectionForBucket:cogSet];
+        NSLog(@"I: %d", cog.intensity);
         [lines addObject:cog];
     }
     // Send to overlay delegates
