@@ -1,0 +1,4 @@
+# Ignore some project files
+*.xcuserdata
+*.xcbkptlist
+*.xcscheme
