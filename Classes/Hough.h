@@ -15,13 +15,13 @@
 // Operation names
 #define kOperationAnalyzeHoughSpace @"AnalyzeHoughSpace"
 
-typedef enum{
-    kFreeHandDots = 0,
-    kFreeHandDraw,
-    kManualInteraction,
-    
-    kNumInteractionModes
-} EInteractionMode;
+//typedef enum{
+//    kFreeHandDots = 0,
+//    kFreeHandDraw,
+//    kManualInteraction,
+//    
+//    kNumInteractionModes
+//} EInteractionMode;
 
 @protocol HoughOperationDelegate
 
@@ -53,12 +53,13 @@ typedef enum{
 	NSMutableArray* curves;
     NSMutableArray* intersections; // HoughIntersection objects
     
-    EInteractionMode interactionMode;
+//    EInteractionMode interactionMode;
     
     unsigned char* houghSpace;
     unsigned char* tmpHoughSpace;
 
     BOOL isSetup;
+    BOOL storeAfterDraw;
     
     CGColorSpaceRef colorSpace;
     CGFloat yScale;
@@ -67,10 +68,11 @@ typedef enum{
 }
 @property (nonatomic, assign) CGFloat yScale;
 @property (nonatomic, assign) CGSize size;
-@property (nonatomic, assign) EInteractionMode interactionMode;
+@property (nonatomic, assign) BOOL storeAfterDraw;
+//@property (nonatomic, assign) EInteractionMode interactionMode;
 @property (nonatomic, assign) NSObject<HoughOperationDelegate>* operationDelegate;
 
--(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points; // Completely redraw houghImage
+-(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points persistant:(BOOL)pointsArePersistent; // Completely redraw houghImage
 -(void)clear;
 -(void)makePersistent;  // Stores tmpHoughImage to houghImage;
 -(CGPoint)equationForPoint:(CGRect)pointInRect;

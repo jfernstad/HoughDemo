@@ -82,7 +82,7 @@
     self.toolBar.tintColor = [UIColor toolbarTintColor];
 
     self.hough = [[[Hough alloc] init] autorelease];
-    self.hough.interactionMode   = kFreeHandDraw;// kManualInteraction;
+//    self.hough.interactionMode   = kFreeHandDraw;// kManualInteraction;
     self.hough.size = imgRect.size; // Setup hough size
     self.hough.operationDelegate = self;
 

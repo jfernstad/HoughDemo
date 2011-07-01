@@ -21,7 +21,7 @@
 
 -(id)init{
 
-    if ((self == [super init])) {
+    if ((self = [super init])) {
         self.lineColor = [UIColor redColor];
     }
     return self;
@@ -70,6 +70,15 @@
                                      drawRect.origin.y + drawRect.size.height);
         //CGContextAddEllipseInRect(ctx, CGRectWithCenter(peak, 5));
         CGContextDrawPath(ctx, kCGPathFillStroke);
+        
+        // Debug lines
+//        CGContextMoveToPoint(ctx, center.x, center.y);
+//        CGContextAddLineToPoint(ctx, center.x + vec.x * len, 
+//                                     center.y + vec.y * len);
+//        CGContextSetStrokeColorWithColor(ctx, [UIColor yellowColor].CGColor);
+//        CGContextDrawPath(ctx, kCGPathFillStroke);
+        // Debug lines
+        
     }
 	
 //	NSLog(@"Got Vector (%f, %f)", 360*theta, len);

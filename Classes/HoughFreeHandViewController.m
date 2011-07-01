@@ -16,6 +16,7 @@
 @interface HoughFreeHandViewController ()
 -(void)layoutViews;
 -(void)interactionMode:(id)sender;
+-(void)startAnalysis:(NSTimer*)timer;
 @end
 
 @implementation HoughFreeHandViewController
@@ -24,6 +25,9 @@
 @synthesize hough;
 @synthesize bucket;
 @synthesize busy;
+@synthesize pointAdded;
+@synthesize persistentTouch;
+@synthesize readyForAnalysis;
 @synthesize status;
 @synthesize lineLayer;
 @synthesize circleLayer;
@@ -44,6 +48,17 @@
  */
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
+
+-(void)startAnalysis:(NSTimer*)timer{
+    if (!self.busy && self.pointAdded && self.readyForAnalysis) {
+        //NSLog(@"Executing analysis.");
+
+        self.readyForAnalysis = NO;
+        self.pointAdded = NO;
+        [self.hough performSelectorInBackground:@selector(analyzeHoughSpace) withObject:nil];
+    }
+}
+
 - (void)loadView {
     
     CGRect totalRect  = [UIScreen mainScreen].applicationFrame;
@@ -82,20 +97,22 @@
 
     self.hough = [[[Hough alloc] init] autorelease];
     self.hough.operationDelegate = self;
-    self.hough.interactionMode   = kFreeHandDraw; // TODO: Parameterize
     self.houghInputView.houghRef = self.hough;
     self.houghTouchView.houghRef = self.hough;
     
     self.bucket = [[[Bucket2D alloc] init] autorelease];
-    
+
+    self.persistentTouch = YES;
+    self.houghInputView.persistentTouch = self.persistentTouch;
+
     // TODO: Clean this mess up..
-    UISegmentedControl* modeControl = [[[UISegmentedControl alloc] initWithItems:
+    modeControl = [[[UISegmentedControl alloc] initWithItems:
                                         [NSArray arrayWithObjects:@"  Draw  ", @"  Tap  ", nil]] autorelease];
     
     modeControl.segmentedControlStyle = UISegmentedControlStyleBar;
     modeControl.tintColor = [UIColor houghGreen];
     
-    [modeControl setSelectedSegmentIndex:(hough.interactionMode==kFreeHandDraw)?0:1];
+    [modeControl setSelectedSegmentIndex:(self.persistentTouch)?0:1];
     [modeControl addTarget:self
                     action:@selector(interactionMode:)
           forControlEvents:UIControlEventValueChanged];
@@ -191,8 +208,14 @@
     [super viewDidLoad];
     
     [self layoutViews];
+
+    // TODO: Manage this from button instead
     
+    analysisTimer = [NSTimer timerWithTimeInterval:0.1 target:self selector:@selector(startAnalysis:) userInfo:nil repeats:YES];
+    
+    [[NSRunLoop mainRunLoop] addTimer:analysisTimer forMode:NSDefaultRunLoopMode];
 	self.busy = NO;
+    self.readyForAnalysis = YES;
 }
 
 
@@ -225,6 +248,10 @@
     self.lineDelegate   = nil;
     self.toolBar        = nil;
     
+    modeControl = nil;
+    
+    [analysisTimer invalidate];
+    
     [super dealloc];
 }
 
@@ -245,24 +272,18 @@
 		
 		self.busy = YES;
 		
-        NSNumber* gestureState = objc_getAssociatedObject(pointArray, kHoughInputGestureState);
-        objc_setAssociatedObject(pointArray, kHoughInputGestureState, nil, OBJC_ASSOCIATION_RETAIN); // Clear association
-        
-        if (hough.interactionMode == kFreeHandDots && [gestureState intValue] == (int)UIGestureRecognizerStateEnded) {
-            [hough makePersistent]; // Store temporary image as
-        }
-        
         start = [NSDate date];
-		img   = [hough newHoughSpaceFromPoints:pointArray];
+		img   = [hough newHoughSpaceFromPoints:pointArray persistant:self.persistentTouch];
 		imgCreation = [start timeIntervalSinceNow];
-		
+
         // Show hough image
 		self.houghTouchView.layer.contents = (id)img;
         
-        [self.hough performSelectorInBackground:@selector(analyzeHoughSpace) withObject:nil];
+//        [self.hough performSelectorInBackground:@selector(analyzeHoughSpace) withObject:nil];
         
 		CGImageRelease(img);
 
+        self.pointAdded = YES;
 		self.busy = NO;
 //		self.status.text = [NSString stringWithFormat:@"Time for Hough generation: %3.3f ms (%1.3f ms/curve)", -imgCreation*1000.0, -imgCreation*1000.0/((pointArray.count>0)?pointArray.count:1)];
 	}
@@ -294,7 +315,8 @@
 
 - (void)interactionMode:(id)sender{
     
-    hough.interactionMode = (((UISegmentedControl*)sender).selectedSegmentIndex == 0)?kFreeHandDraw:kFreeHandDots;
+    self.persistentTouch = (modeControl.selectedSegmentIndex == 0);
+    self.houghInputView.persistentTouch = self.persistentTouch;
 }
 
 -(void)houghWillBeginOperation:(NSString*)operation{
@@ -327,11 +349,12 @@
     
     for (NSSet* cogSet in buckets) {
         cog = [self.bucket cogIntersectionForBucket:cogSet];
-        NSLog(@"I: %d", cog.intensity);
+//        NSLog(@"I: %d", cog.intensity);
         [lines addObject:cog];
     }
     // Send to overlay delegates
     [self overlayLines:lines];
+    self.readyForAnalysis = YES;
 }
 
 @end

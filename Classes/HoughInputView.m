@@ -24,6 +24,7 @@
 @synthesize delegate;
 @synthesize pointsColor;
 @synthesize houghRef;
+@synthesize persistentTouch;
 
 - (id)initWithFrame:(CGRect)frame {
     
@@ -36,7 +37,7 @@
 }
 
 -(id)initWithCoder:(NSCoder *)aDecoder{
-	if (self == [super initWithCoder:aDecoder]) {
+	if ((self = [super initWithCoder:aDecoder])) {
         [self setup];
 	}
 	return self;
@@ -52,6 +53,7 @@
 
 - (void)setup{
     self.points  = [NSMutableArray arrayWithCapacity:0];
+    self.persistentTouch = NO;
     
     tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
     pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
@@ -73,7 +75,7 @@
 	
 	CGContextSetStrokeColorWithColor(context, pointsColor.CGColor);
 	CGContextSetLineWidth(context, 3.0);
-
+    
 	CGPoint p;
 	for (NSValue* val in self.points) {
 		[val getValue:&p];
@@ -115,25 +117,27 @@
     for (NSUInteger i = 0; i < gestureRecognizer.numberOfTouches; i++) {
         p = [gestureRecognizer locationOfTouch:i inView:self];
         p = [self convertPoint:p withAccuracy:CGPointMake(3.0, 3.0)]; 
-
+        
         [tmpPoints addObject:[NSValue valueWithCGPoint:p]];
     }
-
+    
 	self.currentPoint = [NSValue valueWithCGPoint:p];
 	
-	if (gestureRecognizer == tap || houghRef.interactionMode == kFreeHandDraw) {
+	if (gestureRecognizer == tap || self.persistentTouch) {
 		[self.points addObjectsFromArray:tmpPoints];
 	}else if (gestureRecognizer == pan) {
-		if (gestureRecognizer.state == UIGestureRecognizerStateBegan || self.points.count == 0) {
+		if (self.persistentTouch) {
             [self.points addObjectsFromArray:tmpPoints];
 		}
 		else {
             NSInteger start = self.points.count-tmpPoints.count;
             start = MAX(start, 0);
             NSRange r = {(NSUInteger)start, tmpPoints.count};
-//			[self.points replaceObjectAtIndex:self.points.count-1 withObject:self.currentPoint];
-			[self.points replaceObjectsInRange:r withObjectsFromArray:tmpPoints];
-		}
+            //			[self.points replaceObjectAtIndex:self.points.count-1 withObject:self.currentPoint];
+            if (points.count) {
+                [self.points replaceObjectsInRange:r withObjectsFromArray:tmpPoints];
+            }
+        }
 	}
 	
 	[self setNeedsDisplay];
@@ -143,7 +147,11 @@
         // Grr.. need to pass another argument, maybe attach with runtime methods?
         //NSArray* pointArray = [NSArray arrayWithObject:self.currentPoint];
         
-        objc_setAssociatedObject(tmpPoints, kHoughInputGestureState, [NSNumber numberWithInt:(int)gestureRecognizer.state], OBJC_ASSOCIATION_RETAIN);
+        //        objc_setAssociatedObject(tmpPoints, kHoughInputGestureState, [NSNumber numberWithInt:(int)gestureRecognizer.state], OBJC_ASSOCIATION_RETAIN);
+        if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+            houghRef.storeAfterDraw = YES; // Store temporary image
+        }
+
 		[delegate performSelector:@selector(updateInputWithPoints:) withObject:tmpPoints afterDelay:0.0];
 	}
 }

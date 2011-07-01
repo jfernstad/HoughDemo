@@ -21,7 +21,7 @@
 
 -(id)init{
     
-    if ((self == [super init])) {
+    if ((self = [super init])) {
         self.radius = 30;
         self.markColor = [UIColor greenColor];
     }

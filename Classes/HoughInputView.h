@@ -30,6 +30,8 @@
 
 	NSObject<HoughInputProtocol>* delegate;
     Hough* houghRef;
+
+    BOOL persistentTouch;
 }
 
 @property (nonatomic, retain) NSMutableArray* points; // Array of CGPoints
@@ -37,6 +39,7 @@
 @property (nonatomic, assign) NSObject<HoughInputProtocol>* delegate;
 @property (nonatomic, retain) UIColor* pointsColor;
 @property (nonatomic, assign) Hough* houghRef;
+@property (nonatomic, assign) BOOL persistentTouch;
 
 - (void)clear;
 

@@ -50,19 +50,20 @@
 -(BOOL) isPointAlreadyInArray:(CGPoint)p;
 -(void) setupHough;
 -(NSArray*) createCurvesForPoints:(NSArray*)points;
--(CGImageRef) houghImageFromCurves:(NSArray*)curves;
+-(CGImageRef) houghImageFromCurves:(NSArray*)curves persistant:(BOOL)pointsArePersistent;
 -(CGColorSpaceRef)createColorSpace;
 @end
 
 @implementation Hough
-@synthesize size, pointsCopy, tmpPointsCopy, curves, interactionMode, yScale, intersections, operationDelegate;
+@synthesize size, pointsCopy, tmpPointsCopy, curves, yScale, intersections, operationDelegate, storeAfterDraw;
 
 -(id)init{
     
-	if (self == [super init]) {
+	if ((self = [super init])) {
 		self.curves = [NSMutableArray arrayWithCapacity:0];
-        self.interactionMode = kFreeHandDots;
+//        self.interactionMode = kFreeHandDots;
         isSetup = NO;
+        self.storeAfterDraw = NO;
         self.yScale = Y_SCALE;
     }
 	
@@ -205,7 +206,7 @@
     return outArray;
 }
 
--(CGImageRef)houghImageFromCurves:(NSArray*)newCurves{
+-(CGImageRef)houghImageFromCurves:(NSArray*)newCurves persistant:(BOOL)pointsArePersistent{
 	CGImageRef outImg = NULL; // 8 bit grayscale
     
     NSAssert(isSetup, @"! Hough doesn't have a frame! call .frame = rect. ");
@@ -215,7 +216,7 @@
 	
     unsigned char* pointer = tmpHoughSpace;
     
-    if (self.interactionMode == kFreeHandDraw) {
+    if (pointsArePersistent) {
         pointer = houghSpace;
     }else{
         memcpy(tmpHoughSpace, houghSpace, maxDist * maxVals);
@@ -274,13 +275,18 @@
 	return outImg;
 }
 
--(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points{
+-(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points persistant:(BOOL)pointsArePersistent{
 	NSArray* newCurves = [self createCurvesForPoints:points];
     
-    CGImageRef outImage = [self houghImageFromCurves:newCurves];
+    CGImageRef outImage = [self houghImageFromCurves:newCurves persistant:pointsArePersistent];
     
-    if (self.interactionMode == kFreeHandDots) {
-        self.tmpPointsCopy = points;
+    if (self.storeAfterDraw && !pointsArePersistent) {
+        [self makePersistent];
+        self.storeAfterDraw = NO;
+    }
+    
+    if (!pointsArePersistent) {
+        self.tmpPointsCopy = points; // Wtf? Why are these here?
         
     }else{
         

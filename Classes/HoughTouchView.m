@@ -31,7 +31,7 @@
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
-	if (self == [super initWithCoder:aDecoder]) {
+	if ((self = [super initWithCoder:aDecoder])) {
         // Initialization code.
         [self setup];
 		

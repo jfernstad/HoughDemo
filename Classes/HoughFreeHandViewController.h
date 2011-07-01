@@ -22,7 +22,8 @@
 	HoughInputView* houghInputView;
 	HoughTouchView* houghTouchView;
 	UILabel* status;
-	
+	UISegmentedControl* modeControl;
+    
     // Layers & delegates
     CALayer* lineLayer;                // Add as sublayer to houghInputView
     CALayer* circleLayer;              // Add as sublayer to houghInputTouch
@@ -32,6 +33,11 @@
     Bucket2D* bucket;
 	Hough* hough;
 	BOOL busy;
+    BOOL persistentTouch;
+    BOOL pointAdded;
+    BOOL readyForAnalysis;
+    
+    NSTimer* analysisTimer;
 }
 
 @property (nonatomic, retain) UIToolbar* toolBar;
@@ -41,6 +47,9 @@
 @property (nonatomic, retain) Hough* hough;
 @property (nonatomic, retain) Bucket2D* bucket;
 @property (assign) BOOL busy;
+@property (assign) BOOL persistentTouch;
+@property (assign) BOOL pointAdded;
+@property (assign) BOOL readyForAnalysis;
 @property (nonatomic, retain) CALayer* lineLayer;
 @property (nonatomic, retain) CALayer* circleLayer;
 @property (nonatomic, retain) HoughLineOverlayDelegate* lineDelegate;
