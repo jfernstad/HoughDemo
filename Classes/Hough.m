@@ -316,8 +316,8 @@
     
     for (i = 1; i < 255; i++) {
         colorTable[i * 3 + 0] = 255;
-        colorTable[i * 3 + 1] = 255-(i-1)*255/10;
-        colorTable[i * 3 + 2] = 255-(i-1)*255/10;
+        colorTable[i * 3 + 1] = MAX(0,255-(i-1)*255/15);
+        colorTable[i * 3 + 2] = MAX(0,255-(i-1)*255/15);
         //        colorTable[i * 3 + 0] = MIN(128 + i * 10, 255);
         //        colorTable[i * 3 + 1] = MAX(128 + i, 0);
         //        colorTable[i * 3 + 2] = MAX(128 + i, 0);

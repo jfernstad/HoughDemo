@@ -60,7 +60,7 @@
     
     tap.numberOfTapsRequired	= 1;
     tap.numberOfTouchesRequired = 1;
-    pan.maximumNumberOfTouches	= 2;
+    pan.maximumNumberOfTouches	= 1;
     
     [self addGestureRecognizer:tap];
     [self addGestureRecognizer:pan];
@@ -107,51 +107,65 @@
 
 // Gestures
 - (void)handleGesture:(UIGestureRecognizer *)gestureRecognizer{
-	///(@"Got a %@", [gestureRecognizer class]);
-    // for (gestureRecognizer.numberOfTouches
-    // [gestureRecognizer locationForTouch:inView:];
 	CGPoint p = [gestureRecognizer locationInView:self];
-	
+    NSInteger start = 0;
+    NSRange r;
+	NSValue* pointVal = nil;
     NSMutableArray* tmpPoints = [NSMutableArray arrayWithCapacity:gestureRecognizer.numberOfTouches];
     
     for (NSUInteger i = 0; i < gestureRecognizer.numberOfTouches; i++) {
         p = [gestureRecognizer locationOfTouch:i inView:self];
-        p = [self convertPoint:p withAccuracy:CGPointMake(3.0, 3.0)]; 
-        
-        [tmpPoints addObject:[NSValue valueWithCGPoint:p]];
-    }
-    
-	self.currentPoint = [NSValue valueWithCGPoint:p];
-	
-	if (gestureRecognizer == tap || self.persistentTouch) {
-		[self.points addObjectsFromArray:tmpPoints];
-	}else if (gestureRecognizer == pan) {
-		if (self.persistentTouch) {
-            [self.points addObjectsFromArray:tmpPoints];
-		}
-		else {
-            NSInteger start = self.points.count-tmpPoints.count;
-            start = MAX(start, 0);
-            NSRange r = {(NSUInteger)start, tmpPoints.count};
-            //			[self.points replaceObjectAtIndex:self.points.count-1 withObject:self.currentPoint];
-            if (points.count) {
-                [self.points replaceObjectsInRange:r withObjectsFromArray:tmpPoints];
-            }
+        p = [self convertPoint:p withAccuracy:CGPointMake(3.0, 3.0)]; // TODO: Parametrize
+
+        pointVal = [NSValue valueWithCGPoint:p];
+        if (!self.persistentTouch || ![self.points containsObject:pointVal]) { // Don't add same point again.  
+            [tmpPoints addObject:pointVal];
         }
-	}
-	
+    }
+    NSLog(@"GestureState: %d", gestureRecognizer.state);
+	self.currentPoint = [NSValue valueWithCGPoint:p];
+
+    if (self.persistentTouch) {
+        [self.points addObjectsFromArray:tmpPoints]; // Add first points
+    }else{
+    
+        switch (gestureRecognizer.state) {
+            case UIGestureRecognizerStateBegan:
+                [self.points addObjectsFromArray:tmpPoints]; // Add first points
+                break;
+            case UIGestureRecognizerStateEnded:
+                if (gestureRecognizer == tap){
+                    [self.points addObjectsFromArray:tmpPoints];
+                }else{
+                    [tmpPoints addObject:[self.points lastObject]]; // ONE POINT ONLY, Thats all we know. 
+                }
+                houghRef.storeAfterDraw = YES; // Store temporary image
+
+                break;
+            case UIGestureRecognizerStateChanged:
+                if (self.points.count) {
+                    start = self.points.count-tmpPoints.count;
+                    start = MAX(start, 0);
+                    
+                    r.location = start;
+                    r.length = tmpPoints.count;
+                    
+                    [self.points replaceObjectsInRange:r withObjectsFromArray:tmpPoints];
+                }
+                break;
+            case UIGestureRecognizerStateCancelled:
+                NSLog(@"Touch cancelled. Decide what to do here");
+                break;
+                
+            default:
+                break;
+        }
+    
+    }
+
 	[self setNeedsDisplay];
 	
 	if (delegate) {
-		//NSLog(@"handleGesture: Calling delegate");
-        // Grr.. need to pass another argument, maybe attach with runtime methods?
-        //NSArray* pointArray = [NSArray arrayWithObject:self.currentPoint];
-        
-        //        objc_setAssociatedObject(tmpPoints, kHoughInputGestureState, [NSNumber numberWithInt:(int)gestureRecognizer.state], OBJC_ASSOCIATION_RETAIN);
-        if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
-            houghRef.storeAfterDraw = YES; // Store temporary image
-        }
-
 		[delegate performSelector:@selector(updateInputWithPoints:) withObject:tmpPoints afterDelay:0.0];
 	}
 }

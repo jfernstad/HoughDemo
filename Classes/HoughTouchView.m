@@ -48,7 +48,7 @@
     
     tap.numberOfTapsRequired	= 1;
     tap.numberOfTouchesRequired = 1;
-    pan.maximumNumberOfTouches	= 2;
+    pan.maximumNumberOfTouches	= 1;
     
     [self addGestureRecognizer:tap];
     [self addGestureRecognizer:pan];
