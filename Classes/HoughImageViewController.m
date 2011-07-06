@@ -225,7 +225,7 @@
                       [NSValue valueWithCGPoint:CGPointMake(110, 50)],
                        nil];
     
-    CGImageRelease([self.hough newHoughSpaceFromPoints:points]); 
+    CGImageRelease([self.hough newHoughSpaceFromPoints:points persistant:YES]); 
     
     //
     NSLog(@"imagePickerController: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
