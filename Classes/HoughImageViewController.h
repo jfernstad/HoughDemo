@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Hough.h"
+#import "Bucket2D.h"
 
 @class HoughLineOverlayDelegate;
 @class LoadingView;
@@ -26,6 +27,8 @@
     CALayer* lineLayer;
     
 	Hough* hough;
+    Bucket2D* bucket;
+
 }
 
 @property (nonatomic, retain) UIToolbar* toolBar;
@@ -35,7 +38,10 @@
 @property (nonatomic, retain) UIPopoverController* popover;
 @property (nonatomic, retain) Hough* hough;
 @property (nonatomic, retain) LoadingView* loadingView;
-//@property (nonatomic, retain) CALayer* lineLayer; // TODO
-//@property (nonatomic, retain) HoughLineOverlayDelegate* lineDelegate; // TODO
+@property (nonatomic, retain) CALayer* lineLayer;
+@property (nonatomic, retain) HoughLineOverlayDelegate* lineDelegate;
+@property (nonatomic, retain) Bucket2D* bucket;
+
+-(void)cancelOperations;
 
 @end

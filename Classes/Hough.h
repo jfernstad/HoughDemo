@@ -12,16 +12,12 @@
 #define kOperationNameKey           @"OperationName"
 #define kHoughIntersectionArrayKey  @"HoughIntersectionArray"
 
-// Operation names
-#define kOperationAnalyzeHoughSpace @"AnalyzeHoughSpace"
-
-//typedef enum{
-//    kFreeHandDots = 0,
-//    kFreeHandDraw,
-//    kManualInteraction,
-//    
-//    kNumInteractionModes
-//} EInteractionMode;
+// Operations
+#define kOperationGrayscaleImage        @"OperationGrayscaleImage"
+#define kOperationEdgeImage             @"OperationEdgeImage"
+#define kOperationThinImage             @"OperationThinImage"
+#define kOperationCreateHoughSpaceImage @"OperationCreateHoughSpace"
+#define kOperationAnalyzeHoughSpace     @"OperationAnalyzeHoughSpace"
 
 @protocol HoughOperationDelegate
 
@@ -48,34 +44,46 @@
 @interface Hough : NSObject {
 	CGSize size;
 	
+    // Result arrays
 	NSArray* pointsCopy;
 	NSArray* tmpPointsCopy;
 	NSMutableArray* curves;
     NSMutableArray* intersections; // HoughIntersection objects
     
-//    EInteractionMode interactionMode;
-    
+    // Hough buffers
     unsigned char* houghSpace;
     unsigned char* tmpHoughSpace;
 
+    // Interaction flags
     BOOL isSetup;
     BOOL storeAfterDraw;
+    BOOL operationAborted;
     
+    // Visualization params
     CGColorSpaceRef colorSpace;
     CGFloat yScale;
-    
+
+    // Related to operations
+    NSOperationQueue* operationQueue;
     NSObject<HoughOperationDelegate>* operationDelegate;
+
+    // Interrim images
+    UIImage* grayScaleImage;
+    UIImage* edgeImage;
+    UIImage* thinnedImage;
 }
 @property (nonatomic, assign) CGFloat yScale;
 @property (nonatomic, assign) CGSize size;
 @property (nonatomic, assign) BOOL storeAfterDraw;
-//@property (nonatomic, assign) EInteractionMode interactionMode;
 @property (nonatomic, assign) NSObject<HoughOperationDelegate>* operationDelegate;
 
 -(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points persistant:(BOOL)pointsArePersistent; // Completely redraw houghImage
 -(void)clear;
 -(void)makePersistent;  // Stores tmpHoughImage to houghImage;
 -(CGPoint)equationForPoint:(CGRect)pointInRect;
--(void)analyzeHoughSpace;
 -(NSArray*)allIntersections;
+
+// Operations
+-(void)executeOperationsWithImage:(UIImage*)rawImage;
+-(void)cancelOperations;
 @end

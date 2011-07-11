@@ -115,14 +115,14 @@
     
     for (NSUInteger i = 0; i < gestureRecognizer.numberOfTouches; i++) {
         p = [gestureRecognizer locationOfTouch:i inView:self];
-        p = [self convertPoint:p withAccuracy:CGPointMake(3.0, 3.0)]; // TODO: Parametrize
+        p = [self convertPoint:p withAccuracy:CGPointMake(5.0, 5.0)]; // TODO: Parametrize
 
         pointVal = [NSValue valueWithCGPoint:p];
         if (!self.persistentTouch || ![self.points containsObject:pointVal]) { // Don't add same point again.  
             [tmpPoints addObject:pointVal];
         }
     }
-    NSLog(@"GestureState: %d", gestureRecognizer.state);
+//    NSLog(@"GestureState: %d", gestureRecognizer.state);
 	self.currentPoint = [NSValue valueWithCGPoint:p];
 
     if (self.persistentTouch) {

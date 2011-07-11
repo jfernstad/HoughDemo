@@ -10,6 +10,7 @@
 #import "LoadingView.h"
 #import "UIColor+HoughExtensions.h"
 #import "Hough.h"
+#import "HoughLineOverlayDelegate.h"
 
 @interface HoughImageViewController ()
 -(void)showChooseImageView;
@@ -23,15 +24,9 @@
 @synthesize imgPicker;
 @synthesize popover;
 @synthesize loadingView;
-
-//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-//{
-//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-//    if (self) {
-//        // Custom initialization
-//    }
-//    return self;
-//}
+@synthesize lineLayer;
+@synthesize lineDelegate;
+@synthesize bucket;
 
 - (void)dealloc
 {
@@ -42,6 +37,11 @@
     self.placeHolder = nil;
     self.popover = nil; // TODO: Keep an eye on this 
     self.loadingView = nil;
+    self.lineLayer = nil;
+    self.lineDelegate = nil;
+    
+    [self.bucket clearBuckets];
+    self.bucket = nil;
     
     [super dealloc];
 }
@@ -53,6 +53,13 @@
     
     // Release any cached data, images, etc that aren't in use.
 }
+
+#pragma mark - Methods
+-(void)cancelOperations{
+    [self.hough cancelOperations];
+    [self.loadingView stopProgress];
+}
+
 
 #pragma mark - View lifecycle
 
@@ -81,9 +88,11 @@
     self.view.backgroundColor = [UIColor clearColor];
     self.toolBar.tintColor = [UIColor toolbarTintColor];
 
+    self.bucket = [[[Bucket2D alloc] init] autorelease];
+    
     self.hough = [[[Hough alloc] init] autorelease];
 //    self.hough.interactionMode   = kFreeHandDraw;// kManualInteraction;
-    self.hough.size = imgRect.size; // Setup hough size
+    self.hough.size = imgRect.size; // Setup hough size, WRONG. Do this for the image instead. 
     self.hough.operationDelegate = self;
 
     self.imgView.contentMode = UIViewContentModeScaleAspectFit;
@@ -137,8 +146,18 @@
     [self.toolBar setItems:[NSArray arrayWithObjects:fixSpaceItem, titleItem, flexSpaceItem, actionItem, nil] animated:YES];
 
     
+    self.lineDelegate        = [[[HoughLineOverlayDelegate alloc] init] autorelease];
+    self.lineDelegate.houghRef = self.hough;
+    self.lineDelegate.lineColor = [UIColor houghRed];
+    self.lineLayer           = [CALayer layer];
+    self.lineLayer.frame     = CGRectZero; // Set this when we get an image. 
+    self.lineLayer.delegate  = self.lineDelegate;
+    self.lineLayer.masksToBounds = YES;
+    
     self.view.backgroundColor = [UIColor mainBackgroundColor];
 
+    [self.imgView.layer addSublayer:self.lineLayer];
+    
     [self.view addSubview:self.toolBar];
     [self.view addSubview:tilePattern];
     [self.view addSubview:self.imgView];
@@ -172,6 +191,9 @@
     }
 }
 
+- (void)viewWillDisappear:(BOOL)animated{
+    [self cancelOperations];
+}
 /*
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
@@ -194,7 +216,7 @@
 }
 
 #pragma mark -
-#pragma Delegates
+#pragma mark Delegates
 
 -(void)houghWillBeginOperation:(NSString*)operation{
     self.loadingView.text = [NSString stringWithFormat:@"Starting %@...", operation];
@@ -204,35 +226,42 @@
     self.loadingView.text = [NSString stringWithFormat:@"Finished operation %@...", [dict objectForKey:kOperationNameKey]];
     
     NSLog(@"houghDidFinishOperationWithDictionary: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
-    NSLog(@"Intersections (%d): %@", [self.hough allIntersections].count, [self.hough allIntersections]);
+//    NSLog(@"Intersections (%d): %@", [self.hough allIntersections].count, [self.hough allIntersections]);
+
+    if ([[dict objectForKey:kOperationNameKey] isEqualToString:kOperationAnalyzeHoughSpace]) {
+        // We got what we needed
+        
+        // To the bucket thing
+        [self.bucket clearBuckets];
+        [self.bucket addIntersections:[self.hough allIntersections]];
+        
+        self.lineDelegate.lines = [self.bucket cogIntersectionForAllBuckets];
+        
+        [self.lineLayer setNeedsDisplay];
+        [self.loadingView stopProgress];
+    }
+    
 }
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
     NSLog(@"info: %@", info);
+    UIImage* selectedImage = nil;
     
     // Close picker
     // Show image
     // Start processing
     [self.popover dismissPopoverAnimated:YES];
     [self.loadingView startProgress];
-    [self.loadingView performSelector:@selector(stopProgress) withObject:nil afterDelay:5.0];
+//    [self.loadingView performSelector:@selector(stopProgress) withObject:nil afterDelay:5.0]; // TODO: Remove this after implementing the operations
 
-    // TEMP: Add some data to Hough
+    // TEST: Execute operations using the operation queue
     
-    NSArray* points = [NSArray arrayWithObjects:
-//                      [NSValue valueWithCGPoint:CGPointMake(10, 50)], 
-                      [NSValue valueWithCGPoint:CGPointMake( 80, 30)],
-                      [NSValue valueWithCGPoint:CGPointMake( 95, 40)],
-                      [NSValue valueWithCGPoint:CGPointMake(110, 50)],
-                       nil];
+    selectedImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
     
-    CGImageRelease([self.hough newHoughSpaceFromPoints:points persistant:YES]); 
-    
-    //
-    NSLog(@"imagePickerController: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
-    [self.hough performSelectorInBackground:@selector(analyzeHoughSpace) withObject:nil];
-    
-    if ([info objectForKey:@"UIImagePickerControllerOriginalImage"]) {
-        self.imgView.image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+    if (selectedImage) {
+        [self.hough executeOperationsWithImage:selectedImage];
+        self.imgView.image = selectedImage;
+        self.hough.size = self.imgView.bounds.size;
+        self.lineLayer.frame = self.imgView.bounds;
         [self.placeHolder removeFromSuperview];
     }
 }

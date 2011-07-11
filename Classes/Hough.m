@@ -10,7 +10,10 @@
 #import <Accelerate/Accelerate.h>
 
 #define Y_SCALE 2.0f
-#define MIN_INTENSITY 10
+#define MIN_INTENSITY 10    // TODO: Parameterize
+
+// TMP
+#define SLEEPTIME 0.1
 
 @implementation HoughIntersection
 @synthesize theta;
@@ -33,19 +36,15 @@
 -(NSString*)description{
     return [NSString stringWithFormat:@"HoughIntersection: theta: %3.2f, length: %3.2f, intensity: %d", self.theta, self.length, self.intensity];
 }
-//-(NSUInteger)hash{
-//    NSUInteger h = (NSUInteger)(self.theta * self.theta * 2048 + self.length * self.length * 1024);
-////    NSLog(@"Hash: %X", h);
-//    return h;
-//}
-@end
 
+@end
 
 @interface Hough ()
 @property (nonatomic, copy)   NSArray* pointsCopy;
 @property (nonatomic, copy)   NSArray* tmpPointsCopy;
 @property (retain) NSMutableArray* curves;
 @property (retain) NSMutableArray* intersections;
+@property (nonatomic, retain) NSOperationQueue* operationQueue;
 
 -(BOOL) isPointAlreadyInArray:(CGPoint)p;
 -(void) setupHough;
@@ -55,16 +54,24 @@
 @end
 
 @implementation Hough
-@synthesize size, pointsCopy, tmpPointsCopy, curves, yScale, intersections, operationDelegate, storeAfterDraw;
+@synthesize size;
+@synthesize pointsCopy;
+@synthesize tmpPointsCopy;
+@synthesize curves;
+@synthesize yScale;
+@synthesize intersections;
+@synthesize operationDelegate;
+@synthesize storeAfterDraw;
+@synthesize operationQueue;
 
 -(id)init{
     
 	if ((self = [super init])) {
 		self.curves = [NSMutableArray arrayWithCapacity:0];
-//        self.interactionMode = kFreeHandDots;
         isSetup = NO;
         self.storeAfterDraw = NO;
         self.yScale = Y_SCALE;
+        operationQueue = [[NSOperationQueue alloc] init];
     }
 	
 	return self;
@@ -73,6 +80,7 @@
 -(void)clear{
     self.pointsCopy = nil;
     [self.curves removeAllObjects];
+    [self.operationQueue cancelAllOperations];
     
 	int maxDist = self.size.height;
 	int maxVals = self.size.width;
@@ -83,12 +91,11 @@
 }
 
 -(void)makePersistent{
-    // TODO: Copy houghImage to tmpHoughImage;
+
 	int maxDist = self.size.height;
 	int maxVals = self.size.width;
     NSUInteger area = maxDist * maxVals;
     
-    //    memcpy(tmpHoughSpace, houghSpace, size);
     memcpy(houghSpace, tmpHoughSpace, area);
 }
 -(BOOL) isPointAlreadyInArray:(CGPoint) p{
@@ -125,9 +132,15 @@
     
     NSUInteger area = self.size.width * self.size.height;
     
+    if (isSetup) {
+        free(houghSpace);
+        free(tmpHoughSpace);
+    }
+    
     houghSpace    = (unsigned char*)malloc(area);
     tmpHoughSpace = (unsigned char*)malloc(area);
-    colorSpace    = [self createColorSpace];
+    
+    if (!colorSpace) colorSpace = [self createColorSpace];
     
     isSetup = YES;
     // TODO: verify we have memory
@@ -329,67 +342,6 @@
     
 }
 
-//
-// Analyze hough space threaded. 
-//
-
--(void)analyzeHoughSpace{
-    
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    
-//    NSLog(@"analyzeHoughSpace: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
-
-	int imgHeight = (int)self.size.height;
-	int imgWidth  = (int)self.size.width;
-    
-    if (self.operationDelegate) {
-        [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationAnalyzeHoughSpace waitUntilDone:NO];
-    }
-    
-    self.intersections = [[[NSMutableArray alloc] init] autorelease];
-    
-	int maxPoint = 0;
-	int n = 0, x = 0, y = 0;
-    NSUInteger idx = 0;
-    NSUInteger intensity = 0;
-	CGPoint maxPos   = CGPointZero;
-    CGPoint equation = CGPointZero;
-	CGRect pointRect = CGRectZero;
-    pointRect.size   = self.size;
-    
-	// Get Positions from Maxima in Houghspace
-//	for( n = 0; n < imgHeight * imgWidth; n++){
-		maxPoint = 0;
-		for( y = 0; y < imgHeight; y++){
-			for( x = 0; x < imgWidth; x++){
-                
-                idx = x + y*imgWidth;
-				intensity = houghSpace[idx];
-                if( intensity > MIN_INTENSITY ){
-					pointRect.origin.x = x;
-                    pointRect.origin.y = y;
-                    
-                    equation = [self equationForPoint:pointRect];
-                    maxPoint = intensity;
-                    
-                    [self.intersections addObject:
-                     [HoughIntersection houghIntersectionWithTheta:equation.x 
-                                                            length:equation.y 
-                                                      andIntensity:maxPoint]];
-				}
-			}
-		}
-//	}
-	
-    if (self.operationDelegate) {
-        NSDictionary* dic = [NSDictionary dictionaryWithObject:kOperationAnalyzeHoughSpace forKey:kOperationNameKey];
-        [self.operationDelegate performSelectorOnMainThread:@selector(houghDidFinishOperationWithDictionary:) withObject:dic waitUntilDone:NO];
-    }
-    
-    [pool drain];
-}
-
-
 -(NSArray*)allIntersections{
     return self.intersections;
 }
@@ -417,10 +369,233 @@
 	self.intersections = nil;
     self.operationDelegate = nil;
     
+    [self.operationQueue cancelAllOperations];
+    self.operationQueue = nil;
+    
     CGColorSpaceRelease(colorSpace);
     free(houghSpace);
     free(tmpHoughSpace);
     
 	[super dealloc];
 }
+
+
+#pragma mark -
+#pragma mark Operations dispatcher
+
+-(void)executeOperationsWithImage:(UIImage*)rawImage{
+
+    NSOperation* grayscaleOp         = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(grayscaleImage) object:nil] autorelease];
+    NSOperation* edgeOp              = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(edgeImage) object:nil] autorelease];
+    NSOperation* thinOp              = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(thinImage) object:nil] autorelease];
+    NSOperation* createHoughSpaceOp  = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(createHoughSpace) object:nil] autorelease];
+    NSOperation* analyzeHoughSpaceOp = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(analyzeHoughSpace) object:nil] autorelease];
+
+    [analyzeHoughSpaceOp addDependency:createHoughSpaceOp];
+    [createHoughSpaceOp addDependency:thinOp];
+    [thinOp addDependency:edgeOp];
+    [edgeOp addDependency:grayscaleOp];
+    
+    [self.operationQueue addOperation:grayscaleOp];
+    [self.operationQueue addOperation:edgeOp];
+    [self.operationQueue addOperation:thinOp];
+    [self.operationQueue addOperation:createHoughSpaceOp];
+    [self.operationQueue addOperation:analyzeHoughSpaceOp];
+}
+
+-(void)cancelOperations{
+    [self.operationQueue cancelAllOperations];
+}
+#pragma mark -
+#pragma mark Operations
+
+//
+// Analyze hough space threaded. 
+//
+-(void)grayscaleImage{
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+    if (self.operationDelegate) {
+        [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationGrayscaleImage waitUntilDone:NO];
+    }
+
+    NSLog(@"grayscaleImage: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+
+    // Do operation
+    // Temporary
+    [NSThread sleepForTimeInterval:SLEEPTIME];
+    
+    if (self.operationDelegate) {
+        NSDictionary* dic = [NSDictionary dictionaryWithObject:kOperationGrayscaleImage forKey:kOperationNameKey];
+        [self.operationDelegate performSelectorOnMainThread:@selector(houghDidFinishOperationWithDictionary:) withObject:dic waitUntilDone:NO];
+    }
+
+    // Temporary
+    [NSThread sleepForTimeInterval:SLEEPTIME];
+
+    [pool drain];
+}
+-(void)edgeImage{
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    
+    if (self.operationDelegate) {
+        [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationEdgeImage waitUntilDone:NO];
+    }
+    
+    NSLog(@"edgeImage: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+
+    // Do operation
+    // Temporary
+    [NSThread sleepForTimeInterval:SLEEPTIME];
+    
+    if (self.operationDelegate) {
+        NSDictionary* dic = [NSDictionary dictionaryWithObject:kOperationEdgeImage forKey:kOperationNameKey];
+        [self.operationDelegate performSelectorOnMainThread:@selector(houghDidFinishOperationWithDictionary:) withObject:dic waitUntilDone:NO];
+    }
+    
+    // Temporary
+    [NSThread sleepForTimeInterval:SLEEPTIME];
+    [pool drain];
+}
+-(void)thinImage{
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    
+    if (self.operationDelegate) {
+        [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationThinImage waitUntilDone:NO];
+    }
+    
+    NSLog(@"thinImage: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+
+    // Do operation
+    // Temporary
+    [NSThread sleepForTimeInterval:SLEEPTIME];
+
+    if (self.operationDelegate) {
+        NSDictionary* dic = [NSDictionary dictionaryWithObject:kOperationThinImage forKey:kOperationNameKey];
+        [self.operationDelegate performSelectorOnMainThread:@selector(houghDidFinishOperationWithDictionary:) withObject:dic waitUntilDone:NO];
+    }
+    
+    // Temporary
+    [NSThread sleepForTimeInterval:SLEEPTIME];
+
+    [pool drain];
+}
+-(void)createHoughSpace{
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    
+    if (self.operationDelegate) {
+        [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationCreateHoughSpaceImage waitUntilDone:NO];
+    }
+    
+    NSLog(@"createHoughSpace: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+
+    // Do operation
+    // Temporary
+    [NSThread sleepForTimeInterval:SLEEPTIME];
+    
+    NSMutableArray* points = [NSMutableArray arrayWithCapacity:40];
+    
+    CGFloat x = 0, y = 0;
+    NSUInteger ii = 0;
+
+    // Line 1
+    for (ii = 0; ii < 40; ii++) {
+        x = 12 * ii + 40;
+        y = 140;
+        
+        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
+    }
+    
+    // Line 2
+    for (ii = 0; ii < 40; ii++) {
+        x = 12 * ii + 340;
+        y = 340;
+        
+        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
+    }
+
+    // Line 3
+    for (ii = 0; ii < 40; ii++) {
+        y = 12 * ii + 40;
+        x = 140;
+        
+        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
+    }
+
+    // Line 4
+    for (ii = 0; ii < 40; ii++) {
+        y = 12 * ii + 340;
+        x = 340;
+        
+        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
+    }
+
+    CGImageRelease([self newHoughSpaceFromPoints:points persistant:YES]); 
+        
+    if (self.operationDelegate) {
+        NSDictionary* dic = [NSDictionary dictionaryWithObject:kOperationCreateHoughSpaceImage forKey:kOperationNameKey];
+        [self.operationDelegate performSelectorOnMainThread:@selector(houghDidFinishOperationWithDictionary:) withObject:dic waitUntilDone:NO];
+    }
+    // Temporary
+    [NSThread sleepForTimeInterval:SLEEPTIME];
+    
+    [pool drain];
+}
+-(void)analyzeHoughSpace{
+    
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    
+    //    NSLog(@"analyzeHoughSpace: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+    
+	int imgHeight = (int)self.size.height;
+	int imgWidth  = (int)self.size.width;
+    
+    if (self.operationDelegate) {
+        [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationAnalyzeHoughSpace waitUntilDone:NO];
+    }
+    
+    self.intersections = [[[NSMutableArray alloc] init] autorelease];
+    
+	int maxPoint = 0;
+	int n = 0, x = 0, y = 0;
+    NSUInteger idx = 0;
+    NSUInteger intensity = 0;
+	CGPoint maxPos   = CGPointZero;
+    CGPoint equation = CGPointZero;
+	CGRect pointRect = CGRectZero;
+    pointRect.size   = self.size;
+    
+	// Get Positions from Maxima in Houghspace
+    //	for( n = 0; n < imgHeight * imgWidth; n++){
+    maxPoint = 0;
+    for( y = 0; y < imgHeight; y++){
+        for( x = 0; x < imgWidth; x++){
+            
+            idx = x + y*imgWidth;
+            intensity = houghSpace[idx];
+            if( intensity > MIN_INTENSITY ){
+                pointRect.origin.x = x;
+                pointRect.origin.y = y;
+                
+                equation = [self equationForPoint:pointRect];
+                maxPoint = intensity;
+                
+                [self.intersections addObject:
+                 [HoughIntersection houghIntersectionWithTheta:equation.x 
+                                                        length:equation.y 
+                                                  andIntensity:maxPoint]];
+            }
+        }
+    }
+    //	}
+	
+    if (self.operationDelegate) {
+        NSDictionary* dic = [NSDictionary dictionaryWithObject:kOperationAnalyzeHoughSpace forKey:kOperationNameKey];
+        [self.operationDelegate performSelectorOnMainThread:@selector(houghDidFinishOperationWithDictionary:) withObject:dic waitUntilDone:NO];
+    }
+    
+    [pool drain];
+}
+
+
 @end

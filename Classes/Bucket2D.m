@@ -50,6 +50,12 @@
     [bucket addObject:intersection];
 }
 
+-(void)addIntersections:(NSArray*)intersections{
+    for (HoughIntersection* h in intersections) {
+        [self addIntersection:h];
+    }
+}
+
 // Center of gravity for intersections in bucket
 //-(CGPoint)cogForBucket:(NSSet*)bucket{
 -(HoughIntersection*)cogIntersectionForBucket:(NSSet*)bucket{
@@ -84,6 +90,20 @@
     return [HoughIntersection houghIntersectionWithTheta:cog.x
                                                   length:cog.y
                                             andIntensity:bucket.count];
+}
+
+-(NSArray*)cogIntersectionForAllBuckets{
+
+    NSSet* bucks = [self allBuckets];
+    NSMutableArray* lines = [NSMutableArray arrayWithCapacity:buckets.count];
+    HoughIntersection* cog = nil;
+    
+    for (NSSet* set in bucks) {
+        cog = [self cogIntersectionForBucket:set];
+        [lines addObject:cog];
+    }
+
+    return lines;
 }
 
 -(void)dealloc{
