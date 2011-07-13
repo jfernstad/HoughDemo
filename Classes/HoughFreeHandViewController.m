@@ -91,8 +91,8 @@
     CGRect tmpRect    = CGRectZero;
     CGRectDivide(tileRect, &tmpRect, &tileRect, 50, CGRectMaxYEdge);
 
-    UIImageView* tilePattern = [[[UIImageView alloc] initWithFrame:tileRect] autorelease];
-    tilePattern.image = [UIImage imageNamed:@"tilepattern.png"];
+//    UIImageView* tilePattern = [[[UIImageView alloc] initWithFrame:tileRect] autorelease];
+//    tilePattern.image = [UIImage imageNamed:@"tilepattern.png"];
     //    UIImageView* tilePattern = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tilepattern.png"]] autorelease];
 
     self.hough = [[[Hough alloc] init] autorelease];
@@ -171,7 +171,7 @@
     [self.houghTouchView.layer addSublayer:self.circleLayer];
     
     [self.view addSubview:self.toolBar];
-    [self.view addSubview:tilePattern];
+//    [self.view addSubview:tilePattern];
     [self.view addSubview:self.houghTouchView];
     [self.view addSubview:self.houghInputView];
 //    [self.view addSubview:self.status];
@@ -184,7 +184,8 @@
     UIColor* borderColor = [UIColor borderColor];
     
     // Attributes
-    self.view.backgroundColor           = [UIColor mainBackgroundColor];
+//    self.view.backgroundColor           = [UIColor mainBackgroundColor];
+    self.view.backgroundColor           = [UIColor colorWithPatternImage:[UIImage imageNamed:@"tile_50px.png"]];
     self.houghTouchView.backgroundColor = [UIColor houghBackgroundColor];
     self.houghInputView.backgroundColor = [UIColor inputBackgroundColor];
     self.houghInputView.pointsColor     = [UIColor whiteColor];

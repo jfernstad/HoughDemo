@@ -80,8 +80,8 @@
     self.imgView = [[[UIImageView alloc] initWithFrame:imgRect] autorelease];
     self.loadingView = [[[LoadingView alloc] initWithFrame:imgRect] autorelease];
     
-    UIImageView* tilePattern = [[[UIImageView alloc] initWithFrame:imgRect] autorelease];
-    tilePattern.image = [UIImage imageNamed:@"tilepattern.png"];
+//    UIImageView* tilePattern = [[[UIImageView alloc] initWithFrame:imgRect] autorelease];
+//    tilePattern.image = [UIImage imageNamed:@"tilepattern.png"];
 //    UIImageView* tilePattern = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tilepattern.png"]] autorelease];
     
     
@@ -154,12 +154,13 @@
     self.lineLayer.delegate  = self.lineDelegate;
     self.lineLayer.masksToBounds = YES;
     
-    self.view.backgroundColor = [UIColor mainBackgroundColor];
+//    self.view.backgroundColor = [UIColor mainBackgroundColor];
+    self.view.backgroundColor           = [UIColor colorWithPatternImage:[UIImage imageNamed:@"tile_50px.png"]];
 
     [self.imgView.layer addSublayer:self.lineLayer];
     
     [self.view addSubview:self.toolBar];
-    [self.view addSubview:tilePattern];
+//    [self.view addSubview:tilePattern];
     [self.view addSubview:self.imgView];
     
 //    [self.view addSubview:self.placeHolder];

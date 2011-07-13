@@ -22,6 +22,7 @@
 		83492F1A1347DE0E002BD8BF /* CircleOverlayDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 83492F191347DE0D002BD8BF /* CircleOverlayDelegate.m */; };
 		83492F1F1347E080002BD8BF /* CGGeometry+HoughExtensions.c in Sources */ = {isa = PBXBuildFile; fileRef = 83492F1D1347E080002BD8BF /* CGGeometry+HoughExtensions.c */; };
 		8353D8431370F701008B125C /* HoughFreeHandViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8353D8421370F701008B125C /* HoughFreeHandViewController.m */; };
+		835962C613CD535000BC128A /* tile_50px.png in Resources */ = {isa = PBXBuildFile; fileRef = 835962C513CD535000BC128A /* tile_50px.png */; };
 		836DE7131370F2AA0010D82A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 836DE7121370F2AA0010D82A /* test.jpg */; };
 		837A9CBA13A44F7E00B4CE95 /* Bucket2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A9CB913A44F7D00B4CE95 /* Bucket2D.m */; };
 		839C9DC31373BA690074A39C /* HoughImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 839C9DC21373BA690074A39C /* HoughImageViewController.m */; };
@@ -32,7 +33,6 @@
 		83D2BF24134D5226008F32ED /* gear.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D2BF23134D5226008F32ED /* gear.png */; };
 		83D2BF27134D7EBB008F32ED /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D2BF25134D7EBB008F32ED /* Icon-Small-50.png */; };
 		83D2BF28134D7EBB008F32ED /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D2BF26134D7EBB008F32ED /* Icon-Small.png */; };
-		83E0B09B13A331B800C5F801 /* tilepattern.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E0B09A13A331B800C5F801 /* tilepattern.png */; };
 		83E4BCB21347B48D00BFF07D /* HoughLineOverlayDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E4BCB11347B48D00BFF07D /* HoughLineOverlayDelegate.m */; };
 		83E4BCB41347C11700BFF07D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E4BCB31347C11700BFF07D /* QuartzCore.framework */; };
 		83FD84141389FB20000D4F48 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83FD84131389FB20000D4F48 /* LoadingView.m */; };
@@ -62,6 +62,7 @@
 		83492F1E1347E080002BD8BF /* CGGeometry+HoughExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CGGeometry+HoughExtensions.h"; sourceTree = "<group>"; };
 		8353D8411370F701008B125C /* HoughFreeHandViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughFreeHandViewController.h; sourceTree = "<group>"; };
 		8353D8421370F701008B125C /* HoughFreeHandViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughFreeHandViewController.m; sourceTree = "<group>"; };
+		835962C513CD535000BC128A /* tile_50px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tile_50px.png; path = assets/tile_50px.png; sourceTree = "<group>"; };
 		836DE7121370F2AA0010D82A /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
 		837A9CB813A44F7D00B4CE95 /* Bucket2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bucket2D.h; sourceTree = "<group>"; };
 		837A9CB913A44F7D00B4CE95 /* Bucket2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Bucket2D.m; sourceTree = "<group>"; };
@@ -76,7 +77,6 @@
 		83D2BF23134D5226008F32ED /* gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gear.png; sourceTree = "<group>"; };
 		83D2BF25134D7EBB008F32ED /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
 		83D2BF26134D7EBB008F32ED /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
-		83E0B09A13A331B800C5F801 /* tilepattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tilepattern.png; path = assets/tilepattern.png; sourceTree = "<group>"; };
 		83E4BCB01347B48D00BFF07D /* HoughLineOverlayDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughLineOverlayDelegate.h; sourceTree = "<group>"; };
 		83E4BCB11347B48D00BFF07D /* HoughLineOverlayDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughLineOverlayDelegate.m; sourceTree = "<group>"; };
 		83E4BCB31347C11700BFF07D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -148,7 +148,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				83E0B09A13A331B800C5F801 /* tilepattern.png */,
+				835962C513CD535000BC128A /* tile_50px.png */,
 				839C9DC61373BC770074A39C /* hand.jpg */,
 				836DE7121370F2AA0010D82A /* test.jpg */,
 				83D2BF23134D5226008F32ED /* gear.png */,
@@ -295,7 +295,7 @@
 				83D2BF28134D7EBB008F32ED /* Icon-Small.png in Resources */,
 				836DE7131370F2AA0010D82A /* test.jpg in Resources */,
 				839C9DC71373BC770074A39C /* hand.jpg in Resources */,
-				83E0B09B13A331B800C5F801 /* tilepattern.png in Resources */,
+				835962C613CD535000BC128A /* tile_50px.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
