@@ -17,6 +17,7 @@
 		2899E5220DE3E06400AC0155 /* HoughDemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2899E5210DE3E06400AC0155 /* HoughDemoViewController.xib */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		831BFCC0132C445E00019FBD /* HoughTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 831BFCBF132C445E00019FBD /* HoughTouchView.m */; };
+		832F00AF13D25DF600CE9498 /* HoughBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 832F00AE13D25DF600CE9498 /* HoughBaseViewController.m */; };
 		833AE29813495BDE00DFC76D /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 833AE29413495BDE00DFC76D /* Icon-72.png */; };
 		833AE29B13495BDE00DFC76D /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 833AE29713495BDE00DFC76D /* iTunesArtwork */; };
 		83492F1A1347DE0E002BD8BF /* CircleOverlayDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 83492F191347DE0D002BD8BF /* CircleOverlayDelegate.m */; };
@@ -54,6 +55,8 @@
 		32CA4F630368D1EE00C91783 /* HoughDemo_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughDemo_Prefix.pch; sourceTree = "<group>"; };
 		831BFCBE132C445E00019FBD /* HoughTouchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughTouchView.h; sourceTree = "<group>"; };
 		831BFCBF132C445E00019FBD /* HoughTouchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughTouchView.m; sourceTree = "<group>"; };
+		832F00AD13D25DF600CE9498 /* HoughBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = HoughBaseViewController.h; sourceTree = "<group>"; };
+		832F00AE13D25DF600CE9498 /* HoughBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughBaseViewController.m; sourceTree = "<group>"; };
 		833AE29413495BDE00DFC76D /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
 		833AE29713495BDE00DFC76D /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		83492F181347DE0D002BD8BF /* CircleOverlayDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircleOverlayDelegate.h; sourceTree = "<group>"; };
@@ -212,6 +215,8 @@
 		839C9DC41373BA770074A39C /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				832F00AD13D25DF600CE9498 /* HoughBaseViewController.h */,
+				832F00AE13D25DF600CE9498 /* HoughBaseViewController.m */,
 				839C9DC11373BA680074A39C /* HoughImageViewController.h */,
 				839C9DC21373BA690074A39C /* HoughImageViewController.m */,
 				8353D8411370F701008B125C /* HoughFreeHandViewController.h */,
@@ -319,6 +324,7 @@
 				839C9DC31373BA690074A39C /* HoughImageViewController.m in Sources */,
 				83FD84141389FB20000D4F48 /* LoadingView.m in Sources */,
 				837A9CBA13A44F7E00B4CE95 /* Bucket2D.m in Sources */,
+				832F00AF13D25DF600CE9498 /* HoughBaseViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
