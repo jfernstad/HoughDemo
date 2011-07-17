@@ -17,6 +17,7 @@
 +(UIColor*)houghWhite;
 +(UIColor*)houghGray;
 +(UIColor*)houghBlue;
++(UIColor*)houghYellow;
 
 +(UIColor*)borderColor;
 +(UIColor*)mainBackgroundColor;
@@ -24,5 +25,6 @@
 +(UIColor*)houghBackgroundColor;
 +(UIColor*)toolbarTintColor;
 +(UIColor*)lineColor;
++(UIColor*)markColor;
 
 @end

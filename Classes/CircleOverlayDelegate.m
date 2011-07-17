@@ -30,14 +30,13 @@
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx{
     
     // TODO: Make sure the context size is same as image size
-    CGRect circle     = CGRectZero;
+//    CGRect circle     = CGRectZero;
     
     if (!self.points) return;
     
     //    NSLog(@"layerDelegate is being used!");
     
-    CGContextSetStrokeColorWithColor(ctx, markColor.CGColor);
-    CGContextSetLineWidth(ctx, 2.0); // TODO: Parametrize
+    CGContextSetLineCap(ctx, kCGLineCapRound);
     CGContextSetShadow(ctx, CGSizeMake(3, 3), 1.0);
     
     CGPoint center = CGPointZero;
@@ -45,22 +44,34 @@
         
         center = [v CGPointValue];
         
-        circle = CGRectWithCenter(center, self.radius);
-        // Circle
-        CGContextAddEllipseInRect(ctx, circle);
+        center.y -= 2.0;
         
-        CGContextMoveToPoint(ctx, CGRectGetMinX(circle) - 5, center.y);
-        CGContextAddLineToPoint(ctx, CGRectGetMinX(circle) + 5, center.y);
+//        circle = CGRectWithCenter(center, self.radius);
 
-        CGContextMoveToPoint(ctx, CGRectGetMaxX(circle) - 5, center.y);
-        CGContextAddLineToPoint(ctx, CGRectGetMaxX(circle) + 5, center.y);
+        CGContextSetStrokeColorWithColor(ctx,  [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5].CGColor);
+        CGContextSetLineWidth(ctx, 5.0); // TODO: Parametrize
+        
+        // Arrow
+        CGContextMoveToPoint(ctx, center.x, center.y);
+        CGContextAddLineToPoint(ctx, center.x - 20, center.y - 30); // FIXME: Dislike this hardcoded values
 
-        CGContextMoveToPoint(ctx, center.x, CGRectGetMinY(circle) - 5);
-        CGContextAddLineToPoint(ctx, center.x, CGRectGetMinY(circle) + 5);
+        CGContextMoveToPoint(ctx, center.x, center.y);
+        CGContextAddLineToPoint(ctx, center.x + 20, center.y - 30); // FIXME: Dislike this hardcoded values
 
-        CGContextMoveToPoint(ctx, center.x, CGRectGetMaxY(circle) - 5);
-        CGContextAddLineToPoint(ctx, center.x, CGRectGetMaxY(circle) + 5);
+        CGContextDrawPath(ctx, kCGPathStroke);
 
+        // -- 
+        
+        CGContextSetStrokeColorWithColor(ctx, markColor.CGColor);
+        CGContextSetLineWidth(ctx, 2.0); // TODO: Parametrize
+        
+        // Arrow
+        CGContextMoveToPoint(ctx, center.x, center.y);
+        CGContextAddLineToPoint(ctx, center.x - 20, center.y - 30);// FIXME: Dislike this hardcoded value
+        
+        CGContextMoveToPoint(ctx, center.x, center.y);
+        CGContextAddLineToPoint(ctx, center.x + 20, center.y - 30);// FIXME: Dislike this hardcoded value
+        
         CGContextDrawPath(ctx, kCGPathStroke);
     }
 	

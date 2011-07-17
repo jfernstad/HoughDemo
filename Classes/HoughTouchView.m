@@ -93,6 +93,7 @@
     
     for (NSUInteger i = 0; i < gestureRecognizer.numberOfTouches; i++) {
         p = [gestureRecognizer locationOfTouch:i inView:self];
+        p.y -= 30.0; // FIXME: Dislike this hardcoded value
         r.origin = p;
         r.size   = self.frame.size;
 

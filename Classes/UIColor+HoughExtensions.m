@@ -33,7 +33,9 @@
 +(UIColor*)houghBlue{
     return [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:1.0];
 }
-
++(UIColor*)houghYellow{
+    return [UIColor yellowColor];
+}
 #pragma Colors
 +(UIColor*)borderColor{
     return [UIColor houghGreen];
@@ -52,5 +54,8 @@
 }
 +(UIColor*)lineColor{
     return [UIColor houghRed];
+}
++(UIColor*)markColor{
+    return [UIColor houghYellow];
 }
 @end

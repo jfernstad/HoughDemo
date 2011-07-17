@@ -46,6 +46,25 @@
     [self.loadingView stopProgress];
 }
 
+#pragma mark Properties
+
+-(UIImagePickerController*)imgPicker{
+    if (!imgPicker) {
+        imgPicker = [[UIImagePickerController alloc] init];
+        imgPicker.delegate = self;
+    }
+    return imgPicker;
+}
+
+-(UIPopoverController*)popover{
+    if (!popover) {
+        popover = [[UIPopoverController alloc] initWithContentViewController:imgPicker];
+        popover.delegate = self;
+    }
+    return popover;
+}
+
+
 
 #pragma mark - View lifecycle
 
@@ -108,17 +127,6 @@
 -(void)showChooseImageView{
     // TODO: Load popover with settings view
 
-    if (!self.imgPicker) {
-        self.imgPicker = [[[UIImagePickerController alloc] init] autorelease];
-        self.imgPicker.delegate = self;
-    }
-
-    if (!self.popover) {
-        self.popover = [[[UIPopoverController alloc] initWithContentViewController:imgPicker] autorelease];
-        self.popover.delegate = self;
-        NSLog(@"recreating popover");
-    }
-    
     self.imgPicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     
     [self.popover presentPopoverFromBarButtonItem:[self.toolBar.items objectAtIndex:self.toolBar.items.count-1] permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];

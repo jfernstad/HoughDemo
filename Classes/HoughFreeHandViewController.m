@@ -176,7 +176,7 @@
     self.houghInputView.layer.borderColor   = borderColor.CGColor;
     
     self.lineDelegate.lineColor   = [UIColor lineColor];
-    self.circleDelegate.markColor = [UIColor lineColor];
+    self.circleDelegate.markColor = [UIColor markColor];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
