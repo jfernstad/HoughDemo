@@ -67,8 +67,7 @@
 -(id)init{
     
 	if ((self = [super init])) {
-		self.curves = [NSMutableArray arrayWithCapacity:0];
-        isSetup = NO;
+		isSetup = NO;
         self.storeAfterDraw = NO;
         self.yScale = Y_SCALE;
         operationQueue = [[NSOperationQueue alloc] init];
@@ -79,7 +78,6 @@
 
 -(void)clear{
     self.pointsCopy = nil;
-    [self.curves removeAllObjects];
     [self.operationQueue cancelAllOperations];
     
 	int maxDist = self.size.height;
@@ -298,19 +296,6 @@
         self.storeAfterDraw = NO;
     }
     
-    if (!pointsArePersistent) {
-        self.tmpPointsCopy = points; // Wtf? Why are these here?
-        
-    }else{
-        
-        // Ugh.. Redo this.
-        NSMutableArray* totalPoints = [NSMutableArray arrayWithArray:self.pointsCopy];
-        [totalPoints addObjectsFromArray:points];
-        self.pointsCopy = totalPoints;
-    }
-    
-    [self.curves addObjectsFromArray:newCurves];
-    
 	return outImage;
 }
 
@@ -364,7 +349,6 @@
 }
 -(void)dealloc{
     
-	self.curves = nil;
 	self.pointsCopy = nil;
 	self.intersections = nil;
     self.operationDelegate = nil;
