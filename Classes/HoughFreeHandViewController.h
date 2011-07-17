@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Hough.h"
+#import "HoughBaseViewController.h"
 #import "HoughInputView.h"
 #import "HoughTouchView.h"
 #import "HoughLineOverlayDelegate.h"
@@ -16,9 +16,8 @@
 @class HoughTouchView;
 @class Bucket2D;
 
-@interface HoughFreeHandViewController : UIViewController <HoughInputProtocol, HoughOverlayProtocol, HoughOperationDelegate>{
+@interface HoughFreeHandViewController : HoughBaseViewController <HoughInputProtocol, HoughOverlayProtocol, HoughOperationDelegate>{
     // View elements
-    UIToolbar* toolBar;
 	HoughInputView* houghInputView;
 	HoughTouchView* houghTouchView;
 	UILabel* status;
@@ -30,8 +29,6 @@
     HoughLineOverlayDelegate* lineDelegate; // Layer delegate, add to lineLayer 
     CircleOverlayDelegate* circleDelegate; // Layer delegate, add to circleLayer 
     
-    Bucket2D* bucket;
-	Hough* hough;
 	BOOL busy;
     BOOL persistentTouch;
     BOOL pointAdded;
@@ -40,12 +37,9 @@
     NSTimer* analysisTimer;
 }
 
-@property (nonatomic, retain) UIToolbar* toolBar;
 @property (nonatomic, retain) HoughInputView* houghInputView;
 @property (nonatomic, retain) HoughTouchView* houghTouchView;
 @property (nonatomic, retain) UILabel* status;
-@property (nonatomic, retain) Hough* hough;
-@property (nonatomic, retain) Bucket2D* bucket;
 @property (assign) BOOL busy;
 @property (assign) BOOL persistentTouch;
 @property (assign) BOOL pointAdded;

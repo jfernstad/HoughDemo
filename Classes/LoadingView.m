@@ -33,15 +33,6 @@
     return self;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
-
 - (void)layoutSubviews{
 
     CGRect screen        = self.bounds;
@@ -72,15 +63,13 @@
 #pragma mark -
 #pragma Methods
 
-//- (void)showView:(BOOL)show animated:(BOOL)animated{
-//    
-//}
 - (void)startProgress{
 
     [progress startAnimating];
 
     self.hidden = NO;
-
+    [self.superview bringSubviewToFront:self];
+    
     [UIView beginAnimations:@"ShowView" context:nil];
     self.alpha         = 1.0;
     loadingLabel.alpha = 1.0;
@@ -89,8 +78,6 @@
     
 }
 - (void)stopProgress{
-
-
     [UIView beginAnimations:@"HideView" context:nil];
     self.alpha         = 0.0;
     loadingLabel.alpha = 0.0;
