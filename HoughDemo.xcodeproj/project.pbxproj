@@ -55,7 +55,7 @@
 		32CA4F630368D1EE00C91783 /* HoughDemo_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughDemo_Prefix.pch; sourceTree = "<group>"; };
 		831BFCBE132C445E00019FBD /* HoughTouchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughTouchView.h; sourceTree = "<group>"; };
 		831BFCBF132C445E00019FBD /* HoughTouchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughTouchView.m; sourceTree = "<group>"; };
-		832F00AD13D25DF600CE9498 /* HoughBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = HoughBaseViewController.h; sourceTree = "<group>"; };
+		832F00AD13D25DF600CE9498 /* HoughBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughBaseViewController.h; sourceTree = "<group>"; };
 		832F00AE13D25DF600CE9498 /* HoughBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughBaseViewController.m; sourceTree = "<group>"; };
 		833AE29413495BDE00DFC76D /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
 		833AE29713495BDE00DFC76D /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
@@ -390,7 +390,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = "HoughDemo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = HoughStuffAdHoc;
+				PRODUCT_NAME = AdHoughStuff;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = AdHoc;
