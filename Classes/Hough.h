@@ -51,8 +51,8 @@
     NSMutableArray* intersections; // HoughIntersection objects
     
     // Hough buffers
-    unsigned char* houghSpace;
-    unsigned char* tmpHoughSpace;
+    CVImageBufferRef houghSpace;
+    CVImageBufferRef tmpHoughSpace;
 
     // Interaction flags
     BOOL isSetup;

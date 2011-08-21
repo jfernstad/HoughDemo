@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		025FBB241350F2DF002717DD /* UIColor+HoughExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 025FBB231350F2DF002717DD /* UIColor+HoughExtensions.m */; };
-		028778CF13574A31009D30F2 /* libobjc.A.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 028778CE13574A31009D30F2 /* libobjc.A.dylib */; };
 		1D3623260D0F684500981E51 /* HoughDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -36,6 +35,7 @@
 		83D2BF28134D7EBB008F32ED /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D2BF26134D7EBB008F32ED /* Icon-Small.png */; };
 		83E4BCB21347B48D00BFF07D /* HoughLineOverlayDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E4BCB11347B48D00BFF07D /* HoughLineOverlayDelegate.m */; };
 		83E4BCB41347C11700BFF07D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E4BCB31347C11700BFF07D /* QuartzCore.framework */; };
+		83F1366713FB631300A6CEF3 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83F1366613FB631300A6CEF3 /* CoreVideo.framework */; };
 		83FD84141389FB20000D4F48 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83FD84131389FB20000D4F48 /* LoadingView.m */; };
 /* End PBXBuildFile section */
 
@@ -83,6 +83,7 @@
 		83E4BCB01347B48D00BFF07D /* HoughLineOverlayDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughLineOverlayDelegate.h; sourceTree = "<group>"; };
 		83E4BCB11347B48D00BFF07D /* HoughLineOverlayDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughLineOverlayDelegate.m; sourceTree = "<group>"; };
 		83E4BCB31347C11700BFF07D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		83F1366613FB631300A6CEF3 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		83FD84121389FB20000D4F48 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
 		83FD84131389FB20000D4F48 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* HoughDemo-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "HoughDemo-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
@@ -93,7 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				028778CF13574A31009D30F2 /* libobjc.A.dylib in Frameworks */,
+				83F1366713FB631300A6CEF3 /* CoreVideo.framework in Frameworks */,
 				83E4BCB41347C11700BFF07D /* QuartzCore.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -130,6 +131,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				83F1366613FB631300A6CEF3 /* CoreVideo.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,

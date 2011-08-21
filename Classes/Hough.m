@@ -8,6 +8,7 @@
 
 #import "Hough.h"
 #import <Accelerate/Accelerate.h>
+#import <CoreVideo/CoreVideo.h>
 
 #define Y_SCALE 2.0f
 #define MIN_INTENSITY 10    // TODO: Parameterize
@@ -84,8 +85,17 @@
 	int maxVals = self.size.width;
     NSUInteger area = maxDist * maxVals;
 	
-    memset(houghSpace,   0, area);
-    memset(tmpHoughSpace, 0, area);
+    CVPixelBufferLockBaseAddress(houghSpace, 0);
+    CVPixelBufferLockBaseAddress(tmpHoughSpace, 0);
+
+    unsigned char* p1 = CVPixelBufferGetBaseAddress(houghSpace);
+    unsigned char* p2 = CVPixelBufferGetBaseAddress(tmpHoughSpace);
+    
+    memset(p1, 0, area);
+    memset(p2, 0, area);
+
+    CVPixelBufferUnlockBaseAddress(houghSpace, 0);
+    CVPixelBufferUnlockBaseAddress(tmpHoughSpace, 0);
 }
 
 -(void)makePersistent{
@@ -94,7 +104,16 @@
 	int maxVals = self.size.width;
     NSUInteger area = maxDist * maxVals;
     
-    memcpy(houghSpace, tmpHoughSpace, area);
+    CVPixelBufferLockBaseAddress(houghSpace, 0);
+    CVPixelBufferLockBaseAddress(tmpHoughSpace, 0);
+    
+    unsigned char* p1 = CVPixelBufferGetBaseAddress(houghSpace);
+    unsigned char* p2 = CVPixelBufferGetBaseAddress(tmpHoughSpace);
+    
+    memcpy(p1, p2, area);
+    
+    CVPixelBufferUnlockBaseAddress(houghSpace, 0);
+    CVPixelBufferUnlockBaseAddress(tmpHoughSpace, 0);
 }
 -(BOOL) isPointAlreadyInArray:(CGPoint) p{
 	
@@ -128,16 +147,42 @@
     
     NSLog(@"Setting up Hough!");
     
-    NSUInteger area = self.size.width * self.size.height;
+//    NSUInteger area = self.size.width * self.size.height;
     
     if (isSetup) {
-        free(houghSpace);
-        free(tmpHoughSpace);
+        CVPixelBufferRelease(houghSpace);
+        CVPixelBufferRelease(tmpHoughSpace);
     }
     
-    houghSpace    = (unsigned char*)malloc(area);
-    tmpHoughSpace = (unsigned char*)malloc(area);
+//    houghSpace    = (unsigned char*)malloc(area);
+//    tmpHoughSpace = (unsigned char*)malloc(area);
+    CVReturn ret = kCVReturnError;
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:
+                         [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
+                         [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, nil];
+                         
+    ret = CVPixelBufferCreate(NULL, 
+                        self.size.width,
+                        self.size.height, 
+                        kCVPixelFormatType_32ARGB,
+                        (CFDictionaryRef)dic,   // Maybe should use kCVPixelBufferCGImageCompatibilityKey = TRUE here
+                        &houghSpace);
     
+    if (ret != kCVReturnSuccess) {
+        NSLog(@" FAILED TO CREATE HOUGHSPACE PIXELBUFFER !");
+    }
+
+    ret = CVPixelBufferCreate(NULL, 
+                              self.size.width,
+                              self.size.height, 
+                              kCVPixelFormatType_32ARGB,
+                              (CFDictionaryRef)dic,   // Maybe should use kCVPixelBufferCGImageCompatibilityKey = TRUE here
+                              &tmpHoughSpace);
+
+    if (ret != kCVReturnSuccess) {
+        NSLog(@" FAILED TO CREATE TMPHOUGHSPACE PIXELBUFFER !");
+    }
+
     if (!colorSpace) colorSpace = [self createColorSpace];
     
     isSetup = YES;
@@ -225,12 +270,18 @@
 	int maxDist = self.size.height;
 	int maxVals = self.size.width;
 	
-    unsigned char* pointer = tmpHoughSpace;
+    CVPixelBufferLockBaseAddress(houghSpace, 0);
+    CVPixelBufferLockBaseAddress(tmpHoughSpace, 0);
+
+    unsigned char* pointer = CVPixelBufferGetBaseAddress(tmpHoughSpace);//tmpHoughSpace;
+
+//    CVPixelBufferLockBaseAddress(buffer, 0);
     
     if (pointsArePersistent) {
-        pointer = houghSpace;
+        pointer = CVPixelBufferGetBaseAddress(houghSpace);
     }else{
-        memcpy(tmpHoughSpace, houghSpace, maxDist * maxVals);
+        unsigned char* d = CVPixelBufferGetBaseAddress(houghSpace);//tmpHoughSpace;
+        memcpy(pointer, d, maxDist * maxVals);
     }
 	
 	// Draw the curves
@@ -254,6 +305,9 @@
 	CFDataRef cfImgData = CFDataCreate(NULL, pointer, maxDist * maxVals);
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(cfImgData);
 	
+    CVPixelBufferUnlockBaseAddress(tmpHoughSpace, 0);
+    CVPixelBufferUnlockBaseAddress(houghSpace, 0);
+
     //CGColorSpaceRef csp = CGColorSpaceCreateDeviceGray();
     //CGColorSpaceRef csp = [self createColorSpace];
 	
@@ -357,8 +411,11 @@
     self.operationQueue = nil;
     
     CGColorSpaceRelease(colorSpace);
-    free(houghSpace);
-    free(tmpHoughSpace);
+    CVPixelBufferRelease(houghSpace);
+    CVPixelBufferRelease(tmpHoughSpace);
+    
+    houghSpace = NULL;
+    tmpHoughSpace = NULL;
     
 	[super dealloc];
 }
@@ -541,13 +598,16 @@
     self.intersections = [[[NSMutableArray alloc] init] autorelease];
     
 	int maxPoint = 0;
-	int n = 0, x = 0, y = 0;
+	int x = 0, y = 0;
     NSUInteger idx = 0;
     NSUInteger intensity = 0;
-	CGPoint maxPos   = CGPointZero;
+//	CGPoint maxPos   = CGPointZero;
     CGPoint equation = CGPointZero;
 	CGRect pointRect = CGRectZero;
     pointRect.size   = self.size;
+    
+    CVPixelBufferLockBaseAddress(houghSpace, 0); // Is this neccessary?
+    unsigned char *rasterData = CVPixelBufferGetBaseAddress(houghSpace);
     
 	// Get Positions from Maxima in Houghspace
     //	for( n = 0; n < imgHeight * imgWidth; n++){
@@ -556,7 +616,7 @@
         for( x = 0; x < imgWidth; x++){
             
             idx = x + y*imgWidth;
-            intensity = houghSpace[idx];
+            intensity = rasterData[idx];
             if( intensity > MIN_INTENSITY ){
                 pointRect.origin.x = x;
                 pointRect.origin.y = y;
@@ -572,6 +632,8 @@
         }
     }
     //	}
+    
+    CVPixelBufferUnlockBaseAddress(houghSpace, 0);
 	
     if (self.operationDelegate) {
         NSDictionary* dic = [NSDictionary dictionaryWithObject:kOperationAnalyzeHoughSpace forKey:kOperationNameKey];
