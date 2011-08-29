@@ -18,37 +18,46 @@
 @synthesize lines;
 @synthesize lineColor;
 @synthesize houghRef;
+@synthesize imgSize;
 
 -(id)init{
 
     if ((self = [super init])) {
-        self.lineColor = [UIColor redColor];
+        self.lineColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:0.7];
     }
     return self;
 }
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx{
 
     // TODO: Make sure the context size is same as image size
-//    CGRect rect     = CGRectZero;
     CGRect drawRect = CGRectZero;
     CGFloat theta   = 0.0;
     CGFloat len     = 0.0;
-//    CGPoint eq      = CGPointZero;
     CGPoint vec     = CGPointZero;
     CGPoint orto    = CGPointZero;
     CGPoint center  = CGPointZero;
     CGPoint peak    = CGPointZero;
+
+    CGFloat xScale = 1.0;
+    CGFloat yScale = 1.0;
     
     if (!self.lines) return;
+    if (CGSizeEqualToSize(self.imgSize, CGSizeZero)) return;
 
+    xScale = self.imgSize.width  / layer.bounds.size.width;
+    yScale = self.imgSize.height / layer.bounds.size.height;
+    
+    NSLog(@"LineDelegate scale: (%f, %f)",xScale, yScale);
+    
 //    NSLog(@"layerDelegate is being used!");
     CGColorRef color = lineColor.CGColor;
-    const CGFloat *components = NULL;
+//    const CGFloat *components = NULL;
     //    CGContextSetStrokeColorWithColor(ctx, lineColor.CGColor);
     CGContextSetLineWidth(ctx, 2.0); // TODO: Parametrize
     
     for (HoughIntersection* i in self.lines) {
         
+        NSLog(@"%@", i);
 //        eq      = [houghRef equationForPoint:rect];
         theta   = i.theta;
         len     = i.length;
@@ -56,16 +65,17 @@
         vec    = CGPointMake(cosf(theta), -sinf(theta));
         orto   = CGPointMake(-vec.y, vec.x); // 2D orthogonal vector
         center = CGPointMake(layer.bounds.size.width/2, layer.bounds.size.height/2);
-        peak   = CGPointMake(center.x + len * vec.x, center.y + len * vec.y);
+        peak   = CGPointMake(center.x + (len * vec.x)/xScale, center.y + (len * vec.y)/yScale);
 
     	drawRect = CGRectMake(peak.x - 1000 * orto.x, 
                               peak.y - 1000 * orto.y, 
                               2000 * orto.x, 
                               2000 * orto.y);
 
-        components = CGColorGetComponents(color);
-        CGContextSetRGBStrokeColor(ctx, components[0], components[1], components[2], 0.7);
+//        components = CGColorGetComponents(color);
+//        CGContextSetRGBStrokeColor(ctx, components[0], components[1], components[2], 0.7);
 //        CGContextSetRGBStrokeColor(ctx, components[0], components[1], components[2], MAX(MIN(1.0, 1-1/(float)(i.intensity-10)), 0));
+        CGContextSetStrokeColorWithColor(ctx, color);
         CGContextMoveToPoint(ctx, drawRect.origin.x, drawRect.origin.y);
         CGContextAddLineToPoint(ctx, drawRect.origin.x + drawRect.size.width, 
                                      drawRect.origin.y + drawRect.size.height);

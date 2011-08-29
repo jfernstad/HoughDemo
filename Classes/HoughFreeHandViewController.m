@@ -48,7 +48,7 @@
 
         self.readyForAnalysis = NO;
         self.pointAdded = NO;
-        [self.hough performSelectorInBackground:@selector(analyzeHoughSpace) withObject:nil];
+        [self.hough performSelectorInBackground:@selector(analyzeHoughSpaceOp) withObject:nil];
     }
 }
 
@@ -251,7 +251,8 @@
 
         // Show hough image
 		self.houghTouchView.layer.contents = (id)img;
-        
+        self.lineDelegate.imgSize = self.houghTouchView.frame.size;
+
 		CGImageRelease(img);
 
         self.pointAdded = YES;

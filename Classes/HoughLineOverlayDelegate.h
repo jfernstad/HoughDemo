@@ -16,11 +16,13 @@
     UIColor* lineColor;
     
     Hough* houghRef;
+
+    CGSize imgSize;
 }
 
 // NSValue containing a CGRect with origin as theta, distance and size as source image size
 @property (nonatomic, retain) NSArray* lines;
 @property (nonatomic, retain) UIColor* lineColor;
 @property (nonatomic, assign) Hough* houghRef;
-
+@property (nonatomic, assign) CGSize imgSize;
 @end

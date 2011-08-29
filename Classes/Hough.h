@@ -10,6 +10,7 @@
 
 // Dictionary keys
 #define kOperationNameKey           @"OperationName"
+#define kOperationUIImageKey        @"ResultingUIImage"
 #define kHoughIntersectionArrayKey  @"HoughIntersectionArray"
 
 // Operations
@@ -68,9 +69,11 @@
     NSObject<HoughOperationDelegate>* operationDelegate;
 
     // Interrim images
-    UIImage* grayScaleImage;
-    UIImage* edgeImage;
-    UIImage* thinnedImage;
+    UIImage* inputUIImage;
+    CVImageBufferRef inputImage; 
+    CVImageBufferRef grayScaleImage;
+    CVImageBufferRef edgeImage;
+    CVImageBufferRef thinnedImage;
 }
 @property (nonatomic, assign) CGFloat yScale;
 @property (nonatomic, assign) CGSize size;

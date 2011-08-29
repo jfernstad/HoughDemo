@@ -21,6 +21,7 @@
 @synthesize length;
 @synthesize intensity;
 
+
 -(id)init{
     if ((self = [super init])) {
     }
@@ -46,12 +47,24 @@
 @property (retain) NSMutableArray* curves;
 @property (retain) NSMutableArray* intersections;
 @property (nonatomic, retain) NSOperationQueue* operationQueue;
+@property (nonatomic, retain) UIImage* inputUIImage;
+
+@property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef houghSpace;
+@property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef tmpHoughSpace;
+@property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef inputImage; 
+@property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef grayScaleImage;
+@property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef edgeImage;
+@property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef thinnedImage;
 
 -(BOOL) isPointAlreadyInArray:(CGPoint)p;
 -(void) setupHough;
 -(NSArray*) createCurvesForPoints:(NSArray*)points;
 -(CGImageRef) houghImageFromCurves:(NSArray*)curves persistant:(BOOL)pointsArePersistent;
 -(CGColorSpaceRef)createColorSpace;
+
+-(CGImageRef)CGImageWithCVPixelBuffer:(CVPixelBufferRef)pixBuf;
+-(CVPixelBufferRef)CVPixelBufferWithCGImage:(CGImageRef)cgImg;
+-(CVPixelBufferRef)newEmptyCVPixelBuffer:(CGSize)size;
 @end
 
 @implementation Hough
@@ -64,6 +77,14 @@
 @synthesize operationDelegate;
 @synthesize storeAfterDraw;
 @synthesize operationQueue;
+@synthesize inputUIImage;
+
+@synthesize houghSpace;
+@synthesize tmpHoughSpace;
+@synthesize inputImage;
+@synthesize grayScaleImage;
+@synthesize edgeImage;
+@synthesize thinnedImage;
 
 -(id)init{
     
@@ -81,9 +102,8 @@
     self.pointsCopy = nil;
     [self.operationQueue cancelAllOperations];
     
-	int maxDist = self.size.height;
-	int maxVals = self.size.width;
-    NSUInteger area = maxDist * maxVals;
+	int houghSize    = CVPixelBufferGetDataSize(houghSpace);
+	int tmpHoughSize = CVPixelBufferGetDataSize(tmpHoughSpace);
 	
     CVPixelBufferLockBaseAddress(houghSpace, 0);
     CVPixelBufferLockBaseAddress(tmpHoughSpace, 0);
@@ -91,8 +111,8 @@
     unsigned char* p1 = CVPixelBufferGetBaseAddress(houghSpace);
     unsigned char* p2 = CVPixelBufferGetBaseAddress(tmpHoughSpace);
     
-    memset(p1, 0, area);
-    memset(p2, 0, area);
+    memset(p1, 0, houghSize);
+    memset(p2, 0, tmpHoughSize);
 
     CVPixelBufferUnlockBaseAddress(houghSpace, 0);
     CVPixelBufferUnlockBaseAddress(tmpHoughSpace, 0);
@@ -147,40 +167,16 @@
     
     NSLog(@"Setting up Hough!");
     
-//    NSUInteger area = self.size.width * self.size.height;
-    
     if (isSetup) {
-        CVPixelBufferRelease(houghSpace);
-        CVPixelBufferRelease(tmpHoughSpace);
+        self.houghSpace = nil;
+        self.tmpHoughSpace = nil;
     }
     
-//    houghSpace    = (unsigned char*)malloc(area);
-//    tmpHoughSpace = (unsigned char*)malloc(area);
-    CVReturn ret = kCVReturnError;
-    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:
-                         [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
-                         [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, nil];
-                         
-    ret = CVPixelBufferCreate(NULL, 
-                        self.size.width,
-                        self.size.height, 
-                        kCVPixelFormatType_32ARGB,
-                        (CFDictionaryRef)dic,   // Maybe should use kCVPixelBufferCGImageCompatibilityKey = TRUE here
-                        &houghSpace);
+    houghSpace    = [self newEmptyCVPixelBuffer:self.size];
+    tmpHoughSpace = [self newEmptyCVPixelBuffer:self.size];
     
-    if (ret != kCVReturnSuccess) {
-        NSLog(@" FAILED TO CREATE HOUGHSPACE PIXELBUFFER !");
-    }
-
-    ret = CVPixelBufferCreate(NULL, 
-                              self.size.width,
-                              self.size.height, 
-                              kCVPixelFormatType_32ARGB,
-                              (CFDictionaryRef)dic,   // Maybe should use kCVPixelBufferCGImageCompatibilityKey = TRUE here
-                              &tmpHoughSpace);
-
-    if (ret != kCVReturnSuccess) {
-        NSLog(@" FAILED TO CREATE TMPHOUGHSPACE PIXELBUFFER !");
+    if (!self.houghSpace || !self.tmpHoughSpace) {
+        NSLog(@" FAILED TO CREATE HOUGH PIXELBUFFERS !");
     }
 
     if (!colorSpace) colorSpace = [self createColorSpace];
@@ -302,16 +298,12 @@
 	}
 	
 	CGFloat decode [] = {0.0f, 255.0f}; // TODO: Change to dynamic range. Calc Max/Min per image.
-	CFDataRef cfImgData = CFDataCreate(NULL, pointer, maxDist * maxVals);
+    CFDataRef cfImgData = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, pointer, maxDist * maxVals, kCFAllocatorNull);
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(cfImgData);
 	
     CVPixelBufferUnlockBaseAddress(tmpHoughSpace, 0);
     CVPixelBufferUnlockBaseAddress(houghSpace, 0);
 
-    //CGColorSpaceRef csp = CGColorSpaceCreateDeviceGray();
-    //CGColorSpaceRef csp = [self createColorSpace];
-	
-	
 	CGImageRef tmp = CGImageCreate(maxVals, maxDist, 8, 8, maxVals, colorSpace, kCGImageAlphaNone, dataProvider, decode, NO, kCGRenderingIntentDefault);
     
 	CGColorSpaceRef scpr = CGColorSpaceCreateDeviceRGB();
@@ -322,7 +314,7 @@
 											8, 
 											4*maxVals, 
 											scpr, 
-											kCGImageAlphaPremultipliedLast);
+											kCGImageAlphaPremultipliedFirst);
     
 	
 	// Convert to 8 bit from whatever.. 
@@ -335,8 +327,6 @@
 	CGImageRelease(tmp);
 	CFRelease(cfImgData);
 	CGContextRelease(cr);
-	//CGColorSpaceRelease(csp);
-	//free(houghSpace);
 	return outImg;
 }
 
@@ -406,16 +396,20 @@
 	self.pointsCopy = nil;
 	self.intersections = nil;
     self.operationDelegate = nil;
+    self.inputUIImage = nil;
     
     [self.operationQueue cancelAllOperations];
     self.operationQueue = nil;
     
     CGColorSpaceRelease(colorSpace);
-    CVPixelBufferRelease(houghSpace);
-    CVPixelBufferRelease(tmpHoughSpace);
+
+    self.houghSpace     = nil;
+    self.tmpHoughSpace  = nil;
     
-    houghSpace = NULL;
-    tmpHoughSpace = NULL;
+    self.inputImage     = nil;
+    self.grayScaleImage = nil;
+    self.edgeImage      = nil;
+    self.thinnedImage   = nil;
     
 	[super dealloc];
 }
@@ -426,11 +420,25 @@
 
 -(void)executeOperationsWithImage:(UIImage*)rawImage{
 
-    NSOperation* grayscaleOp         = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(grayscaleImage) object:nil] autorelease];
-    NSOperation* edgeOp              = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(edgeImage) object:nil] autorelease];
-    NSOperation* thinOp              = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(thinImage) object:nil] autorelease];
-    NSOperation* createHoughSpaceOp  = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(createHoughSpace) object:nil] autorelease];
-    NSOperation* analyzeHoughSpaceOp = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(analyzeHoughSpace) object:nil] autorelease];
+//    if (!rawImage) {
+//    }
+
+    [self clear];
+    
+    self.inputUIImage = rawImage;
+    self.size = self.inputUIImage.size; // TODO: Should I really do this?
+
+    // Use pixeldata in CGImage as input to vImage_ functions
+    
+//    CGImageRef imgRef = self.inputUIImage.CGImage;
+
+    
+    
+    NSOperation* grayscaleOp         = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(grayscaleImageOp) object:nil] autorelease];
+    NSOperation* edgeOp              = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(edgeImageOp) object:nil] autorelease];
+    NSOperation* thinOp              = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(thinImageOp) object:nil] autorelease];
+    NSOperation* createHoughSpaceOp  = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(createHoughSpaceOp) object:nil] autorelease];
+    NSOperation* analyzeHoughSpaceOp = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(analyzeHoughSpaceOp) object:nil] autorelease];
 
     [analyzeHoughSpaceOp addDependency:createHoughSpaceOp];
     [createHoughSpaceOp addDependency:thinOp];
@@ -453,14 +461,14 @@
 //
 // Analyze hough space threaded. 
 //
--(void)grayscaleImage{
+-(void)grayscaleImageOp{
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
     if (self.operationDelegate) {
         [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationGrayscaleImage waitUntilDone:NO];
     }
 
-    NSLog(@"grayscaleImage: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+//    NSLog(@"grayscaleImage: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
 
     // Do operation
     // Temporary
@@ -476,14 +484,14 @@
 
     [pool drain];
 }
--(void)edgeImage{
+-(void)edgeImageOp{
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
     if (self.operationDelegate) {
         [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationEdgeImage waitUntilDone:NO];
     }
     
-    NSLog(@"edgeImage: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+//    NSLog(@"edgeImage: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
 
     // Do operation
     // Temporary
@@ -498,14 +506,14 @@
     [NSThread sleepForTimeInterval:SLEEPTIME];
     [pool drain];
 }
--(void)thinImage{
+-(void)thinImageOp{
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
     if (self.operationDelegate) {
         [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationThinImage waitUntilDone:NO];
     }
     
-    NSLog(@"thinImage: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+//    NSLog(@"thinImage: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
 
     // Do operation
     // Temporary
@@ -521,14 +529,14 @@
 
     [pool drain];
 }
--(void)createHoughSpace{
+-(void)createHoughSpaceOp{
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
     if (self.operationDelegate) {
         [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationCreateHoughSpaceImage waitUntilDone:NO];
     }
     
-    NSLog(@"createHoughSpace: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+//    NSLog(@"createHoughSpace: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
 
     // Do operation
     // Temporary
@@ -536,45 +544,57 @@
     
     NSMutableArray* points = [NSMutableArray arrayWithCapacity:40];
     
+    CGSize imgSize = self.inputUIImage.size;
+    
     CGFloat x = 0, y = 0;
     NSUInteger ii = 0;
 
     // Line 1
     for (ii = 0; ii < 40; ii++) {
-        x = 12 * ii + 40;
-        y = 140;
+        x = imgSize.width/2 - (CGFloat)(ii*10);
+        y = imgSize.height/2;
         
         [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
+        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
     }
     
     // Line 2
-    for (ii = 0; ii < 40; ii++) {
-        x = 12 * ii + 340;
-        y = 340;
-        
-        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
-    }
+//    for (ii = 0; ii < 40; ii++) {
+//        x = imgSize.width/20 * ii + imgSize.height/6;
+//        y = imgSize.width/2;
+//        
+//        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
+//    }
+//
+//    // Line 3
+//    for (ii = 0; ii < 40; ii++) {
+//        y = 1 * ii + imgSize.height/8;
+//        x = ii;
+//        
+//        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
+//    }
+//
+//    // Line 4
+//    for (ii = 0; ii < 40; ii++) {
+//        y = imgSize.height/20 * ii + imgSize.height/6;
+//        x = imgSize.width/2;
+//        
+//        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
+//    }
 
-    // Line 3
-    for (ii = 0; ii < 40; ii++) {
-        y = 12 * ii + 40;
-        x = 140;
-        
-        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
-    }
-
-    // Line 4
-    for (ii = 0; ii < 40; ii++) {
-        y = 12 * ii + 340;
-        x = 340;
-        
-        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
-    }
-
-    CGImageRelease([self newHoughSpaceFromPoints:points persistant:YES]); 
-        
+    
+    CGImageRef  tImg = [self newHoughSpaceFromPoints:points persistant:YES]; 
+    CGImageRef imgTest = [self CGImageWithCVPixelBuffer:self.houghSpace];
+    
+    UIImage* hImg = [UIImage imageWithCGImage:tImg]; 
+//    UIImage* hImg = [UIImage imageWithCGImage:imgTest];
+    
+    CGImageRelease(tImg);
+    CGImageRelease(imgTest);
+    
     if (self.operationDelegate) {
-        NSDictionary* dic = [NSDictionary dictionaryWithObject:kOperationCreateHoughSpaceImage forKey:kOperationNameKey];
+        NSDictionary* dic = [NSDictionary dictionaryWithObjectsAndKeys:kOperationCreateHoughSpaceImage, kOperationNameKey, hImg, kOperationUIImageKey, nil];
+        
         [self.operationDelegate performSelectorOnMainThread:@selector(houghDidFinishOperationWithDictionary:) withObject:dic waitUntilDone:NO];
     }
     // Temporary
@@ -582,7 +602,7 @@
     
     [pool drain];
 }
--(void)analyzeHoughSpace{
+-(void)analyzeHoughSpaceOp{
     
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
@@ -636,12 +656,72 @@
     CVPixelBufferUnlockBaseAddress(houghSpace, 0);
 	
     if (self.operationDelegate) {
-        NSDictionary* dic = [NSDictionary dictionaryWithObject:kOperationAnalyzeHoughSpace forKey:kOperationNameKey];
+        NSDictionary* dic = [NSDictionary dictionaryWithObjectsAndKeys:kOperationAnalyzeHoughSpace, kOperationNameKey, self.intersections, kHoughIntersectionArrayKey, nil];
         [self.operationDelegate performSelectorOnMainThread:@selector(houghDidFinishOperationWithDictionary:) withObject:dic waitUntilDone:NO];
     }
     
     [pool drain];
 }
 
+#pragma mark Internal -
+-(CGImageRef)CGImageWithCVPixelBuffer:(CVPixelBufferRef)pixBuf{
+    CGImageRef outImg = NULL;
+    
+    if (!pixBuf) {
+        return NULL;
+    }
+    
+    NSInteger w   = CVPixelBufferGetWidth(pixBuf);
+    NSInteger h   = CVPixelBufferGetHeight(pixBuf);
+    NSInteger bpr = CVPixelBufferGetBytesPerRow(pixBuf);
+    NSInteger s   = CVPixelBufferGetDataSize(pixBuf);
+    
+    CVPixelBufferLockBaseAddress(pixBuf, 0);
+    
+    unsigned char* pointer = CVPixelBufferGetBaseAddress(pixBuf);
+
+    CFDataRef cfImgData = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, pointer, s, kCFAllocatorNull);
+    CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(cfImgData);
+	CGColorSpaceRef scpr = CGColorSpaceCreateDeviceRGB();
+	
+    CVPixelBufferUnlockBaseAddress(pixBuf, 0);
+    
+	outImg = CGImageCreate(w, h, 8, 8*bpr/w, bpr, scpr, kCGImageAlphaPremultipliedFirst, dataProvider, NULL, NO, kCGRenderingIntentDefault);
+	
+	CGDataProviderRelease(dataProvider);
+	CGColorSpaceRelease(scpr);
+	CFRelease(cfImgData);
+    
+    return outImg;
+}
+-(CVPixelBufferRef)CVPixelBufferWithCGImage:(CGImageRef)cgImg{
+    CVPixelBufferRef outBuf = NULL;
+    
+
+    return outBuf;
+}
+
+-(CVPixelBufferRef)newEmptyCVPixelBuffer:(CGSize)size{
+    CVPixelBufferRef newBuffer = NULL;
+    
+    CVReturn ret = kCVReturnError;
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:
+                         [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
+                         [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, nil];
+    
+    ret = CVPixelBufferCreate(NULL, 
+                              self.size.width,
+                              self.size.height, 
+                              kCVPixelFormatType_32ARGB,
+                              (CFDictionaryRef)dic,
+                              &newBuffer);
+
+    if (ret != kCVReturnSuccess) {
+        NSLog(@"newEmptyCVPixelBuffer: FAILED TO CREATE NEW PIXELBUFFER !");
+        newBuffer = NULL;
+    }
+
+    return newBuffer;
+}
 
 @end

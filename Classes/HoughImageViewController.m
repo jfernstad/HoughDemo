@@ -81,6 +81,7 @@
 
     self.hough.size = totalRect.size; // Setup hough size, WRONG. Do this for the image instead. 
     self.hough.operationDelegate = self;
+    self.hough.yScale = 2.0;
 
     self.imgView.contentMode = UIViewContentModeScaleAspectFit;
     
@@ -112,6 +113,7 @@
     self.lineDelegate        = [[[HoughLineOverlayDelegate alloc] init] autorelease];
     self.lineDelegate.houghRef = self.hough;
     self.lineDelegate.lineColor = [UIColor houghRed];
+    self.lineDelegate.imgSize= self.imgView.image.size;
     self.lineLayer           = [CALayer layer];
     self.lineLayer.frame     = CGRectZero; // Set this when we get an image. 
     self.lineLayer.delegate  = self.lineDelegate;
@@ -134,7 +136,7 @@
 
 - (void) viewDidAppear:(BOOL)animated{
     if (!imgView.image) {
-        [self showChooseImageView];
+        [self performSelector:@selector(showChooseImageView) withObject:nil afterDelay:0.0];
     }
 }
 
@@ -167,27 +169,38 @@
 
 -(void)houghWillBeginOperation:(NSString*)operation{
     self.loadingView.text = [NSString stringWithFormat:@"Starting %@...", operation];
-    NSLog(@"houghWillBeginOperation: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+//    NSLog(@"houghWillBeginOperation: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
 }
 -(void)houghDidFinishOperationWithDictionary:(NSDictionary*)dict{ // Operation in kOperationNameKey
     self.loadingView.text = [NSString stringWithFormat:@"Finished operation %@...", [dict objectForKey:kOperationNameKey]];
     
-    NSLog(@"houghDidFinishOperationWithDictionary: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+//    NSLog(@"houghDidFinishOperationWithDictionary: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
 //    NSLog(@"Intersections (%d): %@", [self.hough allIntersections].count, [self.hough allIntersections]);
+
+    if ([dict objectForKey:kOperationUIImageKey]) {
+        UIImage* img = (UIImage*)[dict objectForKey:kOperationUIImageKey];
+        self.imgView.image = img;
+        [self.imgView sizeToFit];
+        self.lineDelegate.imgSize = img.size;
+    }
 
     if ([[dict objectForKey:kOperationNameKey] isEqualToString:kOperationAnalyzeHoughSpace]) {
         // We got what we needed
         
-        // To the bucket thing
-        [self.bucket clearBuckets];
-        [self.bucket addIntersections:[self.hough allIntersections]];
+        NSArray* intersections = nil;
+        if ([dict objectForKey:kHoughIntersectionArrayKey]) {
+            intersections = [dict objectForKey:kHoughIntersectionArrayKey];
+            // Do the bucket thing
+            [self.bucket clearBuckets];
+            [self.bucket addIntersections:intersections];
+            
+            self.lineDelegate.lines = [self.bucket cogIntersectionForAllBuckets];
+            [self.lineLayer setNeedsDisplay];
+        }
         
-        self.lineDelegate.lines = [self.bucket cogIntersectionForAllBuckets];
-        
-        [self.lineLayer setNeedsDisplay];
         [self.loadingView stopProgress];
     }
-    
+ 
 }
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
     NSLog(@"info: %@", info);
@@ -206,8 +219,8 @@
     if (selectedImage) {
         [self.hough executeOperationsWithImage:selectedImage];
         self.imgView.image = selectedImage;
-        self.hough.size = self.imgView.bounds.size;
         self.lineLayer.frame = self.imgView.bounds;
+        self.lineDelegate.imgSize = self.imgView.bounds.size;
     }
 }
 
