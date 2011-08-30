@@ -48,6 +48,7 @@
 @property (retain) NSMutableArray* intersections;
 @property (nonatomic, retain) NSOperationQueue* operationQueue;
 @property (nonatomic, retain) UIImage* inputUIImage;
+@property (nonatomic, assign) CGSize imgSize;
 
 @property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef houghSpace;
 @property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef tmpHoughSpace;
@@ -69,6 +70,7 @@
 
 @implementation Hough
 @synthesize size;
+@synthesize imgSize;
 @synthesize pointsCopy;
 @synthesize tmpPointsCopy;
 @synthesize curves;
@@ -157,6 +159,7 @@
 							 powf(rectSize.width,  2))/self.yScale+0.5f);
     int maxVals = rectSize.width;
     
+    imgSize = rectSize;
     size = CGSizeMake(maxVals, maxDist);
     
     
@@ -231,7 +234,7 @@
 		
 		p = [val CGPointValue];
         
-		xAmp	 = p.x - self.size.width/2;
+		xAmp	 = p.x - self.imgSize.width/2; // TODO: Doh, this should be input image half width
 		yAmp	 = p.y - offset;
 		
 		// calc cos part: (x-180)*cos
@@ -269,14 +272,14 @@
     CVPixelBufferLockBaseAddress(houghSpace, 0);
     CVPixelBufferLockBaseAddress(tmpHoughSpace, 0);
 
-    unsigned char* pointer = CVPixelBufferGetBaseAddress(tmpHoughSpace);//tmpHoughSpace;
+    unsigned char* pointer = CVPixelBufferGetBaseAddress(tmpHoughSpace);
 
 //    CVPixelBufferLockBaseAddress(buffer, 0);
     
     if (pointsArePersistent) {
         pointer = CVPixelBufferGetBaseAddress(houghSpace);
     }else{
-        unsigned char* d = CVPixelBufferGetBaseAddress(houghSpace);//tmpHoughSpace;
+        unsigned char* d = CVPixelBufferGetBaseAddress(houghSpace);
         memcpy(pointer, d, maxDist * maxVals);
     }
 	
@@ -544,15 +547,18 @@
     
     NSMutableArray* points = [NSMutableArray arrayWithCapacity:40];
     
-    CGSize imgSize = self.inputUIImage.size;
+    CGSize origSize = self.inputUIImage.size;
     
     CGFloat x = 0, y = 0;
     NSUInteger ii = 0;
 
     // Line 1
     for (ii = 0; ii < 40; ii++) {
-        x = imgSize.width/2 - (CGFloat)(ii*10);
-        y = imgSize.height/2;
+        x = origSize.width/2 + ii * origSize.width/100;//imgSize.width/2 - (CGFloat)(ii*10);
+        y = origSize.height/2;// - size.height/5;
+
+//        x = 0 + ii*10;
+//        y = 500;
         
         [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
         NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));

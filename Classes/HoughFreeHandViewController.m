@@ -301,7 +301,7 @@
     [self.bucket addIntersections:filteredArray];
 
      // calc COGs for all buckets
-    NSArray* cogLines = [self.bucket cogIntersectionForAllBuckets];
+    NSArray* cogLines = [self.bucket cogIntersectionsForAllBuckets];
     
     [self overlayLines:cogLines];
     self.readyForAnalysis = YES;

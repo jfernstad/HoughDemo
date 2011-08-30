@@ -92,7 +92,7 @@
                                             andIntensity:bucket.count];
 }
 
--(NSArray*)cogIntersectionForAllBuckets{
+-(NSArray*)cogIntersectionsForAllBuckets{
 
     NSSet* bucks = [self allBuckets];
     NSMutableArray* lines = [NSMutableArray arrayWithCapacity:buckets.count];

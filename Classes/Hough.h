@@ -44,6 +44,7 @@
 
 @interface Hough : NSObject {
 	CGSize size;
+    CGSize imgSize;
 	
     // Result arrays
 	NSArray* pointsCopy;

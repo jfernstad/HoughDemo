@@ -21,6 +21,6 @@
 -(void)addIntersection:(HoughIntersection*)intersection;
 -(void)addIntersections:(NSArray*)intersections;
 -(HoughIntersection*)cogIntersectionForBucket:(NSSet*)bucket; // Center of gravity for intersections in bucket
--(NSArray*)cogIntersectionForAllBuckets; // Array of cogs all buckets
+-(NSArray*)cogIntersectionsForAllBuckets; // Array of cogs all buckets
 
 @end

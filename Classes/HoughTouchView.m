@@ -97,7 +97,7 @@
         r.origin = p;
         r.size   = self.frame.size;
 
-        e = [self.houghRef equationForPoint:r];
+        e = [self.houghRef equationForPoint:r]; // TODO: This one expects the size to be houghSpace sized
         intersection = [HoughIntersection houghIntersectionWithTheta:e.x
                                                               length:e.y
                                                         andIntensity:100];

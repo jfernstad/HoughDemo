@@ -180,7 +180,7 @@
     if ([dict objectForKey:kOperationUIImageKey]) {
         UIImage* img = (UIImage*)[dict objectForKey:kOperationUIImageKey];
         self.imgView.image = img;
-        [self.imgView sizeToFit];
+//        [self.imgView sizeToFit];
         self.lineDelegate.imgSize = img.size;
     }
 
@@ -194,7 +194,7 @@
             [self.bucket clearBuckets];
             [self.bucket addIntersections:intersections];
             
-            self.lineDelegate.lines = [self.bucket cogIntersectionForAllBuckets];
+            self.lineDelegate.lines = [self.bucket cogIntersectionsForAllBuckets];
             [self.lineLayer setNeedsDisplay];
         }
         
