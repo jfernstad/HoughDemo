@@ -246,7 +246,7 @@
 		self.busy = YES;
 		
         start = [NSDate date];
-		img   = [hough newHoughSpaceFromPoints:pointArray persistant:self.persistentTouch];
+		img   = [hough newHoughSpaceFromPoints:pointArray persistent:self.persistentTouch];
 		imgCreation = [start timeIntervalSinceNow];
 
         // Show hough image

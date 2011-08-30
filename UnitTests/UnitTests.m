@@ -41,19 +41,40 @@
     
     NSMutableArray* points = [NSMutableArray array];
     
+    //    CGSize origSize = self.size;// self.inputUIImage.size;
+    CGSize origSize = imgSize;
+    
     CGFloat x = 0, y = 0;
     NSUInteger ii = 0;
     
     // Line 1
     for (ii = 0; ii < 40; ii++) {
-        x = 500 + ii*imgSize.width/100;
-        y = 500;
+        x = origSize.width/2 + ii * origSize.width/100;//imgSize.width/2 - (CGFloat)(ii*10);
+        y = origSize.height/2;// - size.height/5;
         
         [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
-//        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
+        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
+    }
+    
+    // Line 2
+    for (ii = 0; ii < 40; ii++) {
+        y = origSize.height/2 + ii * origSize.height/100;//imgSize.width/2 - (CGFloat)(ii*10);
+        x = origSize.width/2;// - size.height/5;
+        
+        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
+        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
+    }
+    
+    // Line 3
+    for (ii = 0; ii < 40; ii++) {
+        y = origSize.height/2 + ii * origSize.height/50;//imgSize.width/2 - (CGFloat)(ii*10);
+        x = origSize.width/2  + ii * origSize.width/50;// - size.height/5;
+        
+        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
+        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
     }
 
-    CGImageRelease([instance newHoughSpaceFromPoints:points persistant:YES]);
+    CGImageRelease([instance newHoughSpaceFromPoints:points persistent:YES]);
     
     [instance analyzeHoughSpaceOp];
     
@@ -61,21 +82,32 @@
     
     [bucket addIntersections:[instance allIntersections]];
     
-    STAssertEquals((int)[bucket allBuckets].count, (int)1, @"More than 1 bucket in this bucket! Not %d !", [bucket allBuckets].count);
+    STAssertEquals((int)[bucket allBuckets].count, (int)3, @"Not 3 buckets in this bucket! Not %d !", [bucket allBuckets].count);
     
     NSArray* cogs = [bucket cogIntersectionsForAllBuckets];
  
-    STAssertEquals((int)cogs.count, (int)1, @"Should only be 1 line in here. Not %d !", cogs.count);
+    STAssertEquals((int)cogs.count, (int)3, @"Should only be 3 lines in here. Not %d !", cogs.count);
     
     NSLog(@"%@", cogs);
     
-    HoughIntersection* theLine = nil;
+    HoughIntersection* l1 = nil;
+    HoughIntersection* l2 = nil;
+    HoughIntersection* l3 = nil;
     
     if (cogs.count) {
-        theLine = [cogs objectAtIndex:0];
+        l1 = [cogs objectAtIndex:0];
+        l2 = [cogs objectAtIndex:1];
+        l3 = [cogs objectAtIndex:2];
     
-        STAssertEqualsWithAccuracy((float)(M_PI/2), (float)(theLine.theta), 0.01, @"Angle is wrong!");
-        STAssertEqualsWithAccuracy((float)0, (float)(theLine.length), 2, @"Length is too far off!");
+        STAssertEqualsWithAccuracy((float)(M_PI/2), (float)(l1.theta), 0.01, @"Angle is wrong!");
+        STAssertEqualsWithAccuracy((float)0, (float)(l1.length), 2, @"Length is too far off!");
+
+        STAssertEqualsWithAccuracy((float)(M_PI), (float)(l2.theta), 0.01, @"Angle is wrong!");
+        STAssertEqualsWithAccuracy((float)0, (float)(l2.length), 3, @"Length is too far off!");
+        
+        STAssertEqualsWithAccuracy((float)(M_PI/4), (float)(l3.theta), 0.01, @"Angle is wrong!");
+        STAssertEqualsWithAccuracy((float)0, (float)(l3.length), 2, @"Length is too far off!");
+
     }
 }
 

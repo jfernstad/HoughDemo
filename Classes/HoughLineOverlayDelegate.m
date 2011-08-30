@@ -67,10 +67,10 @@
         center = CGPointMake(layer.bounds.size.width/2, layer.bounds.size.height/2);
         peak   = CGPointMake(center.x + (len * vec.x)/xScale, center.y + (len * vec.y)/yScale);
 
-    	drawRect = CGRectMake(peak.x - 1000 * orto.x, 
-                              peak.y - 1000 * orto.y, 
-                              2000 * orto.x, 
-                              2000 * orto.y);
+    	drawRect = CGRectMake(peak.x - 1000 * (orto.x)/xScale, 
+                              peak.y - 1000 * (orto.y)/yScale, 
+                              2000 * (orto.x)/xScale, 
+                              2000 * (orto.y)/yScale);
 
 //        components = CGColorGetComponents(color);
 //        CGContextSetRGBStrokeColor(ctx, components[0], components[1], components[2], 0.7);

@@ -81,7 +81,7 @@
 
     self.hough.size = totalRect.size; // Setup hough size, WRONG. Do this for the image instead. 
     self.hough.operationDelegate = self;
-    self.hough.yScale = 2.0;
+    self.hough.yScale = 1;
 
     self.imgView.contentMode = UIViewContentModeScaleAspectFit;
     

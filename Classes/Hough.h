@@ -47,15 +47,8 @@
     CGSize imgSize;
 	
     // Result arrays
-	NSArray* pointsCopy;
-	NSArray* tmpPointsCopy;
-	NSMutableArray* curves;
     NSMutableArray* intersections; // HoughIntersection objects
     
-    // Hough buffers
-    CVImageBufferRef houghSpace;
-    CVImageBufferRef tmpHoughSpace;
-
     // Interaction flags
     BOOL isSetup;
     BOOL storeAfterDraw;
@@ -69,6 +62,10 @@
     NSOperationQueue* operationQueue;
     NSObject<HoughOperationDelegate>* operationDelegate;
 
+    // Hough buffers
+    CVImageBufferRef houghSpace;
+    CVImageBufferRef tmpHoughSpace;
+    
     // Interrim images
     UIImage* inputUIImage;
     CVImageBufferRef inputImage; 
@@ -81,7 +78,13 @@
 @property (nonatomic, assign) BOOL storeAfterDraw;
 @property (nonatomic, assign) NSObject<HoughOperationDelegate>* operationDelegate;
 
--(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points persistant:(BOOL)pointsArePersistent; // Completely redraw houghImage
+// Manual Interaction methods
+-(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points persistent:(BOOL)pointsArePersistent; // Completely redraw houghImage. TODO: Remove?
+//-(void)createHoughWithWithPoints:(NSArray*)points persistent:(BOOL)pointsArePersistent;
+//-(CGImageRef)renderHough;
+
+
+// Useful methods?
 -(void)clear;
 -(void)makePersistent;  // Stores tmpHoughImage to houghImage;
 -(CGPoint)equationForPoint:(CGRect)pointInRect;

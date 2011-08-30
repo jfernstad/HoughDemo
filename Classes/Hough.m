@@ -42,9 +42,6 @@
 @end
 
 @interface Hough ()
-@property (nonatomic, copy)   NSArray* pointsCopy;
-@property (nonatomic, copy)   NSArray* tmpPointsCopy;
-@property (retain) NSMutableArray* curves;
 @property (retain) NSMutableArray* intersections;
 @property (nonatomic, retain) NSOperationQueue* operationQueue;
 @property (nonatomic, retain) UIImage* inputUIImage;
@@ -57,7 +54,6 @@
 @property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef edgeImage;
 @property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef thinnedImage;
 
--(BOOL) isPointAlreadyInArray:(CGPoint)p;
 -(void) setupHough;
 -(NSArray*) createCurvesForPoints:(NSArray*)points;
 -(CGImageRef) houghImageFromCurves:(NSArray*)curves persistant:(BOOL)pointsArePersistent;
@@ -71,9 +67,6 @@
 @implementation Hough
 @synthesize size;
 @synthesize imgSize;
-@synthesize pointsCopy;
-@synthesize tmpPointsCopy;
-@synthesize curves;
 @synthesize yScale;
 @synthesize intersections;
 @synthesize operationDelegate;
@@ -101,7 +94,6 @@
 }
 
 -(void)clear{
-    self.pointsCopy = nil;
     [self.operationQueue cancelAllOperations];
     
 	int houghSize    = CVPixelBufferGetDataSize(houghSpace);
@@ -122,9 +114,7 @@
 
 -(void)makePersistent{
 
-	int maxDist = self.size.height;
-	int maxVals = self.size.width;
-    NSUInteger area = maxDist * maxVals;
+	int houghSize    = CVPixelBufferGetDataSize(houghSpace);
     
     CVPixelBufferLockBaseAddress(houghSpace, 0);
     CVPixelBufferLockBaseAddress(tmpHoughSpace, 0);
@@ -132,26 +122,10 @@
     unsigned char* p1 = CVPixelBufferGetBaseAddress(houghSpace);
     unsigned char* p2 = CVPixelBufferGetBaseAddress(tmpHoughSpace);
     
-    memcpy(p1, p2, area);
+    memcpy(p1, p2, houghSize);
     
     CVPixelBufferUnlockBaseAddress(houghSpace, 0);
     CVPixelBufferUnlockBaseAddress(tmpHoughSpace, 0);
-}
--(BOOL) isPointAlreadyInArray:(CGPoint) p{
-	
-	BOOL ret = NO;
-	CGPoint tp;
-	
-	for (NSValue *v in self.pointsCopy) {
-		[v getValue:&tp];
-		
-		if (CGPointEqualToPoint(tp, p)) {
-			ret = YES;
-			break;
-		}
-	}
-	
-	return ret;
 }
 
 -(void)setSize:(CGSize)rectSize{
@@ -161,7 +135,6 @@
     
     imgSize = rectSize;
     size = CGSizeMake(maxVals, maxDist);
-    
     
     [self setupHough];
 }
@@ -188,7 +161,8 @@
     // TODO: verify we have memory
 }
 
-// WOHO   4 times faster than createHoughSpace!
+#pragma mark - Hough Stuff
+
 -(NSArray*)createCurvesForPoints: (NSArray*)points{
     
     NSAssert(isSetup, @"! Hough doesn't have a frame! call .frame = rect. ");
@@ -222,11 +196,12 @@
 	CGPoint p, p2;
 	int k			= 0;
 	
-	float offset = self.size.height/2.0f;
-	float xAmp	 = 0.0;
-	float yAmp	 = 0.0;
+	float yOff = self.imgSize.height/2.0f;
+	float xOff = self.size.width/2.0f;
+	float xAmp = 0.0;
+	float yAmp = 0.0;
 	
-	float compressedOffset = (self.size.height - self.size.height/self.yScale)/2.0f; // To see the entire wave we need to scale and offset the amplitude. 
+	float compressedOffset = (self.size.height - self.imgSize.height/self.yScale)/2.0f; // To see the entire wave we need to scale and offset the amplitude. 
 	
     NSMutableArray* outArray = [NSMutableArray arrayWithCapacity:points.count];
     
@@ -234,8 +209,9 @@
 		
 		p = [val CGPointValue];
         
-		xAmp	 = p.x - self.imgSize.width/2; // TODO: Doh, this should be input image half width
-		yAmp	 = p.y - offset;
+        // Offset point to middle of hough space
+		xAmp	 = xOff - p.x;
+		yAmp	 = yOff - p.y;
 		
 		// calc cos part: (x-180)*cos
 		vDSP_vsmul(cosValues, 1, &xAmp, cosPart, 1, maxVals);
@@ -243,7 +219,7 @@
 		vDSP_vsmul(sinValues, 1, &yAmp, sinPart, 1, maxVals);
 		
 		vDSP_vadd(cosPart, 1, sinPart, 1, yValues, 1, maxVals);
-		vDSP_vsadd(yValues,1, &offset, yOffset, 1, maxVals);
+		vDSP_vsadd(yValues,1, &yOff, yOffset, 1, maxVals);
 		
 		tmpArray = [NSMutableArray arrayWithCapacity:maxVals];
 		
@@ -280,7 +256,7 @@
         pointer = CVPixelBufferGetBaseAddress(houghSpace);
     }else{
         unsigned char* d = CVPixelBufferGetBaseAddress(houghSpace);
-        memcpy(pointer, d, maxDist * maxVals);
+        memcpy(pointer, d, CVPixelBufferGetDataSize(houghSpace));
     }
 	
 	// Draw the curves
@@ -333,7 +309,7 @@
 	return outImg;
 }
 
--(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points persistant:(BOOL)pointsArePersistent{
+-(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points persistent:(BOOL)pointsArePersistent{
 	NSArray* newCurves = [self createCurvesForPoints:points];
     
     CGImageRef outImage = [self houghImageFromCurves:newCurves persistant:pointsArePersistent];
@@ -386,8 +362,10 @@
     CGFloat theta = 0;
     CGFloat len   = 0;
     
-    theta   = M_PI - pointInRect.origin.x * M_PI/pointInRect.size.width;
-    len     = (pointInRect.size.height - pointInRect.origin.y*self.yScale); // * Y_SCALE = 2
+    // Reverse previous offset algorithm
+    theta   = M_PI - pointInRect.origin.x * M_PI/pointInRect.size.width;    // Remove earlier theta offset
+//    len     = (pointInRect.size.height - (pointInRect.size.height/2 - pointInRect.origin.y)*self.yScale); // Remove earlier length offset
+    len     = (pointInRect.origin.y - pointInRect.size.height/2)*self.yScale; // Remove earlier length offset
     
     outp.x  = theta;
     outp.y  = len;
@@ -396,7 +374,6 @@
 }
 -(void)dealloc{
     
-	self.pointsCopy = nil;
 	self.intersections = nil;
     self.operationDelegate = nil;
     self.inputUIImage = nil;
@@ -429,14 +406,11 @@
     [self clear];
     
     self.inputUIImage = rawImage;
-    self.size = self.inputUIImage.size; // TODO: Should I really do this?
 
-    // Use pixeldata in CGImage as input to vImage_ functions
-    
-//    CGImageRef imgRef = self.inputUIImage.CGImage;
+    if (!CGSizeEqualToSize(self.size, rawImage.size)) {
+        self.size = self.inputUIImage.size;
+    }
 
-    
-    
     NSOperation* grayscaleOp         = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(grayscaleImageOp) object:nil] autorelease];
     NSOperation* edgeOp              = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(edgeImageOp) object:nil] autorelease];
     NSOperation* thinOp              = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(thinImageOp) object:nil] autorelease];
@@ -545,51 +519,42 @@
     // Temporary
     [NSThread sleepForTimeInterval:SLEEPTIME];
     
-    NSMutableArray* points = [NSMutableArray arrayWithCapacity:40];
+    NSMutableArray* points = [NSMutableArray arrayWithCapacity:120];
     
+//    CGSize origSize = self.size;// self.inputUIImage.size;
     CGSize origSize = self.inputUIImage.size;
-    
+    CGFloat lineOffset = 0;
     CGFloat x = 0, y = 0;
     NSUInteger ii = 0;
 
     // Line 1
     for (ii = 0; ii < 40; ii++) {
         x = origSize.width/2 + ii * origSize.width/100;//imgSize.width/2 - (CGFloat)(ii*10);
-        y = origSize.height/2;// - size.height/5;
+        y = origSize.height/2 + lineOffset;// - size.height/5;
 
-//        x = 0 + ii*10;
-//        y = 500;
-        
         [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
         NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
     }
     
     // Line 2
-//    for (ii = 0; ii < 40; ii++) {
-//        x = imgSize.width/20 * ii + imgSize.height/6;
-//        y = imgSize.width/2;
-//        
-//        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
-//    }
-//
-//    // Line 3
-//    for (ii = 0; ii < 40; ii++) {
-//        y = 1 * ii + imgSize.height/8;
-//        x = ii;
-//        
-//        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
-//    }
-//
-//    // Line 4
-//    for (ii = 0; ii < 40; ii++) {
-//        y = imgSize.height/20 * ii + imgSize.height/6;
-//        x = imgSize.width/2;
-//        
-//        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
-//    }
-
+    for (ii = 0; ii < 40; ii++) {
+        y = origSize.height/2 + ii * origSize.height/100;//imgSize.width/2 - (CGFloat)(ii*10);
+        x = origSize.width/2 + lineOffset;// - size.height/5;
+        
+        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
+        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
+    }
     
-    CGImageRef  tImg = [self newHoughSpaceFromPoints:points persistant:YES]; 
+    // Line 3
+    for (ii = 0; ii < 40; ii++) {
+        y = origSize.height/2 + ii * origSize.height/100 + lineOffset;//imgSize.width/2 - (CGFloat)(ii*10);
+        x = origSize.width/2  + ii * origSize.width/100 + lineOffset;// - size.height/5;
+        
+        [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
+        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
+    }
+    
+    CGImageRef  tImg = [self newHoughSpaceFromPoints:points persistent:YES]; 
     CGImageRef imgTest = [self CGImageWithCVPixelBuffer:self.houghSpace];
     
     UIImage* hImg = [UIImage imageWithCGImage:tImg]; 
