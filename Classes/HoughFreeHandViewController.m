@@ -9,6 +9,7 @@
 #import "HoughFreeHandViewController.h"
 #import "HoughLineOverlayDelegate.h"
 #import "UIColor+HoughExtensions.h"
+#import "NotificationView.h"
 
 @interface HoughFreeHandViewController ()
 -(void)layoutViews;
@@ -282,12 +283,18 @@
     self.circleDelegate.points = nil;
 	[self.lineLayer setNeedsDisplay];
     [self.circleLayer setNeedsDisplay];
+    
+    [NotificationView showText:@"Clear canvas" inView:self.view];
 }
 
 - (void)interactionMode:(id)sender{
     
     self.persistentTouch = (modeControl.selectedSegmentIndex == 0);
     self.houghInputView.persistentTouch = self.persistentTouch;
+    
+    NSString* notificationString = (modeControl.selectedSegmentIndex == 0)?@"Multi point mode":@"Single point mode";
+    
+    [NotificationView showText:notificationString inView:self.view];
 }
 
 -(void)houghWillBeginOperation:(NSString*)operation{
