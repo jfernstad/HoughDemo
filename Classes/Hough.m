@@ -372,6 +372,7 @@
     
     return outp;    
 }
+
 -(void)dealloc{
     
 	self.intersections = nil;
@@ -446,13 +447,25 @@
     }
 
 //    NSLog(@"grayscaleImage: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
+    
+    CGImageRef origImage = self.inputUIImage.CGImage;
+    
+    CVPixelBufferRef bufRef = [self CVPixelBufferWithCGImage:origImage];
+    
+    CGImageRef copiedImage = [self CGImageWithCVPixelBuffer:bufRef];
+    
+    UIImage* hImg = [UIImage imageWithCGImage:copiedImage];
+//    UIImage* hImg = nil;//[UIImage imageWithCGImage:copiedImage];
+
+    CVPixelBufferRelease(bufRef);
+    CGImageRelease(copiedImage);
 
     // Do operation
     // Temporary
     [NSThread sleepForTimeInterval:SLEEPTIME];
     
     if (self.operationDelegate) {
-        NSDictionary* dic = [NSDictionary dictionaryWithObject:kOperationGrayscaleImage forKey:kOperationNameKey];
+        NSDictionary* dic = [NSDictionary dictionaryWithObjectsAndKeys:kOperationGrayscaleImage, kOperationNameKey, hImg, kOperationUIImageKey, nil];
         [self.operationDelegate performSelectorOnMainThread:@selector(houghDidFinishOperationWithDictionary:) withObject:dic waitUntilDone:NO];
     }
 
@@ -533,7 +546,7 @@
         y = origSize.height/2 + lineOffset;// - size.height/5;
 
         [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
-        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
+//        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
     }
     
     // Line 2
@@ -542,7 +555,7 @@
         x = origSize.width/2 + lineOffset;// - size.height/5;
         
         [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
-        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
+//        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
     }
     
     // Line 3
@@ -551,13 +564,13 @@
         x = origSize.width/2  + ii * origSize.width/100 + lineOffset;// - size.height/5;
         
         [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
-        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
+//        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
     }
     
     CGImageRef  tImg = [self newHoughSpaceFromPoints:points persistent:YES]; 
     CGImageRef imgTest = [self CGImageWithCVPixelBuffer:self.houghSpace];
     
-    UIImage* hImg = [UIImage imageWithCGImage:tImg]; 
+    UIImage* hImg = nil;//[UIImage imageWithCGImage:tImg]; 
 //    UIImage* hImg = [UIImage imageWithCGImage:imgTest];
     
     CGImageRelease(tImg);
@@ -592,7 +605,6 @@
 	int x = 0, y = 0;
     NSUInteger idx = 0;
     NSUInteger intensity = 0;
-//	CGPoint maxPos   = CGPointZero;
     CGPoint equation = CGPointZero;
 	CGRect pointRect = CGRectZero;
     pointRect.size   = self.size;
@@ -601,7 +613,6 @@
     unsigned char *rasterData = CVPixelBufferGetBaseAddress(houghSpace);
     
 	// Get Positions from Maxima in Houghspace
-    //	for( n = 0; n < imgHeight * imgWidth; n++){
     maxPoint = 0;
     for( y = 0; y < imgHeight; y++){
         for( x = 0; x < imgWidth; x++){
@@ -622,7 +633,6 @@
             }
         }
     }
-    //	}
     
     CVPixelBufferUnlockBaseAddress(houghSpace, 0);
 	
@@ -666,13 +676,41 @@
     return outImg;
 }
 -(CVPixelBufferRef)CVPixelBufferWithCGImage:(CGImageRef)cgImg{
-    CVPixelBufferRef outBuf = NULL;
+
+    if (!cgImg) {
+        return NULL;
+    }
     
+    CVPixelBufferRef outBuf = NULL;
+    CVReturn ret = kCVReturnError;
+
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:
+                         [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
+                         [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, nil];
+
+    CGDataProviderRef dataProvider = CGImageGetDataProvider(cgImg);
+    CFDataRef imageData = CGDataProviderCopyData(dataProvider);
+    void *pixels = (void*)CFDataGetBytePtr(imageData);
+    
+    ret = CVPixelBufferCreateWithBytes(NULL, 
+                                 CGImageGetWidth(cgImg), 
+                                 CGImageGetHeight(cgImg),
+                                 kCVPixelFormatType_32ARGB, // FIXME: What if I need a 8-bit luminance channel only?
+                                 pixels,
+                                 CGImageGetBytesPerRow(cgImg),
+                                 NULL,NULL,
+                                 (CFDictionaryRef)dic,
+                                 &outBuf);
+
+    if (ret != kCVReturnSuccess) {
+        NSLog(@"CVPixelBufferWithCGImage: FAILED TO CREATE PIXELBUFFER FROM CGIMAGE!");
+        outBuf = NULL;
+    }
 
     return outBuf;
 }
 
--(CVPixelBufferRef)newEmptyCVPixelBuffer:(CGSize)size{
+-(CVPixelBufferRef)newEmptyCVPixelBuffer:(CGSize)bufSize{
     CVPixelBufferRef newBuffer = NULL;
     
     CVReturn ret = kCVReturnError;
@@ -681,8 +719,8 @@
                          [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, nil];
     
     ret = CVPixelBufferCreate(NULL, 
-                              self.size.width,
-                              self.size.height, 
+                              bufSize.width,
+                              bufSize.height, 
                               kCVPixelFormatType_32ARGB,
                               (CFDictionaryRef)dic,
                               &newBuffer);
