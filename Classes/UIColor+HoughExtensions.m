@@ -58,4 +58,7 @@
 +(UIColor*)markColor{
     return [UIColor houghYellow];
 }
++(UIColor*)blackWithAlpha:(CGFloat)alpha{
+    return [UIColor colorWithRed:0 green:0 blue:0 alpha:alpha];
+}
 @end

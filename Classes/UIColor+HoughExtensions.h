@@ -26,5 +26,6 @@
 +(UIColor*)toolbarTintColor;
 +(UIColor*)lineColor;
 +(UIColor*)markColor;
++(UIColor*)blackWithAlpha:(CGFloat)alpha;
 
 @end
