@@ -45,6 +45,7 @@
 		83D2BF24134D5226008F32ED /* gear.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D2BF23134D5226008F32ED /* gear.png */; };
 		83D2BF27134D7EBB008F32ED /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D2BF25134D7EBB008F32ED /* Icon-Small-50.png */; };
 		83D2BF28134D7EBB008F32ED /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D2BF26134D7EBB008F32ED /* Icon-Small.png */; };
+		83E3F334140DC5F900E59A29 /* NotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E3F333140DC5F900E59A29 /* NotificationView.m */; };
 		83E4BCB21347B48D00BFF07D /* HoughLineOverlayDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E4BCB11347B48D00BFF07D /* HoughLineOverlayDelegate.m */; };
 		83E4BCB41347C11700BFF07D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E4BCB31347C11700BFF07D /* QuartzCore.framework */; };
 		83F1366713FB631300A6CEF3 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83F1366613FB631300A6CEF3 /* CoreVideo.framework */; };
@@ -99,6 +100,8 @@
 		83D2BF23134D5226008F32ED /* gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gear.png; sourceTree = "<group>"; };
 		83D2BF25134D7EBB008F32ED /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
 		83D2BF26134D7EBB008F32ED /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
+		83E3F332140DC5F900E59A29 /* NotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationView.h; sourceTree = "<group>"; };
+		83E3F333140DC5F900E59A29 /* NotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationView.m; sourceTree = "<group>"; };
 		83E4BCB01347B48D00BFF07D /* HoughLineOverlayDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughLineOverlayDelegate.h; sourceTree = "<group>"; };
 		83E4BCB11347B48D00BFF07D /* HoughLineOverlayDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughLineOverlayDelegate.m; sourceTree = "<group>"; };
 		83E4BCB31347C11700BFF07D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -292,6 +295,8 @@
 				831BFCBF132C445E00019FBD /* HoughTouchView.m */,
 				83FD84121389FB20000D4F48 /* LoadingView.h */,
 				83FD84131389FB20000D4F48 /* LoadingView.m */,
+				83E3F332140DC5F900E59A29 /* NotificationView.h */,
+				83E3F333140DC5F900E59A29 /* NotificationView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -428,6 +433,7 @@
 				83FD84141389FB20000D4F48 /* LoadingView.m in Sources */,
 				837A9CBA13A44F7E00B4CE95 /* Bucket2D.m in Sources */,
 				832F00AF13D25DF600CE9498 /* HoughBaseViewController.m in Sources */,
+				83E3F334140DC5F900E59A29 /* NotificationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -646,6 +652,7 @@
 				836AF305140B30AB00219303 /* AdHoc */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "HoughDemo" */ = {
 			isa = XCConfigurationList;
