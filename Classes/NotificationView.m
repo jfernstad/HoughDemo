@@ -41,17 +41,16 @@
     label.font              = [UIFont systemFontOfSize:24];
     label.textColor         = [UIColor whiteColor];
     label.backgroundColor   = [UIColor clearColor];
-
+    label.textAlignment     = UITextAlignmentCenter;
+    label.lineBreakMode     = UILineBreakModeWordWrap;
+    label.numberOfLines     = 0;
+    
     self.layer.cornerRadius = 10;
     self.layer.borderWidth  = 2;
     self.layer.borderColor  = [UIColor houghGray].CGColor;
-    
-    [self addSubview:label];
-    self.backgroundColor = [UIColor colorWithRed:0
-                                           green:0
-                                            blue:0
-                                           alpha:0.7];
+    self.backgroundColor    = [UIColor blackWithAlpha:0.7];
 
+    [self addSubview:label];
 }
 
 +(void)showText:(NSString*)string inView:(UIView*)parentView{
@@ -66,9 +65,9 @@
     CGRect labelFrame = CGRectZero;
     
     CGSize textSize = [view.text sizeWithFont:view.label.font
-                                     forWidth:MAX(parentView.bounds.size.width/2.0, 200)
-                                lineBreakMode:UILineBreakModeWordWrap];
-    
+                            constrainedToSize:CGSizeMake(MAX(MIN(parentView.bounds.size.width/2.0, 400), 100), 800)
+                                lineBreakMode:view.label.lineBreakMode];
+
     myFrame.size   = CGSizeMake(textSize.width  + padding.x,
                                 textSize.height + padding.y);
     
@@ -77,9 +76,10 @@
     
     labelFrame.size   = textSize;
     labelFrame.origin = CGPointMake(padding.x/2, padding.y/2);
-    view.label.frame       = labelFrame;
 
-    view.frame = myFrame;
+    view.frame        = myFrame;
+    view.label.frame  = labelFrame;
+    
     [parentView addSubview:view];
 
     [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
