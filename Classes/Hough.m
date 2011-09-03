@@ -96,36 +96,36 @@
 -(void)clear{
     [self.operationQueue cancelAllOperations];
     
-	int houghSize    = CVPixelBufferGetDataSize(houghSpace);
-	int tmpHoughSize = CVPixelBufferGetDataSize(tmpHoughSpace);
+	int houghSize    = CVPixelBufferGetDataSize(self.houghSpace);
+	int tmpHoughSize = CVPixelBufferGetDataSize(self.tmpHoughSpace);
 	
-    CVPixelBufferLockBaseAddress(houghSpace, 0);
-    CVPixelBufferLockBaseAddress(tmpHoughSpace, 0);
+    CVPixelBufferLockBaseAddress(self.houghSpace, 0);
+    CVPixelBufferLockBaseAddress(self.tmpHoughSpace, 0);
     
-    unsigned char* p1 = CVPixelBufferGetBaseAddress(houghSpace);
-    unsigned char* p2 = CVPixelBufferGetBaseAddress(tmpHoughSpace);
+    unsigned char* p1 = CVPixelBufferGetBaseAddress(self.houghSpace);
+    unsigned char* p2 = CVPixelBufferGetBaseAddress(self.tmpHoughSpace);
     
     memset(p1, 0, houghSize);
     memset(p2, 0, tmpHoughSize);
     
-    CVPixelBufferUnlockBaseAddress(houghSpace, 0);
-    CVPixelBufferUnlockBaseAddress(tmpHoughSpace, 0);
+    CVPixelBufferUnlockBaseAddress(self.houghSpace, 0);
+    CVPixelBufferUnlockBaseAddress(self.tmpHoughSpace, 0);
 }
 
 -(void)makePersistent{
     
-	int houghSize    = CVPixelBufferGetDataSize(houghSpace);
+	int houghSize    = CVPixelBufferGetDataSize(self.houghSpace);
     
-    CVPixelBufferLockBaseAddress(houghSpace, 0);
-    CVPixelBufferLockBaseAddress(tmpHoughSpace, 0);
+    CVPixelBufferLockBaseAddress(self.houghSpace, 0);
+    CVPixelBufferLockBaseAddress(self.tmpHoughSpace, 0);
     
-    unsigned char* p1 = CVPixelBufferGetBaseAddress(houghSpace);
-    unsigned char* p2 = CVPixelBufferGetBaseAddress(tmpHoughSpace);
+    unsigned char* p1 = CVPixelBufferGetBaseAddress(self.houghSpace);
+    unsigned char* p2 = CVPixelBufferGetBaseAddress(self.tmpHoughSpace);
     
     memcpy(p1, p2, houghSize);
     
-    CVPixelBufferUnlockBaseAddress(houghSpace, 0);
-    CVPixelBufferUnlockBaseAddress(tmpHoughSpace, 0);
+    CVPixelBufferUnlockBaseAddress(self.houghSpace, 0);
+    CVPixelBufferUnlockBaseAddress(self.tmpHoughSpace, 0);
 }
 
 -(void)setSize:(CGSize)rectSize{
@@ -245,18 +245,18 @@
 	int maxDist = self.size.height;
 	int maxVals = self.size.width;
 	
-    CVPixelBufferLockBaseAddress(houghSpace, 0);
-    CVPixelBufferLockBaseAddress(tmpHoughSpace, 0);
+    CVPixelBufferLockBaseAddress(self.houghSpace, 0);
+    CVPixelBufferLockBaseAddress(self.tmpHoughSpace, 0);
     
-    unsigned char* pointer = CVPixelBufferGetBaseAddress(tmpHoughSpace);
+    unsigned char* pointer = CVPixelBufferGetBaseAddress(self.tmpHoughSpace);
     
     //    CVPixelBufferLockBaseAddress(buffer, 0);
     
     if (pointsArePersistent) {
-        pointer = CVPixelBufferGetBaseAddress(houghSpace);
+        pointer = CVPixelBufferGetBaseAddress(self.houghSpace);
     }else{
-        unsigned char* d = CVPixelBufferGetBaseAddress(houghSpace);
-        memcpy(pointer, d, CVPixelBufferGetDataSize(houghSpace));
+        unsigned char* d = CVPixelBufferGetBaseAddress(self.houghSpace);
+        memcpy(pointer, d, CVPixelBufferGetDataSize(self.houghSpace));
     }
 	
 	// Draw the curves
@@ -280,8 +280,8 @@
     CFDataRef cfImgData = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, pointer, maxDist * maxVals, kCFAllocatorNull);
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(cfImgData);
 	
-    CVPixelBufferUnlockBaseAddress(tmpHoughSpace, 0);
-    CVPixelBufferUnlockBaseAddress(houghSpace, 0);
+    CVPixelBufferUnlockBaseAddress(self.tmpHoughSpace, 0);
+    CVPixelBufferUnlockBaseAddress(self.houghSpace, 0);
     
 	CGImageRef tmp = CGImageCreate(maxVals, maxDist, 8, 8, maxVals, colorSpace, kCGImageAlphaNone, dataProvider, decode, NO, kCGRenderingIntentDefault);
     
@@ -531,8 +531,34 @@
     NSUInteger w = CVPixelBufferGetWidth(self.edgeImage);
     NSUInteger h = CVPixelBufferGetHeight(self.edgeImage);
     NSUInteger ws = CVPixelBufferGetBytesPerRow(self.edgeImage);
-    UInt8 edge = 0; 
+    NSUInteger edge = 0; 
+
+    CVPixelBufferRef blurBuf = [self newEmptyCVPixelBuffer:edgeSize];
+    CVPixelBufferLockBaseAddress(blurBuf, 0);
+    unsigned char* blur = CVPixelBufferGetBaseAddress(blurBuf);
+    CVPixelBufferUnlockBaseAddress(blurBuf, 0);
     
+    // BOX BLUR
+    // Skip edge row, edge x-direction
+    for (yy = 1; yy < h - 1; yy++) {
+        for (xx = 1; xx < w - 1; xx++) {
+            
+            // Offset to RED channel
+            edge = (pixelsIn[(xx - 1)*4 + 1 + yy * ws] +
+                    pixelsIn[(xx + 0)*4 + 1 + yy * ws] +
+                    pixelsIn[(xx + 1)*4 + 1 + yy * ws])/3;
+            
+            // Per color-component
+            blur[xx * 4 + 0 + yy * ws] = 255;//*xx/w;
+            blur[xx * 4 + 1 + yy * ws] = edge;
+            blur[xx * 4 + 2 + yy * ws] = edge;
+            blur[xx * 4 + 3 + yy * ws] = edge;
+        }
+    }
+
+    pixelsIn = blur; // Replace pointers
+    
+    // EDGE
     // Skip edge row, edge x-direction
     for (yy = 1; yy < h - 1; yy++) {
         for (xx = 1; xx < w - 1; xx++) {
@@ -572,6 +598,7 @@
     UIImage* hImg = [UIImage imageWithCGImage:copiedImage];
     
     CGImageRelease(copiedImage);
+    CVPixelBufferRelease(blurBuf);
     // DEBUG
 
     if (self.operationDelegate) {
@@ -694,8 +721,8 @@
 	CGRect pointRect = CGRectZero;
     pointRect.size   = self.size;
     
-    CVPixelBufferLockBaseAddress(houghSpace, 0); // Is this neccessary?
-    unsigned char *rasterData = CVPixelBufferGetBaseAddress(houghSpace);
+    CVPixelBufferLockBaseAddress(self.houghSpace, 0); // Is this neccessary?
+    unsigned char *rasterData = CVPixelBufferGetBaseAddress(self.houghSpace);
     
 	// Get Positions from Maxima in Houghspace
     maxPoint = 0;
@@ -719,7 +746,7 @@
         }
     }
     
-    CVPixelBufferUnlockBaseAddress(houghSpace, 0);
+    CVPixelBufferUnlockBaseAddress(self.houghSpace, 0);
 	
     if (self.operationDelegate) {
         NSDictionary* dic = [NSDictionary dictionaryWithObjectsAndKeys:kOperationAnalyzeHoughSpace, kOperationNameKey, self.intersections, kHoughIntersectionArrayKey, nil];
