@@ -12,6 +12,7 @@
 
 @interface HoughImageViewController ()
 -(void)showChooseImageView;
+-(void)centerImage;
 @end
 
 @implementation HoughImageViewController
@@ -76,6 +77,7 @@
     CGRect totalRect  = self.contentRect;
     
     self.imgView = [[[UIImageView alloc] initWithFrame:totalRect] autorelease];
+    self.imgView.contentMode = UIViewContentModeScaleAspectFit;
     
     self.view.backgroundColor = [UIColor clearColor];
 
@@ -164,6 +166,29 @@
 	return YES;
 }
 
+
+#pragma mark - Convenience methods
+
+-(void)centerImage{
+    CGSize imgSize    = self.imgView.image.size;
+    CGRect newImgRect = self.contentRect;
+
+    CGFloat scale = MAX(imgSize.width/newImgRect.size.width,imgSize.height/newImgRect.size.height);
+
+    imgSize.width  /= scale;
+    imgSize.height /= scale;
+
+    newImgRect.origin.x = (newImgRect.size.width  - imgSize.width )/2;
+    newImgRect.origin.y = newImgRect.origin.y + (newImgRect.size.height - imgSize.height)/2;
+
+    newImgRect.size = imgSize;
+
+    self.imgView.frame = CGRectIntegral(newImgRect);
+
+    self.lineLayer.frame = self.imgView.bounds;
+    self.lineDelegate.imgSize = self.imgView.bounds.size;
+}
+
 #pragma mark -
 #pragma mark Delegates
 
@@ -180,8 +205,8 @@
     if ([dict objectForKey:kOperationUIImageKey]) {
         UIImage* img = (UIImage*)[dict objectForKey:kOperationUIImageKey];
         self.imgView.image = img;
-//        [self.imgView sizeToFit];
-        self.lineDelegate.imgSize = img.size;
+        
+        [self centerImage];
     }
 
     if ([[dict objectForKey:kOperationNameKey] isEqualToString:kOperationAnalyzeHoughSpace]) {
@@ -219,8 +244,8 @@
     if (selectedImage) {
         [self.hough executeOperationsWithImage:selectedImage];
         self.imgView.image = selectedImage;
-        self.lineLayer.frame = self.imgView.bounds;
-        self.lineDelegate.imgSize = self.imgView.bounds.size;
+
+        [self centerImage];
     }
 }
 

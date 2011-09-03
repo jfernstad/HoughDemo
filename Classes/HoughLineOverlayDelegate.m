@@ -49,16 +49,12 @@
     
     NSLog(@"LineDelegate scale: (%f, %f)",xScale, yScale);
     
-//    NSLog(@"layerDelegate is being used!");
     CGColorRef color = lineColor.CGColor;
-//    const CGFloat *components = NULL;
-    //    CGContextSetStrokeColorWithColor(ctx, lineColor.CGColor);
     CGContextSetLineWidth(ctx, 2.0); // TODO: Parametrize
     
     for (HoughIntersection* i in self.lines) {
         
         NSLog(@"%@", i);
-//        eq      = [houghRef equationForPoint:rect];
         theta   = i.theta;
         len     = i.length;
         
