@@ -293,7 +293,7 @@
 											8, 
 											4*maxVals, 
 											scpr, 
-											kCGImageAlphaPremultipliedFirst);
+											kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Big);
     
 	
 	// Convert to 8 bit from whatever.. 
@@ -446,20 +446,49 @@
         [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationGrayscaleImage waitUntilDone:NO];
     }
 
-//    NSLog(@"grayscaleImage: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
-    
-    CGImageRef origImage = self.inputUIImage.CGImage;
-    
+    CGImageRef origImage    = self.inputUIImage.CGImage;
     CVPixelBufferRef bufRef = [self CVPixelBufferWithCGImage:origImage];
+    self.grayScaleImage     = bufRef;
     
-    CGImageRef copiedImage = [self CGImageWithCVPixelBuffer:bufRef];
-    
-    UIImage* hImg = [UIImage imageWithCGImage:copiedImage];
-//    UIImage* hImg = nil;//[UIImage imageWithCGImage:copiedImage];
-
     CVPixelBufferRelease(bufRef);
-    CGImageRelease(copiedImage);
 
+    // Do the actual grayscale implementation
+    unsigned char* pixels = NULL;
+    
+    CVPixelBufferLockBaseAddress(self.grayScaleImage, 0);
+    pixels = CVPixelBufferGetBaseAddress(self.grayScaleImage);
+    CVPixelBufferUnlockBaseAddress(self.grayScaleImage, 0);
+    
+    NSUInteger ii = 0;
+    NSUInteger grayInt = 0;
+    UInt8 grayValue = 0, A = 0, R = 0, G = 0, B = 0;
+    
+    for (ii = 0; ii < CVPixelBufferGetDataSize(self.grayScaleImage); ii+=4) {
+        
+        A = pixels[ii+0];
+        R = pixels[ii+1];
+        G = pixels[ii+2];
+        B = pixels[ii+3];
+
+        grayInt   = (76 * R + 150 * G + 29 * B)/256;
+        grayValue = (UInt8)grayInt;
+        
+        pixels[ii+0] = A;
+        pixels[ii+1] = grayValue;
+        pixels[ii+2] = grayValue;
+        pixels[ii+3] = grayValue;
+    }
+
+
+    // DEBUG
+    CGImageRef copiedImage = [self CGImageWithCVPixelBuffer:self.grayScaleImage];
+    UIImage* hImg = [UIImage imageWithCGImage:copiedImage];
+    
+    CGImageRelease(copiedImage);
+    // DEBUG
+    
+
+    
     // Do operation
     // Temporary
     [NSThread sleepForTimeInterval:SLEEPTIME];
@@ -667,7 +696,7 @@
 	
     CVPixelBufferUnlockBaseAddress(pixBuf, 0);
     
-	outImg = CGImageCreate(w, h, 8, 8*bpr/w, bpr, scpr, kCGImageAlphaPremultipliedFirst, dataProvider, NULL, NO, kCGRenderingIntentDefault);
+	outImg = CGImageCreate(w, h, 8, 8*bpr/w, bpr, scpr, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Big, dataProvider, NULL, NO, kCGRenderingIntentDefault);
 	
 	CGDataProviderRelease(dataProvider);
 	CGColorSpaceRelease(scpr);
@@ -691,17 +720,49 @@
     CGDataProviderRef dataProvider = CGImageGetDataProvider(cgImg);
     CFDataRef imageData = CGDataProviderCopyData(dataProvider);
     void *pixels = (void*)CFDataGetBytePtr(imageData);
+
     
+    // TODO: Covert pixel from whatever format into ARGB, 32bitBigEndian
+
+    // -- BEGIN CONVERSION --
+
+    CGColorSpaceRef csp = CGColorSpaceCreateDeviceRGB();
+    CGContextRef ctx = CGBitmapContextCreate(NULL, 
+                                          CGImageGetWidth(cgImg), 
+                                          CGImageGetHeight(cgImg),
+                                          8,
+                                          CGImageGetWidth(cgImg) * 4,
+                                          csp,
+                                          kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Big);
+
+    CGContextDrawImage(ctx, CGRectMake(0, 0, CGImageGetWidth(cgImg), CGImageGetHeight(cgImg)), cgImg);
+    
+    CGImageRef convertedImg = CGBitmapContextCreateImage(ctx);
+    
+    CGContextRelease(ctx);
+    CGColorSpaceRelease(csp);
+//    CFRelease(imageData);
+//    CGDataProviderRelease(dataProvider);
+    
+    // -- END CONVERSION --
+    
+    
+    dataProvider = CGImageGetDataProvider(convertedImg);
+    imageData    = CGDataProviderCopyData(dataProvider);
+    pixels       = (void*)CFDataGetBytePtr(imageData);
+
     ret = CVPixelBufferCreateWithBytes(NULL, 
-                                 CGImageGetWidth(cgImg), 
-                                 CGImageGetHeight(cgImg),
+                                 CGImageGetWidth(convertedImg), 
+                                 CGImageGetHeight(convertedImg),
                                  kCVPixelFormatType_32ARGB, // FIXME: What if I need a 8-bit luminance channel only?
                                  pixels,
-                                 CGImageGetBytesPerRow(cgImg),
+                                 CGImageGetBytesPerRow(convertedImg),
                                  NULL,NULL,
                                  (CFDictionaryRef)dic,
                                  &outBuf);
 
+    CGImageRelease(convertedImg); // Should I?
+    
     if (ret != kCVReturnSuccess) {
         NSLog(@"CVPixelBufferWithCGImage: FAILED TO CREATE PIXELBUFFER FROM CGIMAGE!");
         outBuf = NULL;
