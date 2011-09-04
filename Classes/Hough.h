@@ -14,6 +14,7 @@
 #define kHoughIntersectionArrayKey  @"HoughIntersectionArray"
 
 // Operations
+#define kOperationPrepareImage          @"OperationPrepareImage"
 #define kOperationGrayscaleImage        @"OperationGrayscaleImage"
 #define kOperationEdgeImage             @"OperationEdgeImage"
 #define kOperationThinImage             @"OperationThinImage"

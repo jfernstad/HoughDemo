@@ -47,7 +47,7 @@
     xScale = self.imgSize.width  / layer.bounds.size.width;
     yScale = self.imgSize.height / layer.bounds.size.height;
     
-    NSLog(@"LineDelegate scale: (%f, %f)",xScale, yScale);
+//    NSLog(@"LineDelegate scale: (%f, %f)",xScale, yScale);
     
     CGColorRef color = lineColor.CGColor;
     CGContextSetLineWidth(ctx, 2.0); // TODO: Parametrize

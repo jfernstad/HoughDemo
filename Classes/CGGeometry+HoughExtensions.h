@@ -8,5 +8,10 @@
 
 #include <CoreGraphics/CGGeometry.h>
 
+// CGRect related
 CGRect CGRectWithCenter(CGPoint p, CGFloat radius);
 CGRect CGRectCenteredInRect(CGRect referenceRect, CGSize sizeToCenter);
+
+// CGSize related
+CGSize CGSizeIntegral(CGSize inputSize);
+CGSize CGSizeAspectFitSize(CGSize inputSize, CGSize parentSize);

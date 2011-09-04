@@ -8,10 +8,13 @@
 
 #import "HoughImageViewController.h"
 #import "UIColor+HoughExtensions.h"
+#import "CGGeometry+HoughExtensions.h"
 #import "HoughLineOverlayDelegate.h"
 
 @interface HoughImageViewController ()
 -(void)showChooseImageView;
+-(CGSize)aspectFitSize:(CGSize)inputSize inSize:(CGSize)parentSize;
+-(CGRect)centerRect:(CGRect)inputRect inRect:(CGRect)parentRect;
 -(void)centerImage;
 @end
 
@@ -168,20 +171,35 @@
 
 
 #pragma mark - Convenience methods
+-(CGSize)aspectFitSize:(CGSize)inputSize inSize:(CGSize)parentSize{
+    CGSize outSize = CGSizeZero;
+    CGFloat scale = MAX(inputSize.width/parentSize.width,
+                        inputSize.height/parentSize.height);
+    
+    outSize.width  = inputSize.width /scale;
+    outSize.height = inputSize.height/scale;
+
+    return outSize;
+}
+-(CGRect)centerRect:(CGRect)inputRect inRect:(CGRect)parentRect{
+    CGRect outRect = inputRect;
+    outRect.origin.x = parentRect.origin.x + (parentRect.size.width  - inputRect.size.width )/2;
+    outRect.origin.y = parentRect.origin.y + (parentRect.size.height - inputRect.size.height)/2;
+    return outRect;
+}
 
 -(void)centerImage{
-    CGSize imgSize    = self.imgView.image.size;
+    CGRect imgRect    = CGRectZero;
     CGRect newImgRect = self.contentRect;
 
-    CGFloat scale = MAX(imgSize.width/newImgRect.size.width,imgSize.height/newImgRect.size.height);
+    imgRect.size = self.imgView.image.size;
 
-    imgSize.width  /= scale;
-    imgSize.height /= scale;
+    imgRect.size = CGSizeAspectFitSize(imgRect.size, newImgRect.size);
+    //    imgRect.size = [self aspectFitSize:imgRect.size inSize:newImgRect.size];
+    newImgRect   = CGRectCenteredInRect(newImgRect, imgRect.size);
+    //    newImgRect   = [self centerRect:imgRect inRect:newImgRect];
 
-    newImgRect.origin.x = (newImgRect.size.width  - imgSize.width )/2;
-    newImgRect.origin.y = newImgRect.origin.y + (newImgRect.size.height - imgSize.height)/2;
-
-    newImgRect.size = imgSize;
+    newImgRect.size = imgRect.size;
 
     self.imgView.frame = CGRectIntegral(newImgRect);
 
@@ -194,14 +212,10 @@
 
 -(void)houghWillBeginOperation:(NSString*)operation{
     self.loadingView.text = [NSString stringWithFormat:@"Starting %@...", operation];
-//    NSLog(@"houghWillBeginOperation: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
 }
 -(void)houghDidFinishOperationWithDictionary:(NSDictionary*)dict{ // Operation in kOperationNameKey
     self.loadingView.text = [NSString stringWithFormat:@"Finished operation %@...", [dict objectForKey:kOperationNameKey]];
     
-//    NSLog(@"houghDidFinishOperationWithDictionary: IsMainThread? %@", [[NSThread currentThread] isMainThread]?@"Yes":@"NO");
-//    NSLog(@"Intersections (%d): %@", [self.hough allIntersections].count, [self.hough allIntersections]);
-
     if ([dict objectForKey:kOperationUIImageKey]) {
         UIImage* img = (UIImage*)[dict objectForKey:kOperationUIImageKey];
         self.imgView.image = img;
@@ -212,6 +226,7 @@
     if ([[dict objectForKey:kOperationNameKey] isEqualToString:kOperationAnalyzeHoughSpace]) {
         // We got what we needed
         
+        // TODO: Make this an operation instead. Might block interface.
         NSArray* intersections = nil;
         if ([dict objectForKey:kHoughIntersectionArrayKey]) {
             intersections = [dict objectForKey:kHoughIntersectionArrayKey];
@@ -242,6 +257,7 @@
     selectedImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
     
     if (selectedImage) {
+        
         [self.hough executeOperationsWithImage:selectedImage];
         self.imgView.image = selectedImage;
 
