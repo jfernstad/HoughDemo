@@ -165,12 +165,16 @@
 
 #pragma mark - Read Only Properties
 
+-(CVPixelBufferRef)InputImage{
+    return self.inputImage;
+}
+
 -(CVPixelBufferRef)HoughImage{
     return self.houghSpace;
 }
 
 -(CVPixelBufferRef)GrayScaleImage{
-    return self.GrayScaleImage;
+    return self.grayScaleImage;
 }
 
 -(CVPixelBufferRef)EdgeImage{
@@ -478,6 +482,12 @@
     
     self.inputUIImage = [UIImage imageWithCGImage:scaledImage];
     self.size = newSize;
+    
+    // TEMPORARY
+    CVPixelBufferRef tmpImage = [self CVPixelBufferWithCGImage:scaledImage];
+    self.inputImage = tmpImage;
+    CVPixelBufferRelease(tmpImage);
+    // 
     
     CGImageRelease(scaledImage);
     

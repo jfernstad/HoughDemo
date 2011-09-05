@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ImageHist.h"
 
 @class LoadingView;
 
@@ -17,8 +18,11 @@
     
     UIColor* histogramColor;
     LoadingView* loadingView;
+
+    EPixelBufferComponent hideComponents;
 }
 @property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef image;
 @property (nonatomic, retain) UIColor* histogramColor;
+@property (nonatomic, assign) EPixelBufferComponent hideComponents;
 
 @end

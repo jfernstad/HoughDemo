@@ -16,6 +16,7 @@
 typedef void (^HistogramFinished)(NSDictionary*);
 
 typedef enum EPixelBufferComponent{
+    EPixelBufferNone    = 0x00,
     EPixelBufferAlpha   = 0x01,
     EPixelBufferRed     = 0x02,
     EPixelBufferGreen   = 0x04,

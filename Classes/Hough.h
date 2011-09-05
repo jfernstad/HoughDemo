@@ -79,6 +79,7 @@
 @property (nonatomic, assign) BOOL storeAfterDraw;
 @property (nonatomic, assign) NSObject<HoughOperationDelegate>* operationDelegate;
 
+@property (nonatomic, readonly) CVImageBufferRef InputImage;
 @property (nonatomic, readonly) CVImageBufferRef HoughImage;
 @property (nonatomic, readonly) CVImageBufferRef GrayScaleImage;
 @property (nonatomic, readonly) CVImageBufferRef EdgeImage;
