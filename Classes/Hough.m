@@ -163,6 +163,25 @@
     // TODO: verify we have memory
 }
 
+#pragma mark - Read Only Properties
+
+-(CVPixelBufferRef)HoughImage{
+    return self.houghSpace;
+}
+
+-(CVPixelBufferRef)GrayScaleImage{
+    return self.GrayScaleImage;
+}
+
+-(CVPixelBufferRef)EdgeImage{
+    return self.edgeImage;
+}
+
+-(CVPixelBufferRef)ThinnedImage{
+    return self.thinnedImage;
+}
+
+
 #pragma mark - Hough Stuff
 
 -(NSArray*)createCurvesForPoints: (NSArray*)points{
@@ -673,9 +692,10 @@
     UInt8 intensity = 0;
     NSUInteger counter = 0;
     
-	// Get Positions from Maxima in Houghspace
+	// Get Positions from pixels in edge image
     for( yy = 0; yy < h; yy++){
-        if (counter > 1000) {
+        // TODO: Parametrize max number of pixels
+        if (counter > 1000) { 
             break;
         }
         for( xx = 0; xx < w; xx++){

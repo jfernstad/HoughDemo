@@ -79,6 +79,12 @@
 @property (nonatomic, assign) BOOL storeAfterDraw;
 @property (nonatomic, assign) NSObject<HoughOperationDelegate>* operationDelegate;
 
+@property (nonatomic, readonly) CVImageBufferRef HoughImage;
+@property (nonatomic, readonly) CVImageBufferRef GrayScaleImage;
+@property (nonatomic, readonly) CVImageBufferRef EdgeImage;
+@property (nonatomic, readonly) CVImageBufferRef ThinnedImage;
+
+
 // Manual Interaction methods
 -(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points persistent:(BOOL)pointsArePersistent; // Completely redraw houghImage. TODO: Remove?
 //-(void)createHoughWithWithPoints:(NSArray*)points persistent:(BOOL)pointsArePersistent;
