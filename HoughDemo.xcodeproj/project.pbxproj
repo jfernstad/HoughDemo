@@ -50,6 +50,8 @@
 		83E4BCB41347C11700BFF07D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E4BCB31347C11700BFF07D /* QuartzCore.framework */; };
 		83F1366713FB631300A6CEF3 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83F1366613FB631300A6CEF3 /* CoreVideo.framework */; };
 		83FD84141389FB20000D4F48 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83FD84131389FB20000D4F48 /* LoadingView.m */; };
+		83FF4115141539C600BA91D4 /* ImageHist.m in Sources */ = {isa = PBXBuildFile; fileRef = 83FF4114141539C600BA91D4 /* ImageHist.m */; };
+		83FF41181415689000BA91D4 /* HistogramView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83FF41171415689000BA91D4 /* HistogramView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,6 +110,10 @@
 		83F1366613FB631300A6CEF3 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		83FD84121389FB20000D4F48 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
 		83FD84131389FB20000D4F48 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
+		83FF4113141539C600BA91D4 /* ImageHist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageHist.h; sourceTree = "<group>"; };
+		83FF4114141539C600BA91D4 /* ImageHist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageHist.m; sourceTree = "<group>"; };
+		83FF41161415689000BA91D4 /* HistogramView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistogramView.h; sourceTree = "<group>"; };
+		83FF41171415689000BA91D4 /* HistogramView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistogramView.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* HoughDemo-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "HoughDemo-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -269,6 +275,8 @@
 				83CBB2251319B9160092FE93 /* Hough.m */,
 				837A9CB813A44F7D00B4CE95 /* Bucket2D.h */,
 				837A9CB913A44F7D00B4CE95 /* Bucket2D.m */,
+				83FF4113141539C600BA91D4 /* ImageHist.h */,
+				83FF4114141539C600BA91D4 /* ImageHist.m */,
 			);
 			name = Algorithms;
 			sourceTree = "<group>";
@@ -297,6 +305,8 @@
 				83FD84131389FB20000D4F48 /* LoadingView.m */,
 				83E3F332140DC5F900E59A29 /* NotificationView.h */,
 				83E3F333140DC5F900E59A29 /* NotificationView.m */,
+				83FF41161415689000BA91D4 /* HistogramView.h */,
+				83FF41171415689000BA91D4 /* HistogramView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -434,6 +444,8 @@
 				837A9CBA13A44F7E00B4CE95 /* Bucket2D.m in Sources */,
 				832F00AF13D25DF600CE9498 /* HoughBaseViewController.m in Sources */,
 				83E3F334140DC5F900E59A29 /* NotificationView.m in Sources */,
+				83FF4115141539C600BA91D4 /* ImageHist.m in Sources */,
+				83FF41181415689000BA91D4 /* HistogramView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
