@@ -13,16 +13,23 @@
 #define kHistogramOnBlueComponentKey   @"HistogramOnBlue"
 #define kHistogramOnAlphaComponentKey  @"HistogramOnAlpha"
 
+#define kHistogramStatisticsKey        @"HistogramStatistics"
+#define kHistogramMaxValueKey          @"HistogramMaxValue"
+#define kHistogramMinValueKey          @"HistogramMinValue"
+#define kHistogramMaxIntensityKey      @"HistogramMaxIntensity"
+#define kHistogramMinIntensityKey      @"HistogramMinIntensity"
+
 typedef void (^HistogramFinished)(NSDictionary*);
 
 typedef enum EPixelBufferComponent{
-    EPixelBufferNone    = 0x00,
-    EPixelBufferAlpha   = 0x01,
-    EPixelBufferRed     = 0x02,
-    EPixelBufferGreen   = 0x04,
-    EPixelBufferBlue    = 0x08,
+    EPixelBufferNone      = 0x00,
+    EPixelBufferAlpha     = 0x01,
+    EPixelBufferRed       = 0x02,
+    EPixelBufferGreen     = 0x04,
+    EPixelBufferBlue      = 0x08,
     
-    EPixelBufferAll     = 0x0F
+    EPixelBufferAllColors = 0x0E,
+    EPixelBufferAll       = 0x0F
     
 }EPixelBufferComponent;
 

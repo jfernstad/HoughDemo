@@ -19,10 +19,14 @@
     UIColor* histogramColor;
     LoadingView* loadingView;
 
-    EPixelBufferComponent hideComponents;
+    EPixelBufferComponent useComponents;
+    BOOL stretchHistogram;
+    BOOL logHistogram;
 }
 @property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef image;
 @property (nonatomic, retain) UIColor* histogramColor;
-@property (nonatomic, assign) EPixelBufferComponent hideComponents;
+@property (nonatomic, assign) EPixelBufferComponent useComponents;
+@property (nonatomic, assign) BOOL stretchHistogram;
+@property (nonatomic, assign) BOOL logHistogram;
 
 @end
