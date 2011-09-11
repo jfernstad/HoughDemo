@@ -18,12 +18,11 @@
     if (self) {
         loadingLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         progress     = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    
+        progress.backgroundColor = [UIColor clearColor];
+        
         loadingLabel.font = [UIFont fontWithName:@"helvetica" size:24.0];
         loadingLabel.textColor       = [UIColor whiteColor];
         loadingLabel.backgroundColor = [UIColor clearColor];
-        
-        self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
         
         [self addSubview:loadingLabel];
         [self addSubview:progress];
@@ -39,14 +38,18 @@
     CGRect indicatorRect = CGRectZero;
     CGRect textRect      = CGRectZero;
 
-    CGSize textSize = [loadingLabel.text sizeWithFont:loadingLabel.font];
+    CGSize textSize     = CGSizeZero;
+    CGSize progressSize = CGSizeZero;
     
-    CGSize progressSize = CGSizeMake(textSize.height, textSize.height); // Make square
-    
-    textRect = CGRectCenteredInRect(screen, textSize);
-
-    indicatorRect.origin = CGPointMake(textRect.origin.x - progressSize.width - 7, textRect.origin.y); // Padding
-    indicatorRect.size = progressSize;
+    if (!loadingLabel.text) {
+        indicatorRect = screen;
+    }else{
+        textSize     = [loadingLabel.text sizeWithFont:loadingLabel.font];
+        textRect     = CGRectCenteredInRect(screen, textSize);
+        progressSize = CGSizeMake(textSize.height, textSize.height); // Make square;
+        indicatorRect.origin = CGPointMake(textRect.origin.x - progressSize.width - 7, textRect.origin.y); // Padding
+        indicatorRect.size = progressSize;
+    }
     
     loadingLabel.frame = textRect;
     progress.frame     = indicatorRect;
@@ -95,5 +98,4 @@
 - (NSString*) text{
     return loadingLabel.text;
 }
-
 @end

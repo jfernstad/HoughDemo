@@ -33,7 +33,7 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
     self = [super initWithFrame:frame];
     if (self) {
         loadingView = [[LoadingView alloc] initWithFrame:CGRectZero];
-        
+        loadingView.backgroundColor = [UIColor clearColor];
         self.backgroundColor  = [UIColor colorWithWhite:0.3 alpha:0.5];
         self.useComponents    = EPixelBufferAllColors;
         self.stretchHistogram = NO;
