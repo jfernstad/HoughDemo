@@ -474,8 +474,8 @@
         [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationPrepareImage waitUntilDone:NO];
     }
 
-    CGSize newSize = CGSizeAspectFitSize(self.inputUIImage.size, [UIScreen mainScreen].bounds.size);
-    CGImageRef scaledImage = [self CGImageWithImage:self.inputUIImage.CGImage andSize:CGSizeIntegral(newSize)]; 
+    CGSize newSize = CGSizeIntegral(CGSizeAspectFitSize(self.inputUIImage.size, [UIScreen mainScreen].bounds.size));
+    CGImageRef scaledImage = [self CGImageWithImage:self.inputUIImage.CGImage andSize:newSize]; 
 
     NSLog(@"InputSize: %@", NSStringFromCGSize(self.inputUIImage.size));
     NSLog(@"NewSize: %@", NSStringFromCGSize(newSize));
@@ -576,20 +576,22 @@
     CVPixelBufferLockBaseAddress(self.grayScaleImage, 0);
     pixelsIn  = CVPixelBufferGetBaseAddress(self.grayScaleImage);
     pixelsOut = CVPixelBufferGetBaseAddress(self.edgeImage);
-    CVPixelBufferUnlockBaseAddress(self.edgeImage, 0);
-    CVPixelBufferUnlockBaseAddress(self.grayScaleImage, 0);
     
     NSUInteger xx = 0, yy = 0;
     NSInteger kernel[3] = {-1,0,1};
-    NSUInteger w = CVPixelBufferGetWidth(self.edgeImage);
-    NSUInteger h = CVPixelBufferGetHeight(self.edgeImage);
-    NSUInteger ws = CVPixelBufferGetBytesPerRow(self.edgeImage);
+    NSUInteger w = CVPixelBufferGetWidth(self.grayScaleImage);
+    NSUInteger h = CVPixelBufferGetHeight(self.grayScaleImage);
+    NSUInteger ws = CVPixelBufferGetBytesPerRow(self.grayScaleImage);
     NSUInteger edge = 0; 
 
     CVPixelBufferRef blurBuf = [self newEmptyCVPixelBuffer:edgeSize];
     CVPixelBufferLockBaseAddress(blurBuf, 0);
     unsigned char* blur = CVPixelBufferGetBaseAddress(blurBuf);
-    CVPixelBufferUnlockBaseAddress(blurBuf, 0);
+    
+    NSLog(@"EdgeSize: %@", NSStringFromCGSize(edgeSize));
+    NSLog(@"GrayScale: {%4d,%4d,%4d}", (int)CVPixelBufferGetWidth(self.grayScaleImage), (int)CVPixelBufferGetHeight(self.grayScaleImage),  (int)CVPixelBufferGetBytesPerRow(self.grayScaleImage));
+    NSLog(@"EdgeImage: {%4d,%4d,%4d}", (int)CVPixelBufferGetWidth(self.edgeImage), (int)CVPixelBufferGetHeight(self.edgeImage), (int)CVPixelBufferGetBytesPerRow(self.edgeImage));
+    NSLog(@"BlurBuf:   {%4d,%4d,%4d}", (int)CVPixelBufferGetWidth(blurBuf), (int)CVPixelBufferGetHeight(blurBuf), (int)CVPixelBufferGetBytesPerRow(blurBuf));
     
     // BOX BLUR
     // Skip edge row, edge x-direction
@@ -651,8 +653,13 @@
     UIImage* hImg = NULL;//[UIImage imageWithCGImage:copiedImage];
     
     CGImageRelease(copiedImage);
+    
+    CVPixelBufferUnlockBaseAddress(blurBuf, 0);
     CVPixelBufferRelease(blurBuf);
     // DEBUG
+
+    CVPixelBufferUnlockBaseAddress(self.edgeImage, 0);
+    CVPixelBufferUnlockBaseAddress(self.grayScaleImage, 0);
 
     if (self.operationDelegate) {
         NSDictionary* dic = [NSDictionary dictionaryWithObjectsAndKeys:kOperationEdgeImage, kOperationNameKey, hImg, kOperationUIImageKey, nil];
