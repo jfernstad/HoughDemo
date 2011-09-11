@@ -39,6 +39,8 @@
 		837A9CBA13A44F7E00B4CE95 /* Bucket2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A9CB913A44F7D00B4CE95 /* Bucket2D.m */; };
 		839C9DC31373BA690074A39C /* HoughImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 839C9DC21373BA690074A39C /* HoughImageViewController.m */; };
 		839C9DC71373BC770074A39C /* hand.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 839C9DC61373BC770074A39C /* hand.jpg */; };
+		83A23BC3141C5DA6007C2158 /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A23BC2141C5DA6007C2158 /* InfoViewController.m */; };
+		83A23BC5141C618A007C2158 /* information.html in Resources */ = {isa = PBXBuildFile; fileRef = 83A23BC4141C618A007C2158 /* information.html */; };
 		83CBB19F131997300092FE93 /* HoughInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBB19E131997300092FE93 /* HoughInputView.m */; };
 		83CBB2261319B9160092FE93 /* Hough.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBB2251319B9160092FE93 /* Hough.m */; };
 		83CBB22C1319BC160092FE93 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83CBB22B1319BC160092FE93 /* Accelerate.framework */; };
@@ -94,6 +96,9 @@
 		839C9DC11373BA680074A39C /* HoughImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughImageViewController.h; sourceTree = "<group>"; };
 		839C9DC21373BA690074A39C /* HoughImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughImageViewController.m; sourceTree = "<group>"; };
 		839C9DC61373BC770074A39C /* hand.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = hand.jpg; sourceTree = "<group>"; };
+		83A23BC1141C5DA6007C2158 /* InfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoViewController.h; sourceTree = "<group>"; };
+		83A23BC2141C5DA6007C2158 /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
+		83A23BC4141C618A007C2158 /* information.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = information.html; path = assets/information.html; sourceTree = "<group>"; };
 		83CBB19D131997300092FE93 /* HoughInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughInputView.h; sourceTree = "<group>"; };
 		83CBB19E131997300092FE93 /* HoughInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughInputView.m; sourceTree = "<group>"; };
 		83CBB2241319B9160092FE93 /* Hough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Hough.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -196,6 +201,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				83A23BC4141C618A007C2158 /* information.html */,
 				835962C513CD535000BC128A /* tile_50px.png */,
 				839C9DC61373BC770074A39C /* hand.jpg */,
 				836DE7121370F2AA0010D82A /* test.jpg */,
@@ -290,6 +296,8 @@
 				839C9DC21373BA690074A39C /* HoughImageViewController.m */,
 				8353D8411370F701008B125C /* HoughFreeHandViewController.h */,
 				8353D8421370F701008B125C /* HoughFreeHandViewController.m */,
+				83A23BC1141C5DA6007C2158 /* InfoViewController.h */,
+				83A23BC2141C5DA6007C2158 /* InfoViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -394,6 +402,7 @@
 				836DE7131370F2AA0010D82A /* test.jpg in Resources */,
 				839C9DC71373BC770074A39C /* hand.jpg in Resources */,
 				835962C613CD535000BC128A /* tile_50px.png in Resources */,
+				83A23BC5141C618A007C2158 /* information.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,6 +455,7 @@
 				83E3F334140DC5F900E59A29 /* NotificationView.m in Sources */,
 				83FF4115141539C600BA91D4 /* ImageHist.m in Sources */,
 				83FF41181415689000BA91D4 /* HistogramView.m in Sources */,
+				83A23BC3141C5DA6007C2158 /* InfoViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

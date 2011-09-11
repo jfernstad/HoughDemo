@@ -10,6 +10,7 @@
 
 @class HoughFreeHandViewController;
 @class HoughImageViewController;
+@class InfoViewController;
 
 @interface HoughDemoAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow *window;
@@ -23,6 +24,7 @@
 @property (nonatomic, retain) UITabBarController* tabBar;
 @property (nonatomic, retain) HoughFreeHandViewController* freehandVC;
 @property (nonatomic, retain) HoughImageViewController* imageVC;
+@property (nonatomic, retain) InfoViewController* infoVC;
 
 
 @end

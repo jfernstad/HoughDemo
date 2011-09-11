@@ -9,6 +9,7 @@
 #import "HoughDemoAppDelegate.h"
 #import "HoughFreeHandViewController.h"
 #import "HoughImageViewController.h"
+#import "InfoViewController.h"
 
 @implementation HoughDemoAppDelegate
 
@@ -16,6 +17,7 @@
 @synthesize tabBar;
 @synthesize freehandVC;
 @synthesize imageVC;
+@synthesize infoVC;
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -30,7 +32,10 @@
     imageVC = [[HoughImageViewController alloc] init];
     imageVC.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Image" image:[UIImage imageNamed:@"gear.png"] tag:1] autorelease];
 
-    NSArray* vcs = [NSArray arrayWithObjects:freehandVC, imageVC, nil];
+    infoVC = [[InfoViewController alloc] init];
+    infoVC.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Info" image:[UIImage imageNamed:@"gear.png"] tag:2] autorelease];
+    
+    NSArray* vcs = [NSArray arrayWithObjects:freehandVC, imageVC, infoVC, nil];
     
     [tabBar setViewControllers:vcs animated:NO];
     
@@ -81,6 +86,7 @@
 - (void)dealloc {
     self.freehandVC = nil;
     self.imageVC = nil;
+    self.infoVC = nil;
     self.tabBar = nil;
     [window release];
     [super dealloc];
