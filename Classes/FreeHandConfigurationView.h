@@ -9,6 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "ConfigurationBaseView.h"
 
-@interface FreeHandConfigurationView : ConfigurationBaseView
+@interface FreeHandConfigurationView : ConfigurationBaseView{
+    UILabel* drawLabel;
+    UILabel* analysisLabel;
+    
+    UISwitch* drawMode;
+    UISwitch* analysisMode;
+}
+
 
 @end

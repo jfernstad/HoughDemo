@@ -11,11 +11,15 @@
 @interface ConfigurationBaseView : UIView {
 
     UIImageView* lobeView;
+    UIView* backgroundView;
     
+    CGRect contentRect;
     CGRect originalRect;
     CGPoint startPoint;
     CGRect  startRect;
 }
+@property (nonatomic, retain) UIImageView* lobeView;
+@property (nonatomic, retain) UIView* backgroundView;
 
 -(void)showViewAnimated:(BOOL)useAnimation;
 -(void)dismissViewAnimated:(BOOL)useAnimation;
