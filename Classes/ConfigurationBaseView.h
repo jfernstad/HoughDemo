@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface ConfigurationBaseView : UIView {
-    CGRect originalRect;
+
+    UIImageView* lobeView;
     
+    CGRect originalRect;
     CGPoint startPoint;
     CGRect  startRect;
 }

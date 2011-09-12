@@ -12,44 +12,47 @@
 #import "CGGeometry+HoughExtensions.h"
 
 @interface ConfigurationBaseView ()
+@property (nonatomic, retain) UIImageView* lobeView;
 -(void)layoutViews;
 @end
 
 @implementation ConfigurationBaseView
+@synthesize lobeView;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-        UIImage* lobeImage    = [UIImage imageNamed:@"lobe.png"];
-        UIImageView* lobeView = [[[UIImageView alloc] initWithImage:lobeImage] autorelease];
+        UIImage* lobeImage = [UIImage imageNamed:@"lobe.png"];
+        self.lobeView      = [[[UIImageView alloc] initWithImage:lobeImage] autorelease];
 
-        [self addSubview:lobeView];
+        [self addSubview:self.lobeView];
     
         [self layoutViews];
     }
     return self;
 }
 
+-(void)dealloc{
+    self.lobeView = nil;
+    [super dealloc];
+}
+
 -(void)layoutViews{
     CGRect newFrame = self.frame;
     CGRect imgRect  = self.bounds;
+    CGSize lobeSize = self.lobeView.image.size;
     
-    UIImage* lobeImage    = [UIImage imageNamed:@"lobe.png"];
-    UIImageView* lobeView = [[[UIImageView alloc] initWithImage:lobeImage] autorelease];
-    
-    newFrame.size.height = lobeImage.size.height;
+    newFrame.size.height = lobeSize.height;
     imgRect.size = newFrame.size;
     
-    lobeView.frame = CGRectCenteredInRect(imgRect, lobeImage.size);
+    lobeView.frame = CGRectCenteredInRect(imgRect, lobeSize);
     
     // Hide everything except the lobe. 
-    newFrame.origin.y = self.frame.origin.y - newFrame.size.height + lobeImage.size.height;
+    newFrame.origin.y = self.frame.origin.y - newFrame.size.height + lobeSize.height;
     
     self.frame = newFrame;
     originalRect = self.frame;
-    
-    [self addSubview:lobeView];
 }
 
 -(void)showViewAnimated:(BOOL)useAnimation{
