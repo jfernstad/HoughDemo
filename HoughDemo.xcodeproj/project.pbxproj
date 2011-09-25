@@ -37,6 +37,9 @@
 		836AF30A140B366500219303 /* Bucket2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A9CB913A44F7D00B4CE95 /* Bucket2D.m */; };
 		836DE7131370F2AA0010D82A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 836DE7121370F2AA0010D82A /* test.jpg */; };
 		837A9CBA13A44F7E00B4CE95 /* Bucket2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A9CB913A44F7D00B4CE95 /* Bucket2D.m */; };
+		8397FEA7141D57DC00A4678E /* ConfigurationBaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8397FEA6141D57DC00A4678E /* ConfigurationBaseView.m */; };
+		8397FEAA141D641A00A4678E /* lobe.png in Resources */ = {isa = PBXBuildFile; fileRef = 8397FEA9141D641A00A4678E /* lobe.png */; };
+		8397FEB1141D673C00A4678E /* FreeHandConfigurationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8397FEB0141D673C00A4678E /* FreeHandConfigurationView.m */; };
 		839C9DC31373BA690074A39C /* HoughImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 839C9DC21373BA690074A39C /* HoughImageViewController.m */; };
 		839C9DC71373BC770074A39C /* hand.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 839C9DC61373BC770074A39C /* hand.jpg */; };
 		83A23BC3141C5DA6007C2158 /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A23BC2141C5DA6007C2158 /* InfoViewController.m */; };
@@ -93,6 +96,12 @@
 		836DE7121370F2AA0010D82A /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
 		837A9CB813A44F7D00B4CE95 /* Bucket2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bucket2D.h; sourceTree = "<group>"; };
 		837A9CB913A44F7D00B4CE95 /* Bucket2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Bucket2D.m; sourceTree = "<group>"; };
+		8397FEA5141D57DC00A4678E /* ConfigurationBaseView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigurationBaseView.h; sourceTree = "<group>"; };
+		8397FEA6141D57DC00A4678E /* ConfigurationBaseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigurationBaseView.m; sourceTree = "<group>"; };
+		8397FEA8141D5BB800A4678E /* HoughConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughConstants.h; sourceTree = "<group>"; };
+		8397FEA9141D641A00A4678E /* lobe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lobe.png; path = assets/lobe.png; sourceTree = "<group>"; };
+		8397FEAF141D673C00A4678E /* FreeHandConfigurationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreeHandConfigurationView.h; sourceTree = "<group>"; };
+		8397FEB0141D673C00A4678E /* FreeHandConfigurationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FreeHandConfigurationView.m; sourceTree = "<group>"; };
 		839C9DC11373BA680074A39C /* HoughImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughImageViewController.h; sourceTree = "<group>"; };
 		839C9DC21373BA690074A39C /* HoughImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoughImageViewController.m; sourceTree = "<group>"; };
 		839C9DC61373BC770074A39C /* hand.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = hand.jpg; sourceTree = "<group>"; };
@@ -163,6 +172,7 @@
 				83492F1C1347DE2E002BD8BF /* Layer delegates */,
 				1D3623240D0F684500981E51 /* HoughDemoAppDelegate.h */,
 				1D3623250D0F684500981E51 /* HoughDemoAppDelegate.m */,
+				8397FEA8141D5BB800A4678E /* HoughConstants.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -202,6 +212,7 @@
 			isa = PBXGroup;
 			children = (
 				83A23BC4141C618A007C2158 /* information.html */,
+				8397FEA9141D641A00A4678E /* lobe.png */,
 				835962C513CD535000BC128A /* tile_50px.png */,
 				839C9DC61373BC770074A39C /* hand.jpg */,
 				836DE7121370F2AA0010D82A /* test.jpg */,
@@ -287,6 +298,17 @@
 			name = Algorithms;
 			sourceTree = "<group>";
 		};
+		8397FEAE141D668200A4678E /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				8397FEA5141D57DC00A4678E /* ConfigurationBaseView.h */,
+				8397FEA6141D57DC00A4678E /* ConfigurationBaseView.m */,
+				8397FEAF141D673C00A4678E /* FreeHandConfigurationView.h */,
+				8397FEB0141D673C00A4678E /* FreeHandConfigurationView.m */,
+			);
+			name = Configuration;
+			sourceTree = "<group>";
+		};
 		839C9DC41373BA770074A39C /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -305,6 +327,7 @@
 		839C9DC51373BA9B0074A39C /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				8397FEAE141D668200A4678E /* Configuration */,
 				83CBB19D131997300092FE93 /* HoughInputView.h */,
 				83CBB19E131997300092FE93 /* HoughInputView.m */,
 				831BFCBE132C445E00019FBD /* HoughTouchView.h */,
@@ -403,6 +426,7 @@
 				839C9DC71373BC770074A39C /* hand.jpg in Resources */,
 				835962C613CD535000BC128A /* tile_50px.png in Resources */,
 				83A23BC5141C618A007C2158 /* information.html in Resources */,
+				8397FEAA141D641A00A4678E /* lobe.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,6 +480,8 @@
 				83FF4115141539C600BA91D4 /* ImageHist.m in Sources */,
 				83FF41181415689000BA91D4 /* HistogramView.m in Sources */,
 				83A23BC3141C5DA6007C2158 /* InfoViewController.m in Sources */,
+				8397FEA7141D57DC00A4678E /* ConfigurationBaseView.m in Sources */,
+				8397FEB1141D673C00A4678E /* FreeHandConfigurationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
