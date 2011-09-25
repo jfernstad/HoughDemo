@@ -14,15 +14,16 @@
 typedef CGFloat(^GraphCalculator)(CGFloat);
 
 @interface HistogramView()
--(void)execute;
+@property (nonatomic, retain) ImageHist* histogramObject;
 @property (nonatomic, retain) NSDictionary* histogram;
 @property (nonatomic, retain) LoadingView* loadingView;
+-(void)executeInBackground;
 @end
 
 @implementation HistogramView
-@synthesize image;
 @synthesize histogram;
 @synthesize histogramColor;
+@synthesize histogramObject;
 @synthesize loadingView;
 @synthesize useComponents;
 @synthesize stretchHistogram;
@@ -39,6 +40,8 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
         self.stretchHistogram = NO;
         self.logHistogram     = NO;
         
+        self.histogramObject = [[[ImageHist alloc] init] autorelease]; // Use default settings
+        
         [self addSubview:loadingView];
     }
     return self;
@@ -46,43 +49,36 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
 
 -(void)dealloc{
 
-    self.image = nil;
     self.loadingView = nil;
     self.histogram = nil;
     self.histogramColor = nil;
-
+    self.histogramObject = nil;
+    
     [super dealloc];
 }
 
--(void)setImage:(CVPixelBufferRef)newImage{
-    // Start loading view?
-    // Start histogram operation?
+-(void)executeWithImage:(CVPixelBufferRef)inputForHistogram{
+    NSLog(@"Execute histogramView");
+    self.histogramObject.histogramPixelBufferComponent = self.useComponents;
+    self.histogramObject.histogramGraph = EHistogramGraphLogarithmic;
+    self.histogramObject.histogramType  = EHistogramTypeReverseCumulative;
+    self.histogramObject.image          = inputForHistogram;
+    self.histogramObject.finishBlock    = ^(NSDictionary* dic){self.histogram = dic;};
+
     [self.loadingView startProgress];
-    
-    if (image != newImage) {
-        CVPixelBufferRetain(newImage);
-        CVPixelBufferRelease(image);
-        image = newImage;
-    }
-    
-    [self performSelectorInBackground:@selector(execute) withObject:nil];
+    [self performSelectorInBackground:@selector(executeInBackground) withObject:nil];
 }
 
--(void)execute{
+-(void)executeInBackground{
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; 
-    
-    [ImageHist histoGramWithCVPixelBuffer:self.image
-                              onComponent:self.useComponents
-                              finishBlock:^(NSDictionary* dic){
-                                  self.histogram = dic;
-                              }];
-    
-    [self.loadingView stopProgress];
+    NSLog(@"Background execution");
 
+    [self.histogramObject createHistogram];
     // Reorder histogram to internal representation
-    
-    [self setNeedsDisplay];
-    // Remove loading view
+
+    // TODO: Can I do this another way?
+    [self.loadingView performSelectorOnMainThread:@selector(stopProgress) withObject:nil waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
     [pool drain];
 }
 

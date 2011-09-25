@@ -13,7 +13,7 @@
 
 @interface HistogramView : UIView
 {
-    CVPixelBufferRef image;
+    ImageHist* histogramObject;
     NSDictionary* histogram;
     
     UIColor* histogramColor;
@@ -23,10 +23,11 @@
     BOOL stretchHistogram;
     BOOL logHistogram;
 }
-@property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef image;
 @property (nonatomic, retain) UIColor* histogramColor;
 @property (nonatomic, assign) EPixelBufferComponent useComponents;
 @property (nonatomic, assign) BOOL stretchHistogram;
 @property (nonatomic, assign) BOOL logHistogram;
+
+-(void)executeWithImage:(CVPixelBufferRef)inputForHistogram;
 
 @end

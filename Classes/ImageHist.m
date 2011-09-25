@@ -9,25 +9,47 @@
 #import "ImageHist.h"
 
 @implementation ImageHist
+@synthesize image;
+@synthesize histogramPixelBufferComponent;
+@synthesize histogramGraph;
+@synthesize histogramType;
+@synthesize finishBlock;
 
-+(void)histoGramWithCVPixelBuffer:(CVPixelBufferRef)inBuffer onComponent:(EPixelBufferComponent)components finishBlock:(HistogramFinished)block{
+-(id)init{
+    
+    if ((self = [super init])) {
+        self.histogramPixelBufferComponent = EPixelBufferAllColors;
+        self.histogramGraph                = EHistogramGraphLinear;
+        self.histogramType                 = EHistogramTypeNormal;
+        
+        self.finishBlock = nil;
+        self.image = nil;
+    }
+    return self;
+}
+
+-(void)dealloc{
+    self.image = nil;
+    self.finishBlock = nil;
+    
+    [super dealloc];
+}
+//+(void)histoGramWithCVPixelBuffer:(CVPixelBufferRef)inBuffer onComponent:(EPixelBufferComponent)components finishBlock:(HistogramFinished)block{}
+
+-(void)createHistogram{
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
     NSMutableDictionary* dic = nil;
     NSMutableDictionary* curDic = nil;
     NSMutableDictionary* statsDic = nil;
     
-    if (block) {
-        [block copy];
-    }
+    if (!self.image) return; // TODO: do this better, failBlock?
     
-    CVPixelBufferRetain(inBuffer);
+    CVPixelBufferLockBaseAddress(self.image, 0);
     
-    CVPixelBufferLockBaseAddress(inBuffer, 0);
+    UInt8* pixels = CVPixelBufferGetBaseAddress(self.image);
     
-    UInt8* pixels = CVPixelBufferGetBaseAddress(inBuffer);
-    
-    CVPixelBufferUnlockBaseAddress(inBuffer, 0);
+    CVPixelBufferUnlockBaseAddress(self.image, 0);
     
     // C-stuff, for speed
     int histogram[4][256];
@@ -36,32 +58,67 @@
     NSMutableArray* aryComponents = [NSMutableArray array];
     
     // Pixel offset, assume Pixelbuffer is ARGB 32bit Big Endian format
-    if (components & EPixelBufferAlpha) {
+    if (self.histogramPixelBufferComponent & EPixelBufferAlpha) {
         [aryComponents addObject:[NSNumber numberWithInt:0]]; 
     }
-    if (components & EPixelBufferRed) {
+    if (self.histogramPixelBufferComponent & EPixelBufferRed) {
         [aryComponents addObject:[NSNumber numberWithInt:1]]; 
     }
-    if (components & EPixelBufferGreen) {
+    if (self.histogramPixelBufferComponent & EPixelBufferGreen) {
         [aryComponents addObject:[NSNumber numberWithInt:2]]; 
     }
-    if (components & EPixelBufferBlue) {
+    if (self.histogramPixelBufferComponent & EPixelBufferBlue) {
         [aryComponents addObject:[NSNumber numberWithInt:3]]; 
     }
     
     UInt8 value = 0;
     NSInteger ii = 0;
     NSInteger offset = 0;
+    NSUInteger histValue = 0;
+    NSUInteger prevValue = 0;
+    NSUInteger bufferSize = CVPixelBufferGetDataSize(self.image);
     
     // Generate histogram
+    
     for (NSNumber* n in aryComponents) {
         offset = [n integerValue];
         
-        for (ii = 0; ii < CVPixelBufferGetDataSize(inBuffer); ii+=4) {
+        for (ii = 0; ii < bufferSize; ii+=4) {
             value = pixels[ii + offset];
             histogram[offset][value] += 1;
         }
     }
+
+    // In case we're doing accumulative stuff
+    switch (self.histogramType) {
+        case EHistogramTypeCumulative:
+            for (NSNumber* n in aryComponents) {
+                offset = [n integerValue];
+                prevValue = 0;
+                
+                for (ii = 0; ii < 256; ii++) {
+                    histValue = histogram[offset][ii];
+                    histogram[offset][ii] = histValue + prevValue;
+                    prevValue = histValue + prevValue;
+                }
+            }
+            break;
+        case EHistogramTypeReverseCumulative:
+            for (NSNumber* n in aryComponents) {
+                offset = [n integerValue];
+                prevValue = 0;
+                
+                for (ii = 255; ii >= 0; ii--) {
+                    histValue = histogram[offset][ii];
+                    histogram[offset][ii] = histValue + prevValue;
+                    prevValue = histValue + prevValue;
+                }
+            }
+            break;
+        default:
+            break;
+    }
+
     
     int intValue = 0;
     
@@ -70,7 +127,6 @@
     NSInteger minIntensity = 9999;
     NSInteger maxIntensity = 0;
     BOOL foundMinVal    = NO;
-    BOOL foundMaxVal    = NO;
     
     // Store in obj-c array and dictionary
     // Ponder this: Should the histogram simply be an array with NSIndexPath objects? [Component].[Intensity].[Hits] .. Probably not 
@@ -83,7 +139,7 @@
         minIntensity = 9999;
         maxIntensity = 0;
         foundMinVal  = NO;
-//        foundMaxVal  = NO;
+        //        foundMaxVal  = NO;
         curDic       = nil;
         statsDic     = nil;
         
@@ -128,10 +184,8 @@
         }
     }
     
-    CVPixelBufferRelease(inBuffer);
-    
-    if (block) {
-        block(dic);
+    if (self.finishBlock) {
+        self.finishBlock(dic);
     }
     [pool drain];
 }
