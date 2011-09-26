@@ -12,14 +12,17 @@
 #import "HoughTouchView.h"
 #import "HoughLineOverlayDelegate.h"
 #import "CircleOverlayDelegate.h"
+#import "ConfigurationBaseView.h"
 
 @class HoughTouchView;
 @class Bucket2D;
+@class FreeHandConfigurationView;
 
-@interface HoughFreeHandViewController : HoughBaseViewController <HoughInputProtocol, HoughOverlayProtocol, HoughOperationDelegate>{
+@interface HoughFreeHandViewController : HoughBaseViewController <HoughInputProtocol, HoughOverlayProtocol, HoughOperationDelegate, ConfigurationProtocol>{
     // View elements
 	HoughInputView* houghInputView;
 	HoughTouchView* houghTouchView;
+    FreeHandConfigurationView* confView;
 	UILabel* status;
 	UISegmentedControl* modeControl;
     
@@ -33,6 +36,7 @@
     BOOL persistentTouch;
     BOOL pointAdded;
     BOOL readyForAnalysis;
+    BOOL shouldAnalyzeAutomatically;
     
     NSTimer* analysisTimer;
 }
@@ -44,10 +48,12 @@
 @property (assign) BOOL persistentTouch;
 @property (assign) BOOL pointAdded;
 @property (assign) BOOL readyForAnalysis;
+@property (assign) BOOL shouldAnalyzeAutomatically;
 @property (nonatomic, retain) CALayer* lineLayer;
 @property (nonatomic, retain) CALayer* circleLayer;
 @property (nonatomic, retain) HoughLineOverlayDelegate* lineDelegate;
 @property (nonatomic, retain) CircleOverlayDelegate* circleDelegate;
+@property (nonatomic, retain) FreeHandConfigurationView* confView;
 
 -(void)clear;
 -(void)updateInputWithPoints:(NSArray*)pointArray;

@@ -14,4 +14,5 @@
 // Configuration keys
 #define kHoughAnalysisModeChanged       @"HoughAnalysisModeChanged"
 #define kHoughDrawModeChanged           @"HoughDrawModeChanged"
+#define kHoughThresholdChanged          @"HoughThresholdChanged"
 #endif

@@ -7,14 +7,18 @@
 //
 
 #import "HoughFreeHandViewController.h"
+#import "FreeHandConfigurationView.h"
 #import "HoughLineOverlayDelegate.h"
 #import "UIColor+HoughExtensions.h"
 #import "NotificationView.h"
+#import "HoughConstants.h"
 
 @interface HoughFreeHandViewController ()
 -(void)layoutViews;
 -(void)interactionMode:(id)sender;
 -(void)startAnalysis:(NSTimer*)timer;
+-(void)startAnalysisTimer;
+-(void)stopAnalysisTimer;
 @end
 
 @implementation HoughFreeHandViewController
@@ -24,11 +28,13 @@
 @synthesize pointAdded;
 @synthesize persistentTouch;
 @synthesize readyForAnalysis;
+@synthesize shouldAnalyzeAutomatically;
 @synthesize status;
 @synthesize lineLayer;
 @synthesize circleLayer;
 @synthesize lineDelegate;
 @synthesize circleDelegate;
+@synthesize confView;
 
 /*
  // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -42,16 +48,6 @@
  */
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
-
--(void)startAnalysis:(NSTimer*)timer{
-    if (!self.busy && self.pointAdded && self.readyForAnalysis) {
-        //NSLog(@"Executing analysis.");
-
-        self.readyForAnalysis = NO;
-        self.pointAdded = NO;
-        [self.hough performSelectorInBackground:@selector(analyzeHoughSpaceOp) withObject:nil];
-    }
-}
 
 - (void)loadView {
     
@@ -82,13 +78,20 @@
     CGRect tmpRect    = CGRectZero;
     CGRectDivide(tileRect, &tmpRect, &tileRect, 50, CGRectMaxYEdge);
 
-    self.hough.operationDelegate = self;
-    self.houghInputView.houghRef = self.hough;
-    self.houghTouchView.houghRef = self.hough;
+    // TODO: Load and set parameters for Hough here.
+    self.hough.houghThreshold     = 10;
+    self.hough.maxHoughInput      = 1000;
+    self.hough.operationDelegate  = self;
+    self.houghInputView.houghRef  = self.hough;
+    self.houghTouchView.houghRef  = self.hough;
     
     self.persistentTouch = YES;
     self.houghInputView.persistentTouch = self.persistentTouch;
 
+    // TODO: Read configuration parameters
+    // setup shouldAnalyzeAutomatically here
+    self.shouldAnalyzeAutomatically = YES;
+    
     // TODO: Clean this mess up..
     modeControl = [[[UISegmentedControl alloc] initWithItems:
                                         [NSArray arrayWithObjects:@"  Draw  ", @"  Tap  ", nil]] autorelease];
@@ -129,6 +132,16 @@
                                                                                     target:nil
                                                                                     action:nil] autorelease];
     
+    UILabel* lbl = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+    lbl.backgroundColor = [UIColor clearColor];
+    lbl.font = [UIFont boldSystemFontOfSize:20];
+    lbl.textColor = [UIColor whiteColor];
+    lbl.text = @"Doodle";
+    [lbl sizeToFit];
+    
+    titleItem.customView = lbl;
+
+    
     selectionItem.possibleTitles = [NSSet setWithObjects:@"Draw", @"Tap", @"long titel", nil];
     fixSpaceItem.width  = 330;
     fixSpaceItem2.width = 30;
@@ -156,6 +169,15 @@
     
     [self.view addSubview:self.houghTouchView];
     [self.view addSubview:self.houghInputView];
+    
+    // TODO: Remove/rewrite this test
+    CGRect confRect = contentRect;
+    confRect.size.height = 100;
+    self.confView = [[[FreeHandConfigurationView alloc] initWithFrame:confRect] autorelease];
+    self.confView.delegate = self;
+    [self.view addSubview:self.confView];
+
+    [self.view bringSubviewToFront:self.toolBar];
 }
 
 -(void)layoutViews{
@@ -188,9 +210,8 @@
 
     // TODO: Manage this from button instead
     
-    analysisTimer = [NSTimer timerWithTimeInterval:0.1 target:self selector:@selector(startAnalysis:) userInfo:nil repeats:YES];
+    [self startAnalysisTimer];
     
-    [[NSRunLoop mainRunLoop] addTimer:analysisTimer forMode:NSDefaultRunLoopMode];
 	self.busy = NO;
     self.readyForAnalysis = YES;
 }
@@ -218,6 +239,7 @@
 	
 	self.houghInputView	= nil;
 	self.houghTouchView = nil;
+    self.confView       = nil;
     self.status         = nil;
     self.lineLayer      = nil;
     self.lineDelegate   = nil;
@@ -229,8 +251,28 @@
     [super dealloc];
 }
 
-#pragma mark -
-#pragma mark Delegates
+#pragma mark - Timer related
+
+-(void)startAnalysis:(NSTimer*)timer{
+    if (self.shouldAnalyzeAutomatically && !self.busy && self.pointAdded && self.readyForAnalysis) {
+        //NSLog(@"Executing analysis.");
+        
+        self.readyForAnalysis = NO;
+        self.pointAdded = NO;
+        [self.hough performSelectorInBackground:@selector(analyzeHoughSpaceOp) withObject:nil];
+    }
+}
+
+-(void)startAnalysisTimer{
+    analysisTimer = [NSTimer timerWithTimeInterval:0.1 target:self selector:@selector(startAnalysis:) userInfo:nil repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:analysisTimer forMode:NSDefaultRunLoopMode];
+}
+-(void)stopAnalysisTimer{
+    [analysisTimer invalidate];
+    analysisTimer = nil;
+}
+
+#pragma mark - Delegates
 
 -(void)updateInputWithPoints:(NSArray*)pointArray{
 	// If we are not busy drawing the hough, update the input. 
@@ -314,4 +356,31 @@
     self.readyForAnalysis = YES;
 }
 
+-(void)updateConfigurationWithDictionary:(NSDictionary*)changedValues{
+    NSNumber* analysisModeChanged = [changedValues objectForKey:kHoughAnalysisModeChanged];
+    NSNumber* drawModeChanged     = [changedValues objectForKey:kHoughDrawModeChanged];
+    NSNumber* thresholdChanged    = [changedValues objectForKey:kHoughThresholdChanged];
+
+    if (analysisModeChanged) {
+        if ([analysisModeChanged boolValue]) {
+            [self startAnalysisTimer];
+            self.shouldAnalyzeAutomatically = YES;
+        }
+        else{
+            [self stopAnalysisTimer];
+            self.shouldAnalyzeAutomatically = NO;
+        }
+    }
+
+    if (drawModeChanged) {
+        self.persistentTouch = [drawModeChanged boolValue];
+    }
+    
+    if (thresholdChanged) {
+        self.hough.houghThreshold = [thresholdChanged integerValue];
+        self.pointAdded = YES;
+        NSLog(@"%@", thresholdChanged);
+    }
+    
+}
 @end

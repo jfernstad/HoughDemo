@@ -12,9 +12,12 @@
 @interface FreeHandConfigurationView : ConfigurationBaseView{
     UILabel* drawLabel;
     UILabel* analysisLabel;
+    UILabel* thresholdLabel;
     
     UISwitch* drawMode;
     UISwitch* analysisMode;
+//    UISlider* linesSlider;
+    UISlider* thresholdSlider;
 }
 
 
