@@ -33,13 +33,6 @@ typedef enum EPixelBufferComponent{
     
 }EPixelBufferComponent;
 
-typedef enum EHistogramGraph{
-    EHistogramGraphLinear         = 0x00,
-    EHistogramGraphLogarithmic    = 0x01,
-    EHistogramGraphExponential    = 0x02,
-    
-}EHistogramGraph;
-
 typedef enum EHistogramType{
     EHistogramTypeNormal             = 0x00,
     EHistogramTypeCumulative         = 0x01,
@@ -51,18 +44,15 @@ typedef enum EHistogramType{
 {
     CVPixelBufferRef      image;
     EPixelBufferComponent histogramPixelBufferComponent;
-    EHistogramGraph       histogramGraph;
     EHistogramType        histogramType;
     HistogramFinished     finishBlock;
     
 }
 @property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef image;
 @property (nonatomic, assign) EPixelBufferComponent histogramPixelBufferComponent;
-@property (nonatomic, assign) EHistogramGraph       histogramGraph;
 @property (nonatomic, assign) EHistogramType        histogramType;
 @property (nonatomic, copy)   HistogramFinished     finishBlock;
 
 -(void)createHistogram;
-//+(void)histoGramWithCVPixelBuffer:(CVPixelBufferRef)inBuffer onComponent:(EPixelBufferComponent)components finishBlock:(HistogramFinished)block;
 @end
 

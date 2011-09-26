@@ -11,7 +11,6 @@
 @implementation ImageHist
 @synthesize image;
 @synthesize histogramPixelBufferComponent;
-@synthesize histogramGraph;
 @synthesize histogramType;
 @synthesize finishBlock;
 
@@ -19,7 +18,6 @@
     
     if ((self = [super init])) {
         self.histogramPixelBufferComponent = EPixelBufferAllColors;
-        self.histogramGraph                = EHistogramGraphLinear;
         self.histogramType                 = EHistogramTypeNormal;
         
         self.finishBlock = nil;
@@ -34,7 +32,6 @@
     
     [super dealloc];
 }
-//+(void)histoGramWithCVPixelBuffer:(CVPixelBufferRef)inBuffer onComponent:(EPixelBufferComponent)components finishBlock:(HistogramFinished)block{}
 
 -(void)createHistogram{
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -155,10 +152,10 @@
                 foundMinVal = YES; // First color with intensity > 0
                 
                 if (!dic) {
-                    dic = [NSMutableDictionary dictionary];
+                    dic = [NSMutableDictionary dictionaryWithCapacity:aryComponents.count];
                 }
                 if (!curDic) {
-                    curDic = [NSMutableDictionary dictionary];
+                    curDic = [NSMutableDictionary dictionaryWithCapacity:256];
                     [dic setObject:curDic forKey:n];
                 }
                 
