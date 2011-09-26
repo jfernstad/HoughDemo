@@ -60,7 +60,6 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
 -(void)executeWithImage:(CVPixelBufferRef)inputForHistogram{
     NSLog(@"Execute histogramView");
     self.histogramObject.histogramPixelBufferComponent = self.useComponents;
-    self.histogramObject.histogramGraph = EHistogramGraphLogarithmic;
     self.histogramObject.histogramType  = EHistogramTypeReverseCumulative;
     self.histogramObject.image          = inputForHistogram;
     self.histogramObject.finishBlock    = ^(NSDictionary* dic){self.histogram = dic;};
