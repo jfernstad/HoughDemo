@@ -8,6 +8,7 @@
 
 #import "FreeHandConfigurationView.h"
 #import "CGGeometry+HoughExtensions.h"
+#import "HoughConstants.h"
 
 @interface FreeHandConfigurationView()
 -(void)layoutViews;
@@ -15,6 +16,12 @@
 @property (nonatomic, retain) UILabel* analysisLabel;
 @property (nonatomic, retain) UISwitch* drawMode;
 @property (nonatomic, retain) UISwitch* analysisMode;
+
+// Actions
+-(void)analysisModeChanged:(id)sender;
+-(void)drawModeChanged:(id)sender;
+
+
 @end
 
 @implementation FreeHandConfigurationView
@@ -29,6 +36,11 @@
     if (self) {
         self.drawMode     = [[[UISwitch alloc] initWithFrame:CGRectZero] autorelease];
         self.analysisMode = [[[UISwitch alloc] initWithFrame:CGRectZero] autorelease];
+        [self.drawMode     addTarget:self action:@selector(drawModeChanged:) forControlEvents:UIControlEventTouchUpInside];
+        [self.analysisMode addTarget:self action:@selector(analysisModeChanged:) forControlEvents:UIControlEventTouchUpInside];
+        
+        self.drawMode.exclusiveTouch = YES;
+        self.analysisMode.exclusiveTouch = YES;
         
         self.drawLabel     = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
         self.analysisLabel = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
@@ -105,7 +117,7 @@
     imgRect.origin = CGPointMake(CGRectGetMinX(contentRect), CGRectGetMaxY(contentRect));
     imgRect.size = CGSizeMake(contentRect.size.width, lobeSize.height);
     
-    lobeView.frame = CGRectCenteredInRect(imgRect, lobeSize);
+    self.lobeView.frame = CGRectCenteredInRect(imgRect, lobeSize);
     
     // Hide everything except the lobe. 
     newFrame.origin.y = newFrame.origin.y - newFrame.size.height + lobeSize.height;
@@ -115,5 +127,20 @@
     originalRect = self.frame;
 }
 
+#pragma mark - Actions
+-(void)drawModeChanged:(id)sender{
+    // kHoughDrawModeChanged
+    BOOL isDrawMode = self.drawMode.on;
+    NSDictionary* dic = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:isDrawMode] forKey:kHoughDrawModeChanged];
 
+    [self.delegate updateConfigurationWithDictionary:dic];
+}
+
+-(void)analysisModeChanged:(id)sender{
+    // kHoughAnalysisModeChanged
+    BOOL isAnalysisMode = self.analysisMode.on;
+    NSDictionary* dic = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:isAnalysisMode] forKey:kHoughAnalysisModeChanged];
+    
+    [self.delegate updateConfigurationWithDictionary:dic];
+}
 @end

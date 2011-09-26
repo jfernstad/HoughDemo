@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ConfigurationBaseView : UIView {
+@protocol ConfigurationProtocol <NSObject>
+-(void)updateConfigurationWithDictionary:(NSDictionary*)changedValues;
+@end
 
-    UIImageView* lobeView;
-    UIView* backgroundView;
-    
+@interface ConfigurationBaseView : UIView {
     CGRect contentRect;
     CGRect originalRect;
     CGPoint startPoint;
@@ -20,8 +20,10 @@
 }
 @property (nonatomic, retain) UIImageView* lobeView;
 @property (nonatomic, retain) UIView* backgroundView;
+@property (nonatomic, assign) BOOL isOpen;
+@property (nonatomic, assign) id<ConfigurationProtocol>delegate;
 
 -(void)showViewAnimated:(BOOL)useAnimation;
 -(void)dismissViewAnimated:(BOOL)useAnimation;
-
+-(void)updatePosition:(CGPoint)startPos withPosition:(CGPoint)newPoint;
 @end

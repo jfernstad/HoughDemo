@@ -18,6 +18,8 @@
 @implementation ConfigurationBaseView
 @synthesize lobeView;
 @synthesize backgroundView;
+@synthesize isOpen;
+@synthesize delegate;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -68,12 +70,29 @@
     [UIView beginAnimations:@"AnimateClose" context:nil];
     self.frame = maxRect;
     [UIView commitAnimations];
+    self.isOpen = YES;
 }
 
 -(void)dismissViewAnimated:(BOOL)useAnimation{
     [UIView beginAnimations:@"AnimateClose" context:nil];
     self.frame = originalRect;
     [UIView commitAnimations];
+    self.isOpen = NO;
+}
+
+#pragma mark - Update position - Children should override
+
+-(void)updatePosition:(CGPoint)startPos withPosition:(CGPoint)newPoint{
+    CGFloat delta = newPoint.y - startPoint.y;
+    CGPoint newPosition = self.frame.origin;
+    
+    newPosition.y += delta;
+    newPosition.y = MAX(MIN(newPosition.y,CGRectGetMaxY(originalRect)),CGRectGetMinY(originalRect));
+    
+    CGRect myRect = originalRect;
+    myRect.origin = newPosition;
+    
+    self.frame = myRect;
 }
 
 #pragma mark - Touches
@@ -88,22 +107,25 @@
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event{
     UITouch* currentTouch = [touches anyObject]; // Should probably use first object
-    CGFloat delta = [currentTouch locationInView:self].y - startPoint.y;
-    CGPoint newPosition = self.frame.origin;
+
+    [self updatePosition:startPoint withPosition:[currentTouch locationInView:self]];
     
-    newPosition.y += delta;
-    newPosition.y = MAX(MIN(newPosition.y,CGRectGetMaxY(originalRect)),CGRectGetMinY(originalRect));
-    
-    CGRect myRect = originalRect;
-    myRect.origin = newPosition;
-    
-    self.frame = myRect;
 }
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-    CGFloat delta = self.frame.origin.y - originalRect.origin.y;
+    UITouch* aTouch = [touches anyObject]; // Should probably use first object
+    CGFloat frameDelta = self.frame.origin.y - originalRect.origin.y;
+    CGFloat touchDelta = startPoint.y - [aTouch locationInView:self].y;
 
-    if (delta >= originalRect.size.height/2.0) {
+    if((int)touchDelta == 0){ // Toggle
+        if (self.isOpen) {
+            [self dismissViewAnimated:YES];
+        }
+        else{
+            [self showViewAnimated:YES];
+        }
+    }
+    else if (frameDelta >= originalRect.size.height/2.0) {
         [self showViewAnimated:YES];
         NSLog(@"Showing view");
     }
