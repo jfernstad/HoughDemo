@@ -64,27 +64,35 @@
     NSObject<HoughOperationDelegate>* operationDelegate;
 
     // Hough buffers
-    CVImageBufferRef houghSpace;
-    CVImageBufferRef tmpHoughSpace;
+    CVPixelBufferRef houghSpace;
+    CVPixelBufferRef tmpHoughSpace;
     
     // Interrim images
     UIImage* inputUIImage;
-    CVImageBufferRef inputImage; 
-    CVImageBufferRef grayScaleImage;
-    CVImageBufferRef edgeImage;
-    CVImageBufferRef thinnedImage;
+    CVPixelBufferRef inputImage; 
+    CVPixelBufferRef grayScaleImage;
+    CVPixelBufferRef edgeImage;
+    CVPixelBufferRef thinnedImage;
+    
+    //Configuration
+    NSUInteger maxHoughInput;
+    NSUInteger grayscaleThreshold;
+    NSUInteger houghThreshold;
 }
 @property (nonatomic, assign) CGFloat yScale;
 @property (nonatomic, assign) CGSize size;
 @property (nonatomic, assign) BOOL storeAfterDraw;
 @property (nonatomic, assign) NSObject<HoughOperationDelegate>* operationDelegate;
 
-@property (nonatomic, readonly) CVImageBufferRef InputImage;
-@property (nonatomic, readonly) CVImageBufferRef HoughImage;
-@property (nonatomic, readonly) CVImageBufferRef GrayScaleImage;
-@property (nonatomic, readonly) CVImageBufferRef EdgeImage;
-@property (nonatomic, readonly) CVImageBufferRef ThinnedImage;
+@property (nonatomic, readonly) CVPixelBufferRef InputImage;
+@property (nonatomic, readonly) CVPixelBufferRef HoughImage;
+@property (nonatomic, readonly) CVPixelBufferRef GrayScaleImage;
+@property (nonatomic, readonly) CVPixelBufferRef EdgeImage;
+@property (nonatomic, readonly) CVPixelBufferRef ThinnedImage;
 
+@property (nonatomic, assign) NSUInteger maxHoughInput;
+@property (nonatomic, assign) NSUInteger grayscaleThreshold;
+@property (nonatomic, assign) NSUInteger houghThreshold;
 
 // Manual Interaction methods
 -(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points persistent:(BOOL)pointsArePersistent; // Completely redraw houghImage. TODO: Remove?

@@ -48,12 +48,12 @@
 @property (nonatomic, retain) UIImage* inputUIImage;
 @property (nonatomic, assign) CGSize imgSize;
 
-@property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef houghSpace;
-@property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef tmpHoughSpace;
-@property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef inputImage; 
-@property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef grayScaleImage;
-@property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef edgeImage;
-@property (nonatomic, retain) __attribute__((NSObject)) CVImageBufferRef thinnedImage;
+@property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef houghSpace;
+@property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef tmpHoughSpace;
+@property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef inputImage; 
+@property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef grayScaleImage;
+@property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef edgeImage;
+@property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef thinnedImage;
 
 -(void) setupHough;
 -(NSArray*) createCurvesForPoints:(NSArray*)points;
@@ -83,6 +83,10 @@
 @synthesize edgeImage;
 @synthesize thinnedImage;
 
+@synthesize maxHoughInput;
+@synthesize grayscaleThreshold;
+@synthesize houghThreshold;
+
 -(id)init{
     
 	if ((self = [super init])) {
@@ -90,6 +94,11 @@
         self.storeAfterDraw = NO;
         self.yScale = Y_SCALE;
         operationQueue = [[NSOperationQueue alloc] init];
+
+        // TODO: Find better default values
+        self.maxHoughInput      = 1000;
+        self.grayscaleThreshold = 128;
+        self.houghThreshold     = MIN_INTENSITY;
     }
 	
 	return self;
@@ -696,33 +705,32 @@
         [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationCreateHoughSpaceImage waitUntilDone:NO];
     }
     
-    NSMutableArray* points = [NSMutableArray array];
+    NSMutableArray* points = [NSMutableArray arrayWithCapacity:self.maxHoughInput]; // TODO: Tie to parameter
     
     CVPixelBufferLockBaseAddress(self.edgeImage, 0); // Is this neccessary?
     unsigned char *pixels = CVPixelBufferGetBaseAddress(self.edgeImage);
     CVPixelBufferUnlockBaseAddress(self.edgeImage, 0);
     
     NSUInteger xx = 0, yy = 0;
-    NSUInteger w = CVPixelBufferGetWidth(self.edgeImage);
-    NSUInteger h = CVPixelBufferGetHeight(self.edgeImage);
+    NSUInteger w  = CVPixelBufferGetWidth(self.edgeImage);
+    NSUInteger h  = CVPixelBufferGetHeight(self.edgeImage);
     NSUInteger ws = CVPixelBufferGetBytesPerRow(self.edgeImage);
     UInt8 intensity = 0;
     NSUInteger counter = 0;
     
 	// Get Positions from pixels in edge image
     for( yy = 0; yy < h; yy++){
-        // TODO: Parametrize max number of pixels
-        if (counter > 1000) { 
+        if (counter > self.maxHoughInput) { 
             break;
         }
         for( xx = 0; xx < w; xx++){
             
             intensity = pixels[xx*4 + 1 + yy * ws];
             
-            if( intensity > 254 ){ // Threshold
+            if( intensity > self.grayscaleThreshold ){ // Threshold, Parametrize
                 [points addObject:[NSValue valueWithCGPoint:CGPointMake(xx, yy)]];
                 
-                if (++counter > 1000) {
+                if (++counter > self.maxHoughInput) {
                     NSLog(@"Hit limit @ (%d,%d) %d pixels examined. ", xx,yy,xx*yy);
                     break;
                 }
@@ -780,7 +788,7 @@
             
             idx = x + y*imgWidth;
             intensity = rasterData[idx];
-            if( intensity > MIN_INTENSITY ){
+            if( intensity > self.houghThreshold ){
                 pointRect.origin.x = x;
                 pointRect.origin.y = y;
                 
