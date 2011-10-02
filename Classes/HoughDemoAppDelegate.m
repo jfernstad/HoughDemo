@@ -24,6 +24,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
+    [UIApplication sharedApplication].statusBarHidden = YES;
+
     tabBar              = [[UITabBarController alloc] init];
     
     freehandVC = [[HoughFreeHandViewController alloc] init];
@@ -40,8 +42,6 @@
     [tabBar setViewControllers:vcs animated:NO];
     
 
-    [UIApplication sharedApplication].statusBarHidden = YES;
-    
     // Override point for customization after app launch. 
     [self.window addSubview:tabBar.view];
     [self.window makeKeyAndVisible];
