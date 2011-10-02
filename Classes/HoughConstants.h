@@ -9,6 +9,9 @@
 #ifndef HoughDemo_HoughConstants_h
 #define HoughDemo_HoughConstants_h
 
+#define CORNER_RADIUS 10
+#define EDGE_WIDTH     2
+
 #define kSelectedImageNotification      @"SelectedImageNotification" // Value = NSString, UIImagePickerControllerReferenceURL from ImagePickerController
 
 // Configuration keys

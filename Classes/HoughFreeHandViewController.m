@@ -172,7 +172,7 @@
     
     // TODO: Remove/rewrite this test
     CGRect confRect = contentRect;
-    confRect.size.height = 100;
+    confRect.size.height = 90;
     self.confView = [[[FreeHandConfigurationView alloc] initWithFrame:confRect] autorelease];
     self.confView.delegate = self;
     [self.view addSubview:self.confView];
@@ -189,10 +189,10 @@
     self.houghInputView.backgroundColor = [UIColor inputBackgroundColor];
     self.houghInputView.pointsColor     = [UIColor whiteColor];
     
-    self.houghTouchView.layer.borderWidth   = 2;
-    self.houghInputView.layer.borderWidth   = 2;
-    self.houghTouchView.layer.cornerRadius  = 10;
-    self.houghInputView.layer.cornerRadius  = 10;
+    self.houghTouchView.layer.borderWidth   = EDGE_WIDTH;
+    self.houghInputView.layer.borderWidth   = EDGE_WIDTH;
+    self.houghTouchView.layer.cornerRadius  = CORNER_RADIUS;
+    self.houghInputView.layer.cornerRadius  = CORNER_RADIUS;
     self.houghTouchView.layer.masksToBounds = YES;
     self.houghInputView.layer.masksToBounds = YES;
     self.houghTouchView.layer.borderColor   = borderColor.CGColor;
@@ -374,6 +374,11 @@
 
     if (drawModeChanged) {
         self.persistentTouch = [drawModeChanged boolValue];
+        self.houghInputView.persistentTouch = self.persistentTouch;
+
+        NSString* notificationString = (self.persistentTouch)?@"Multi point mode":@"Single point mode";
+        
+        [NotificationView showText:notificationString inView:self.view];
     }
     
     if (thresholdChanged) {

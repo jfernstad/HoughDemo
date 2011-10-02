@@ -65,7 +65,7 @@
 }
 
 -(void)showViewAnimated:(BOOL)useAnimation{
-    CGRect maxRect = CGRectOffset(originalRect, 0, originalRect.size.height);
+    CGRect maxRect = CGRectOffset(originalRect, 0, originalRect.size.height-self.lobeView.bounds.size.height);
     
     [UIView beginAnimations:@"AnimateClose" context:nil];
     self.frame = maxRect;
@@ -87,7 +87,7 @@
     CGPoint newPosition = self.frame.origin;
     
     newPosition.y += delta;
-    newPosition.y = MAX(MIN(newPosition.y,CGRectGetMaxY(originalRect)),CGRectGetMinY(originalRect));
+    newPosition.y = MAX(MIN(newPosition.y,CGRectGetMaxY(originalRect)-self.lobeView.bounds.size.height),CGRectGetMinY(originalRect));
     
     CGRect myRect = originalRect;
     myRect.origin = newPosition;

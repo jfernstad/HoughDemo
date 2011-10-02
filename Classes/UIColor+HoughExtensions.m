@@ -25,7 +25,7 @@
     return [UIColor colorWithRed:0.7 green:0.5 blue:0.5 alpha:1.0];
 }
 +(UIColor*)houghWhite{
-    return [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:1.0];
+    return [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0];
 }
 +(UIColor*)houghGray{
     return [UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:1.0];

@@ -8,16 +8,20 @@
 
 #import "FreeHandConfigurationView.h"
 #import "CGGeometry+HoughExtensions.h"
+#import "UIColor+HoughExtensions.h"
 #import "HoughConstants.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface FreeHandConfigurationView()
 -(void)layoutViews;
 @property (nonatomic, retain) UILabel* drawLabel;
+@property (nonatomic, retain) UILabel* nLinesLabel;
 @property (nonatomic, retain) UILabel* analysisLabel;
 @property (nonatomic, retain) UILabel* thresholdLabel;
 @property (nonatomic, retain) UISwitch* drawMode;
 @property (nonatomic, retain) UISwitch* analysisMode;
 @property (nonatomic, retain) UISlider* thresholdSlider;
+@property (nonatomic, retain) UIView* container;
 
 // Actions
 -(void)analysisModeChanged:(id)sender;
@@ -31,13 +35,30 @@
 @synthesize analysisMode;
 @synthesize thresholdSlider;
 @synthesize drawLabel;
+@synthesize nLinesLabel;
 @synthesize analysisLabel;
 @synthesize thresholdLabel;
+@synthesize container;
 
 -(id)initWithFrame:(CGRect)frame{
 
     self = [super initWithFrame:frame];
     if (self) {
+        
+        CGRect containerRect = CGRectZero;
+        containerRect = CGRectOffset(containerRect, 0, -self.lobeView.bounds.size.height);
+        containerRect.size.width  = frame.size.width;
+        containerRect.size.height = frame.size.height + self.lobeView.bounds.size.height;
+        contentRect = CGRectInset(containerRect,15,10);
+        
+        self.container = [[[UIView alloc] initWithFrame:containerRect] autorelease];
+        
+        self.container.layer.cornerRadius = CORNER_RADIUS;
+        self.container.layer.borderWidth  = EDGE_WIDTH;
+        self.container.layer.borderColor  = [UIColor borderColor].CGColor;
+        self.container.backgroundColor    = [UIColor blackWithAlpha:0.5];
+        self.container.autoresizingMask   = UIViewAutoresizingNone;
+        
         self.drawMode        = [[[UISwitch alloc] initWithFrame:CGRectZero] autorelease];
         self.analysisMode    = [[[UISwitch alloc] initWithFrame:CGRectZero] autorelease];
         self.thresholdSlider = [[[UISlider alloc] initWithFrame:CGRectZero] autorelease];
@@ -50,24 +71,47 @@
         self.thresholdSlider.exclusiveTouch = YES;
         
         self.drawLabel      = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+        self.nLinesLabel    = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
         self.analysisLabel  = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
         self.thresholdLabel = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
         
         self.drawLabel.text      = @"Draw mode";
-        self.analysisLabel.text  = @"Auto analysis mode";
-        self.thresholdLabel.text = @"Threshold for line";
-        
-        self.thresholdSlider.maximumValue = 100;
-        self.thresholdSlider.minimumValue = 0;
-        
-        [self addSubview:self.drawLabel];
-        [self addSubview:self.analysisLabel];
-        [self addSubview:self.thresholdLabel];
-        
-        [self addSubview:self.drawMode];
-        [self addSubview:self.analysisMode];
-        [self addSubview:self.thresholdSlider];
+        self.analysisLabel.text  = @"Auto analysis";
+        self.thresholdLabel.text = @"Hough threshold ";
 
+        self.drawLabel.font         = [UIFont boldSystemFontOfSize:17];
+        self.nLinesLabel.font       = [UIFont boldSystemFontOfSize:17];
+        self.analysisLabel.font     = [UIFont boldSystemFontOfSize:17];
+        self.thresholdLabel.font    = [UIFont boldSystemFontOfSize:17];
+        
+        self.drawLabel.textColor      = [UIColor houghWhite];
+        self.nLinesLabel.textColor    = [UIColor houghWhite];
+        self.analysisLabel.textColor  = [UIColor houghWhite];
+        self.thresholdLabel.textColor = [UIColor houghWhite];
+            
+        self.drawLabel.backgroundColor      = [UIColor clearColor];
+        self.nLinesLabel.backgroundColor    = [UIColor clearColor];
+        self.analysisLabel.backgroundColor  = [UIColor clearColor];
+        self.thresholdLabel.backgroundColor = [UIColor clearColor];
+
+        [self.drawLabel      sizeToFit];
+        [self.analysisLabel  sizeToFit];
+        [self.thresholdLabel sizeToFit];
+
+        self.thresholdSlider.maximumValue = 100;
+        self.thresholdSlider.minimumValue = 1;
+        
+        [self.container addSubview:self.drawLabel];
+        [self.container addSubview:self.nLinesLabel];
+        [self.container addSubview:self.analysisLabel];
+        [self.container addSubview:self.thresholdLabel];
+        
+        [self.container addSubview:self.drawMode];
+        [self.container addSubview:self.analysisMode];
+        [self.container addSubview:self.thresholdSlider];
+
+        [self addSubview:self.container];
+        
         [self layoutViews];
     }
     return self;
@@ -76,75 +120,62 @@
 -(void)dealloc{
 
     self.drawLabel       = nil;
+    self.nLinesLabel     = nil;
     self.analysisLabel   = nil;
     self.thresholdLabel  = nil;
     self.drawMode        = nil;
     self.analysisMode    = nil;
     self.thresholdSlider = nil;
+    self.container       = nil;
     
     [super dealloc];
 }
 
 -(void)layoutViews{
-    CGRect newFrame        = self.frame;
-    CGRect imgRect         = self.bounds;
-    CGRect drawSection     = CGRectZero;
-    CGRect analysisSection = CGRectZero;
-    CGRect sliderSection   = CGRectZero;
-    
+    CGRect newFrame           = self.frame;
+    CGRect imgRect            = self.bounds;
+    CGRect drawLabelRect      = CGRectZero;
+    CGRect drawSwitchRect     = CGRectZero;
+    CGRect analysisLabelRect  = CGRectZero;
+    CGRect analysisSwitchRect = CGRectZero;
+    CGRect sliderLabelRect    = CGRectZero;
+    CGRect sliderRect         = CGRectZero;
+
     CGSize lobeSize = self.lobeView.image.size;
+    CGRect wholeRect = CGRectOffset(contentRect, 0, 10);
     
-    contentRect = self.bounds;
+    CGRectDivide(wholeRect, &drawLabelRect, &sliderLabelRect, contentRect.size.width/3, CGRectMinXEdge);
+    CGRectDivide(drawLabelRect, &drawSwitchRect, &drawLabelRect, 100, CGRectMaxXEdge);
 
-    CGRectDivide(contentRect, &drawSection, &sliderSection, contentRect.size.height/2, CGRectMinYEdge);
-    CGRectDivide(drawSection, &drawSection, &analysisSection, contentRect.size.width/2, CGRectMinXEdge);
+    sliderLabelRect = CGRectInset(sliderLabelRect, 20, 0);
+    sliderLabelRect = CGRectOffset(sliderLabelRect, 10, 0);
     
-    drawSection      = CGRectInset(drawSection, 10, 10);
-    analysisSection  = CGRectInset(analysisSection, 10, 10);
-    sliderSection    = CGRectInset(sliderSection, 10, 10);
+    CGRectDivide(drawLabelRect, &drawLabelRect, &analysisLabelRect, contentRect.size.height/2, CGRectMinYEdge);
+    CGRectDivide(drawSwitchRect, &drawSwitchRect, &analysisSwitchRect, contentRect.size.height/2, CGRectMinYEdge);
+    CGRectDivide(sliderLabelRect, &sliderLabelRect, &sliderRect, contentRect.size.height/2, CGRectMinYEdge);
     
-    [self.drawLabel sizeToFit];
-    [self.analysisLabel sizeToFit];
+    // Tweaking
+    drawSwitchRect     = CGRectCenteredInRect(drawSwitchRect, drawMode.bounds.size);
+    analysisSwitchRect = CGRectCenteredInRect(analysisSwitchRect, analysisMode.bounds.size);
+    
+    self.drawLabel.frame        = CGRectIntegral(drawLabelRect);
+    self.drawMode.frame         = CGRectIntegral(drawSwitchRect);
+    self.analysisLabel.frame    = CGRectIntegral(analysisLabelRect);
+    self.analysisMode.frame     = CGRectIntegral(analysisSwitchRect);
+    self.thresholdLabel.frame   = CGRectIntegral(sliderLabelRect);
+    self.thresholdSlider.frame  = CGRectIntegral(sliderRect);    
+    
     [self.thresholdLabel sizeToFit];
-
-    CGRect drawLabelRect     = self.drawLabel.bounds;
-    CGRect analysisLabelRect = self.analysisLabel.bounds;
-    CGRect thresholdLabelRect = self.thresholdLabel.bounds;
-    
-    drawLabelRect.origin      = drawSection.origin;
-    analysisLabelRect.origin  = analysisSection.origin;
-    thresholdLabelRect.origin = sliderSection.origin;
-
-    self.drawLabel.frame = drawLabelRect;
-    self.analysisLabel.frame = analysisLabelRect;
-    self.thresholdLabel.frame = thresholdLabelRect;
-    
-    drawSection.size     = CGSizeMake(50, 20);
-    analysisSection.size = CGSizeMake(50, 20);
-    
-    drawSection.origin.x     = CGRectGetMaxX(drawLabelRect);
-    analysisSection.origin.x = CGRectGetMaxX(analysisLabelRect);
-    
-    self.drawMode.frame        = drawSection;
-    self.analysisMode.frame    = analysisSection;
-
-//    self.drawMode.frame     = CGRectCenteredInRect(drawSection,drawSection.size);
-//    self.analysisMode.frame = CGRectCenteredInRect(analysisSection, analysisSection.size);
-
-    self.backgroundView.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.7];
-    
-    CGRect sliderRect = CGRectZero;
-    CGRect sliderLabelRect = CGRectZero;
-    
-    CGRectDivide(sliderSection, &sliderLabelRect, &sliderRect, thresholdLabel.bounds.size.width + 5, CGRectMinXEdge);
-    
-    self.thresholdSlider.frame = sliderRect;
+    sliderLabelRect.size.width = self.thresholdLabel.bounds.size.width;
+    self.thresholdLabel.frame = sliderLabelRect;
+    CGRect nLinesRect = self.thresholdLabel.frame; 
+    self.nLinesLabel.frame = CGRectOffset(nLinesRect, nLinesRect.size.width + 5, 0);
     
     // Stuff to do with Lobe
     newFrame.size.height = self.bounds.size.height + lobeSize.height;
 
-    imgRect.origin = CGPointMake(CGRectGetMinX(contentRect), CGRectGetMaxY(contentRect));
-    imgRect.size = CGSizeMake(contentRect.size.width, lobeSize.height);
+    imgRect.origin = CGPointMake(CGRectGetMinX(self.container.frame), CGRectGetMaxY(self.container.frame));
+    imgRect.size = CGSizeMake(self.container.frame.size.width, lobeSize.height);
     
     self.lobeView.frame = CGRectCenteredInRect(imgRect, lobeSize);
     
@@ -176,6 +207,7 @@
 -(void)thresholdChanged:(id)sender{
     // kHoughThresholdChanged
     NSUInteger thresHoldValue = (NSUInteger)self.thresholdSlider.value;
+    self.nLinesLabel.text = [NSString stringWithFormat:@"%d", thresHoldValue];
     NSDictionary* dic = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:thresHoldValue] forKey:kHoughThresholdChanged];
     
     [self.delegate updateConfigurationWithDictionary:dic];

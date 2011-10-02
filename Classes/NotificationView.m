@@ -8,6 +8,7 @@
 
 #import "NotificationView.h"
 #import "UIColor+HoughExtensions.h"
+#import "HoughConstants.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface NotificationView ()
@@ -45,8 +46,8 @@
     label.lineBreakMode     = UILineBreakModeWordWrap;
     label.numberOfLines     = 0;
     
-    self.layer.cornerRadius = 10;
-    self.layer.borderWidth  = 2;
+    self.layer.cornerRadius = CORNER_RADIUS;
+    self.layer.borderWidth  = EDGE_WIDTH;
     self.layer.borderColor  = [UIColor houghGray].CGColor;
     self.backgroundColor    = [UIColor blackWithAlpha:0.7];
 

@@ -13,12 +13,12 @@
     UILabel* drawLabel;
     UILabel* analysisLabel;
     UILabel* thresholdLabel;
+    UIView* container;
     
     UISwitch* drawMode;
     UISwitch* analysisMode;
 //    UISlider* linesSlider;
     UISlider* thresholdSlider;
 }
-
 
 @end
