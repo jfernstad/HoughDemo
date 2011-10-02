@@ -45,10 +45,12 @@
     self = [super initWithFrame:frame];
     if (self) {
         
+        CGSize lobeSize = self.lobeView.image.size;
+
         CGRect containerRect = CGRectZero;
-        containerRect = CGRectOffset(containerRect, 0, -self.lobeView.bounds.size.height);
+        containerRect = CGRectOffset(containerRect, 0, -lobeSize.height);
         containerRect.size.width  = frame.size.width;
-        containerRect.size.height = frame.size.height + self.lobeView.bounds.size.height;
+        containerRect.size.height = frame.size.height + lobeSize.height;
         contentRect = CGRectInset(containerRect,15,10);
         
         self.container = [[[UIView alloc] initWithFrame:containerRect] autorelease];
@@ -142,7 +144,7 @@
     CGRect sliderRect         = CGRectZero;
 
     CGSize lobeSize = self.lobeView.image.size;
-    CGRect wholeRect = CGRectOffset(contentRect, 0, 10);
+    CGRect wholeRect = CGRectOffset(contentRect, 0, 1.5*lobeSize.height);
     
     CGRectDivide(wholeRect, &drawLabelRect, &sliderLabelRect, contentRect.size.width/3, CGRectMinXEdge);
     CGRectDivide(drawLabelRect, &drawSwitchRect, &drawLabelRect, 100, CGRectMaxXEdge);

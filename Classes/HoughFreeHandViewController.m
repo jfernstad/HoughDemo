@@ -172,7 +172,7 @@
     
     // TODO: Remove/rewrite this test
     CGRect confRect = contentRect;
-    confRect.size.height = 90;
+    confRect.size.height = 100;
     self.confView = [[[FreeHandConfigurationView alloc] initWithFrame:confRect] autorelease];
     self.confView.delegate = self;
     [self.view addSubview:self.confView];

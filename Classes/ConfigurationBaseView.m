@@ -29,6 +29,8 @@
         self.lobeView       = [[[UIImageView alloc] initWithImage:lobeImage] autorelease];
         self.backgroundView = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
         
+        self.exclusiveTouch = YES;
+        
         [self addSubview:self.backgroundView];
         [self addSubview:self.lobeView];
     
