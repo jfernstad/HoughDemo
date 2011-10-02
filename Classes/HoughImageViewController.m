@@ -10,6 +10,7 @@
 #import "UIColor+HoughExtensions.h"
 #import "CGGeometry+HoughExtensions.h"
 #import "HoughLineOverlayDelegate.h"
+#import "HoughConstants.h"
 
 @interface HoughImageViewController ()
 -(void)showChooseImageView;
@@ -20,6 +21,7 @@
 
 @implementation HoughImageViewController
 @synthesize imgView;
+@synthesize histoView;
 @synthesize imgPicker;
 @synthesize popover;
 @synthesize lineLayer;
@@ -28,6 +30,7 @@
 - (void)dealloc
 {
     self.imgView = nil;
+    self.histoView = nil;
     self.imgPicker = nil;
     self.popover = nil; // TODO: Keep an eye on this 
     self.lineLayer = nil;
@@ -78,20 +81,31 @@
     [super loadView];
     
     CGRect totalRect  = self.contentRect;
+    CGRect histoRect   = CGRectMake(0, 100, 200, 500);
     
     self.imgView = [[[UIImageView alloc] initWithFrame:totalRect] autorelease];
     self.imgView.contentMode = UIViewContentModeScaleAspectFit;
     
     self.view.backgroundColor = [UIColor clearColor];
 
+    self.histoView = [[[HistogramView alloc] initWithFrame:histoRect] autorelease];
+    self.histoView.useComponents    = EPixelBufferGreen;
+    self.histoView.logHistogram     = NO;
+    self.histoView.stretchHistogram = YES;
+    self.histoView.histogramColor   = [UIColor colorWithWhite:1 alpha:0.7];
+    
     self.hough.size = totalRect.size; // Setup hough size, WRONG. Do this for the image instead. 
     self.hough.operationDelegate = self;
     self.hough.yScale = 1;
-
+    self.hough.maxHoughInput = 1000;
+    self.hough.houghThreshold = 20;
+    self.hough.grayscaleThreshold = 250;
+    
     self.imgView.contentMode = UIViewContentModeScaleAspectFit;
     
     self.loadingView.text = @"Loading image... ";
-
+    self.loadingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
+    
     self.imgView.backgroundColor = [UIColor clearColor]; // mainBackgroundColor
     
     UIBarButtonItem* actionItem    = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
@@ -129,7 +143,7 @@
     [self.imgView.layer addSublayer:self.lineLayer];
 
     [self.view addSubview:self.imgView];
-    
+    [self.view addSubview:self.histoView];
 }
 -(void)showChooseImageView{
     // TODO: Load popover with settings view
@@ -195,9 +209,7 @@
     imgRect.size = self.imgView.image.size;
 
     imgRect.size = CGSizeAspectFitSize(imgRect.size, newImgRect.size);
-    //    imgRect.size = [self aspectFitSize:imgRect.size inSize:newImgRect.size];
     newImgRect   = CGRectCenteredInRect(newImgRect, imgRect.size);
-    //    newImgRect   = [self centerRect:imgRect inRect:newImgRect];
 
     newImgRect.size = imgRect.size;
 
@@ -231,6 +243,7 @@
         if ([dict objectForKey:kHoughIntersectionArrayKey]) {
             intersections = [dict objectForKey:kHoughIntersectionArrayKey];
             // Do the bucket thing
+            [self.histoView executeWithImage:self.hough.HoughImage];
             [self.bucket clearBuckets];
             [self.bucket addIntersections:intersections];
             
@@ -252,16 +265,20 @@
     [self.popover dismissPopoverAnimated:YES];
     [self.loadingView startProgress];
 
-    // TEST: Execute operations using the operation queue
-    
+    NSString* fileURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
     selectedImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
     
     if (selectedImage) {
         
+        [[NSNotificationCenter defaultCenter] postNotificationName:kSelectedImageNotification object:fileURL];
+        
         [self.hough executeOperationsWithImage:selectedImage];
         self.imgView.image = selectedImage;
-
         [self centerImage];
+
+        // Clear old lines
+        self.lineDelegate.lines = nil;
+        [self.lineLayer setNeedsDisplay];
     }
 }
 

@@ -71,7 +71,7 @@
     [progress startAnimating];
 
     self.hidden = NO;
-    [self.superview bringSubviewToFront:self];
+    [self.superview bringSubviewToFront:self]; // TODO: Might need to change this
     
     [UIView beginAnimations:@"ShowView" context:nil];
     self.alpha         = 1.0;
