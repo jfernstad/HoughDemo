@@ -22,12 +22,15 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
 
 @implementation HistogramView
 @synthesize histogram;
+@synthesize histogramType;
 @synthesize histogramColor;
 @synthesize histogramObject;
 @synthesize loadingView;
 @synthesize useComponents;
 @synthesize stretchHistogram;
 @synthesize logHistogram;
+@synthesize delegate;
+@synthesize histogramInput;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -39,8 +42,9 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
         self.useComponents    = EPixelBufferAllColors;
         self.stretchHistogram = NO;
         self.logHistogram     = NO;
-        
+        self.histogramType    = EHistogramTypeNormal;
         self.histogramObject = [[[ImageHist alloc] init] autorelease]; // Use default settings
+        self.delegate = nil;
         
         [self addSubview:loadingView];
     }
@@ -50,9 +54,11 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
 -(void)dealloc{
 
     self.loadingView = nil;
+    
     self.histogram = nil;
     self.histogramColor = nil;
     self.histogramObject = nil;
+    self.histogramInput = nil;
     
     [super dealloc];
 }
@@ -60,9 +66,15 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
 -(void)executeWithImage:(CVPixelBufferRef)inputForHistogram{
     NSLog(@"Execute histogramView");
     self.histogramObject.histogramPixelBufferComponent = self.useComponents;
-    self.histogramObject.histogramType  = EHistogramTypeReverseCumulative;
+    self.histogramObject.histogramType  = self.histogramType;
     self.histogramObject.image          = inputForHistogram;
-    self.histogramObject.finishBlock    = ^(NSDictionary* dic){self.histogram = dic;};
+    self.histogramObject.finishBlock    = ^(NSDictionary* dic){
+        self.histogram = dic;
+    
+        if (self.delegate) {
+            [self.delegate didFinish:inputForHistogram withHistogram:dic];
+        }
+    };
 
     [self.loadingView startProgress];
     [self performSelectorInBackground:@selector(executeInBackground) withObject:nil];
@@ -91,7 +103,7 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
     NSArray* keys           = [self.histogram allKeys];
     CGFloat alpha           = MIN(MAX(1,keys.count),3);
 
-    CGRect totalRect        = CGRectInset(self.bounds, 10, 10);
+    CGRect totalRect        = self.bounds;//CGRectInset(self.bounds, 10, 10);
 
     CGRect loadingRect = CGRectCenteredInRect(totalRect, CGSizeMake(30, 30));
     self.loadingView.frame = loadingRect;
@@ -161,7 +173,6 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
         CGRect nextRect         = totalRect;
         CGFloat height          = totalRect.size.height/255.0;
         
-        // TODO: Don't do this if we have several components in histogram.
         if (self.stretchHistogram && nValidComponents == 1) {
             height = totalRect.size.height/nValues;
 

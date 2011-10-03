@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HistogramView.h"
+#import <CoreVideo/CoreVideo.h>
 
-@interface HistogramControl : UIControl
+@interface HistogramControl : UIControl <HistogramViewDelegate,HistogramInputProtocol>
 
+-(void)setHistogramImage:(CVPixelBufferRef)newImage;
 @end

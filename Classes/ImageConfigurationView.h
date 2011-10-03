@@ -7,7 +7,12 @@
 //
 
 #import "ConfigurationBaseView.h"
+#import "HistogramView.h"
+#import <CoreVideo/CoreVideo.h>
 
-@interface ImageConfigurationView : ConfigurationBaseView
-
+@interface ImageConfigurationView : ConfigurationBaseView{
+    
+}
+-(void)setGrayscaleInput:(CVPixelBufferRef)newGrayImage;
+-(void)setHoughInput:(CVPixelBufferRef)newHoughImage;
 @end

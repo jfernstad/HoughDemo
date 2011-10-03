@@ -11,6 +11,7 @@
 #import "HistogramView.h"
 
 @class HoughLineOverlayDelegate;
+@class ImageConfigurationView;
 
 @interface HoughImageViewController : HoughBaseViewController <UIImagePickerControllerDelegate, UIPopoverControllerDelegate, HoughOperationDelegate>{
     UIImageView* imgView;
@@ -25,7 +26,7 @@
 }
 
 @property (nonatomic, retain) UIImageView* imgView;
-@property (nonatomic, retain) HistogramView* histoView;
+@property (nonatomic, retain) ImageConfigurationView* confView;
 @property (nonatomic, retain) UIImagePickerController* imgPicker;
 @property (nonatomic, retain) UIPopoverController* popover;
 @property (nonatomic, retain) CALayer* lineLayer;

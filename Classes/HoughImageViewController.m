@@ -11,6 +11,7 @@
 #import "CGGeometry+HoughExtensions.h"
 #import "HoughLineOverlayDelegate.h"
 #import "HoughConstants.h"
+#import "ImageConfigurationView.h"
 
 @interface HoughImageViewController ()
 -(void)showChooseImageView;
@@ -21,7 +22,7 @@
 
 @implementation HoughImageViewController
 @synthesize imgView;
-@synthesize histoView;
+@synthesize confView;
 @synthesize imgPicker;
 @synthesize popover;
 @synthesize lineLayer;
@@ -30,7 +31,7 @@
 - (void)dealloc
 {
     self.imgView = nil;
-    self.histoView = nil;
+    self.confView = nil;
     self.imgPicker = nil;
     self.popover = nil; // TODO: Keep an eye on this 
     self.lineLayer = nil;
@@ -88,11 +89,12 @@
     
     self.view.backgroundColor = [UIColor clearColor];
 
-    self.histoView = [[[HistogramView alloc] initWithFrame:histoRect] autorelease];
-    self.histoView.useComponents    = EPixelBufferGreen;
-    self.histoView.logHistogram     = NO;
-    self.histoView.stretchHistogram = YES;
-    self.histoView.histogramColor   = [UIColor colorWithWhite:1 alpha:0.7];
+//    self.histoView = [[[HistogramView alloc] initWithFrame:histoRect] autorelease];
+//    self.histoView.useComponents    = EPixelBufferGreen;
+//    self.histoView.logHistogram     = NO;
+//    self.histoView.stretchHistogram = YES;
+//    self.histoView.histogramColor   = [UIColor colorWithWhite:1 alpha:0.7];
+    self.confView = [[[ImageConfigurationView alloc] initWithFrame:histoRect] autorelease];
     
     self.hough.size = totalRect.size; // Setup hough size, WRONG. Do this for the image instead. 
     self.hough.operationDelegate = self;
@@ -143,7 +145,8 @@
     [self.imgView.layer addSublayer:self.lineLayer];
 
     [self.view addSubview:self.imgView];
-    [self.view addSubview:self.histoView];
+    [self.view addSubview:self.confView];
+    [self.view bringSubviewToFront:self.toolBar];
 }
 -(void)showChooseImageView{
     // TODO: Load popover with settings view
@@ -243,7 +246,7 @@
         if ([dict objectForKey:kHoughIntersectionArrayKey]) {
             intersections = [dict objectForKey:kHoughIntersectionArrayKey];
             // Do the bucket thing
-            [self.histoView executeWithImage:self.hough.HoughImage];
+            [self.confView setGrayscaleInput:self.hough.GrayScaleImage];
             [self.bucket clearBuckets];
             [self.bucket addIntersections:intersections];
             
