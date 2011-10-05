@@ -26,6 +26,7 @@
 @synthesize histogram;
 @synthesize slider;
 @synthesize histoCover;
+@synthesize positionSliderToLeft;
 // From protocol
 @synthesize histogramColor;
 @synthesize useComponents;
@@ -49,6 +50,8 @@
 
         self.histogram.delegate = self;
 
+        self.positionSliderToLeft = NO;
+        
         [self addSubview:self.histogram];
         [self addSubview:self.histoCover];
         [self addSubview:self.slider];
@@ -74,15 +77,24 @@
 #pragma mark - Setup
 -(void)layoutViews{
     
-    CGRect totalRect = self.bounds;
-    CGRect histoRect = CGRectInset(totalRect, 10, 10);
+    CGFloat padding   = 10.0;
+    CGRect totalRect  = self.bounds;
+    CGRect histoRect  = CGRectZero;
     CGRect sliderRect = CGRectZero;
+    
+    histoRect.size.width -= padding;
+    
+    if (self.positionSliderToLeft){
+        CGRectDivide(totalRect, &sliderRect, &histoRect, padding, CGRectMinXEdge);
+    }
+    else{
+        CGRectDivide(totalRect, &sliderRect, &histoRect, padding, CGRectMaxXEdge);
+    }
+    
+    histoRect = CGRectInset(histoRect, 0, padding);
     
     self.histogram.frame  = histoRect;
     self.histoCover.frame = histoRect;
-    
-    // TODO: Placement should be a flag
-    sliderRect = CGRectMake(CGRectGetMaxX(totalRect)- 10 , totalRect.origin.y, 10, totalRect.size.height);
     
     CGAffineTransform trans = CGAffineTransformMakeRotation(M_PI * 0.5);
     self.slider.transform = trans;
