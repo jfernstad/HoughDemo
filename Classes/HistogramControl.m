@@ -132,6 +132,9 @@
 -(void)setHistogramType:(EHistogramType)newHistogramType{
     self.histogram.histogramType = newHistogramType;
 }
+-(void)setHistogramStyle:(EHistogramStyle)newHistogramStyle{
+    self.histogram.histogramStyle = newHistogramStyle;
+}
 -(void)setStretchHistogram:(BOOL)newStretchHistogram{
     self.histogram.stretchHistogram = newStretchHistogram;
 }
@@ -145,6 +148,7 @@
 -(UIColor*)histogramColor               {return self.histogram.histogramColor;}
 -(EPixelBufferComponent)useComponents   {return self.histogram.useComponents;}
 -(EHistogramType)histogramType          {return self.histogram.histogramType;}
+-(EHistogramStyle)histogramStyle        {return self.histogram.histogramStyle;}
 -(BOOL)stretchHistogram                 {return self.histogram.stretchHistogram;}
 -(BOOL)logHistogram                     {return self.histogram.logHistogram;}
 -(CVPixelBufferRef)histogramInput       {return self.histogram.histogramInput;}

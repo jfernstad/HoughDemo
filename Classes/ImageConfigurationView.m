@@ -35,7 +35,8 @@
         
         self.grayHistControl.logHistogram = NO;
         self.grayHistControl.histogramColor = [UIColor houghRed];
-        self.grayHistControl.histogramType  = EHistogramTypeReverseCumulative;
+        self.grayHistControl.histogramType  = EHistogramTypeReverseCumulative; // High intensity = Low count
+        self.grayHistControl.histogramStyle = EHistogramStyleFlipHorizontal; // Top = High intensity
         
         [self addSubview:self.grayHistControl];
         [self layoutViews];

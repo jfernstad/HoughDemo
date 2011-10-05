@@ -23,6 +23,7 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
 @implementation HistogramView
 @synthesize histogram;
 @synthesize histogramType;
+@synthesize histogramStyle;
 @synthesize histogramColor;
 @synthesize histogramObject;
 @synthesize loadingView;
@@ -61,6 +62,21 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
     self.histogramInput = nil;
     
     [super dealloc];
+}
+
+-(void)setHistogramStyle:(EHistogramStyle)newHistogramStyle{
+    CGAffineTransform newTransform = CGAffineTransformMake(1, 0, 0, 1, 0, 0);
+
+    histogramStyle = newHistogramStyle;
+    
+    if (self.histogramStyle & EHistogramStyleFlipVertical) {
+        newTransform.a = -1;
+    }
+    if (self.histogramStyle & EHistogramStyleFlipHorizontal) {
+        newTransform.d = -1;
+    }
+
+    self.transform = newTransform;
 }
 
 -(void)executeWithImage:(CVPixelBufferRef)inputForHistogram{
