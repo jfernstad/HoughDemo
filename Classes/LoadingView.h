@@ -16,6 +16,7 @@
 }
 
 @property (nonatomic, assign) NSString* text;
+@property (nonatomic, readonly) BOOL inProgress;
 
 //- (void)showView:(BOOL)show animated:(BOOL)animated;
 - (void)startProgress;

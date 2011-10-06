@@ -54,7 +54,7 @@
     
     for (HoughIntersection* i in self.lines) {
         
-        NSLog(@"%@", i);
+        //NSLog(@"%@", i);
         theta   = i.theta;
         len     = i.length;
         

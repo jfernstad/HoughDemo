@@ -82,19 +82,15 @@
     [super loadView];
     
     CGRect totalRect  = self.contentRect;
-    CGRect histoRect   = CGRectMake(0, 100, 200, 500);
+    CGRect confRect   = CGRectMake(0, 100, self.contentRect.size.width, 500);
     
     self.imgView = [[[UIImageView alloc] initWithFrame:totalRect] autorelease];
     self.imgView.contentMode = UIViewContentModeScaleAspectFit;
     
     self.view.backgroundColor = [UIColor clearColor];
 
-//    self.histoView = [[[HistogramView alloc] initWithFrame:histoRect] autorelease];
-//    self.histoView.useComponents    = EPixelBufferGreen;
-//    self.histoView.logHistogram     = NO;
-//    self.histoView.stretchHistogram = YES;
-//    self.histoView.histogramColor   = [UIColor colorWithWhite:1 alpha:0.7];
-    self.confView = [[[ImageConfigurationView alloc] initWithFrame:histoRect] autorelease];
+    self.confView = [[[ImageConfigurationView alloc] initWithFrame:confRect] autorelease];
+    self.confView.delegate = self;
     
     self.hough.size = totalRect.size; // Setup hough size, WRONG. Do this for the image instead. 
     self.hough.operationDelegate = self;
@@ -226,6 +222,11 @@
 #pragma mark Delegates
 
 -(void)houghWillBeginOperation:(NSString*)operation{
+    if (!self.loadingView.inProgress) {
+        [self.loadingView startProgress];
+    }
+    [self.loadingView startProgress];
+
     self.loadingView.text = [NSString stringWithFormat:@"Starting %@...", operation];
 }
 -(void)houghDidFinishOperationWithDictionary:(NSDictionary*)dict{ // Operation in kOperationNameKey
@@ -247,6 +248,7 @@
             intersections = [dict objectForKey:kHoughIntersectionArrayKey];
             // Do the bucket thing
             [self.confView setGrayscaleInput:self.hough.GrayScaleImage];
+            [self.confView setHoughInput:self.hough.HoughImage];
             [self.bucket clearBuckets];
             [self.bucket addIntersections:intersections];
             
@@ -259,7 +261,7 @@
  
 }
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
-    NSLog(@"info: %@", info);
+//    NSLog(@"info: %@", info);
     UIImage* selectedImage = nil;
     
     // Close picker
@@ -290,6 +292,23 @@
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController{
     NSLog(@"popoverControllerDidDismissPopover");
+}
+
+-(void)updateConfigurationWithDictionary:(NSDictionary*)changedValues{
+    NSNumber* houghThresholdChanged   = [changedValues objectForKey:kHoughThresholdChanged];
+    NSNumber* grayThresholdChanged    = [changedValues objectForKey:kHoughGrayscaleThresholdChanged];
+    
+    if (houghThresholdChanged && (houghThresholdChanged.integerValue != self.hough.houghThreshold)) {
+        NSLog(@"New hough threshold: %d", houghThresholdChanged.integerValue);
+        self.hough.houghThreshold = houghThresholdChanged.integerValue;
+        [self.hough executeHoughSpaceOperation];
+    }
+    
+    if (grayThresholdChanged && (grayThresholdChanged.integerValue != self.hough.grayscaleThreshold)) {
+        NSLog(@"New grayscale threshold: %d", grayThresholdChanged.integerValue);
+        self.hough.grayscaleThreshold = grayThresholdChanged.integerValue;
+        [self.hough executeAnalysisOperation];
+    }
 }
 
 @end

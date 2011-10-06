@@ -9,6 +9,7 @@
 #import "ImageConfigurationView.h"
 #import "UIColor+HoughExtensions.h"
 #import "HistogramControl.h"
+#import "HoughConstants.h"
 
 @interface ImageConfigurationView()
 @property (nonatomic, retain) HistogramControl* grayHistControl;
@@ -35,10 +36,18 @@
         
         self.grayHistControl.logHistogram = NO;
         self.grayHistControl.histogramColor = [UIColor houghRed];
-        self.grayHistControl.histogramType  = EHistogramTypeReverseCumulative; // High intensity = Low count
+        self.grayHistControl.histogramType  = EHistogramTypeNormal; // High intensity = Low count
         self.grayHistControl.histogramStyle = EHistogramStyleFlipHorizontal; // Top = High intensity
+        self.houghHistControl.positionSliderToLeft = NO;
+        
+        self.houghHistControl.logHistogram = NO;
+        self.houghHistControl.histogramColor = [UIColor houghGreen];
+        self.houghHistControl.histogramType  = EHistogramTypeReverseCumulative; // High intensity = Low count
+        self.houghHistControl.histogramStyle = EHistoGramStyleFlipBoth; // Top = High intensity
+        self.houghHistControl.positionSliderToLeft = YES;
         
         [self addSubview:self.grayHistControl];
+        [self addSubview:self.houghHistControl];
         [self layoutViews];
     
         // Debug colors
@@ -61,12 +70,18 @@
 
 #pragma mark - Setup
 -(void)layoutViews{
-    
-    CGRect totalRect = self.bounds;
-    CGRect gRect = totalRect;
 
+    CGFloat histWidth = 200; 
+    CGRect totalRect = self.bounds;
+    CGRect tmpRect = CGRectZero;
+    CGRect gRect = totalRect;
+    CGRect hRect = totalRect;
+
+    CGRectDivide(totalRect, &gRect, &tmpRect, histWidth, CGRectMinXEdge);
+    CGRectDivide(totalRect, &hRect, &tmpRect, histWidth, CGRectMaxXEdge);
+    
     self.grayHistControl.frame = gRect;
-    self.houghHistControl.frame = CGRectZero;
+    self.houghHistControl.frame = hRect;
     
 }
 
@@ -74,9 +89,19 @@
 
 -(void)grayThresholdSet:(id)sender{
     NSLog(@"grayThresholdSet");
+    
+    NSInteger thres = self.grayHistControl.value;
+    NSDictionary* dic = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:thres] forKey:kHoughGrayscaleThresholdChanged];
+    
+    [self.delegate updateConfigurationWithDictionary:dic];
 }
 -(void)houghThresholdSet:(id)sender{
     NSLog(@"houghThresholdSet");
+
+    NSInteger thres = self.houghHistControl.value;
+    NSDictionary* dic = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:thres] forKey:kHoughThresholdChanged];
+    
+    [self.delegate updateConfigurationWithDictionary:dic];
 }
 
 #pragma mark - Overrides

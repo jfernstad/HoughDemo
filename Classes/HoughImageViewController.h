@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "HoughBaseViewController.h"
 #import "HistogramView.h"
+#import "ConfigurationBaseView.h"
 
 @class HoughLineOverlayDelegate;
 @class ImageConfigurationView;
 
-@interface HoughImageViewController : HoughBaseViewController <UIImagePickerControllerDelegate, UIPopoverControllerDelegate, HoughOperationDelegate>{
+@interface HoughImageViewController : HoughBaseViewController <UIImagePickerControllerDelegate, UIPopoverControllerDelegate, HoughOperationDelegate, ConfigurationProtocol>{
     UIImageView* imgView;
     HistogramView* histoView;
     

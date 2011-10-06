@@ -15,7 +15,8 @@
 #define kSelectedImageNotification      @"SelectedImageNotification" // Value = NSString, UIImagePickerControllerReferenceURL from ImagePickerController
 
 // Configuration keys
-#define kHoughAnalysisModeChanged       @"HoughAnalysisModeChanged"
-#define kHoughDrawModeChanged           @"HoughDrawModeChanged"
-#define kHoughThresholdChanged          @"HoughThresholdChanged"
+#define kHoughAnalysisModeChanged           @"HoughAnalysisModeChanged"
+#define kHoughDrawModeChanged               @"HoughDrawModeChanged"
+#define kHoughThresholdChanged              @"HoughThresholdChanged"
+#define kHoughGrayscaleThresholdChanged     @"HoughGrayscaleThresholdChanged"
 #endif

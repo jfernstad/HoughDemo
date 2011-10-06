@@ -108,5 +108,7 @@
 
 // Operations
 -(void)executeOperationsWithImage:(UIImage*)rawImage;
+-(void)executeHoughSpaceOperation;
+-(void)executeAnalysisOperation;
 -(void)cancelOperations;
 @end

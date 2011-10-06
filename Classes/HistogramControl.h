@@ -13,5 +13,6 @@
 @interface HistogramControl : UIControl <HistogramViewDelegate,HistogramInputProtocol>
 
 @property (nonatomic, assign) BOOL positionSliderToLeft;
+@property (nonatomic, readonly) NSInteger value;
 -(void)setHistogramImage:(CVPixelBufferRef)newImage;
 @end

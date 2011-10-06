@@ -13,6 +13,8 @@
 @property (nonatomic, retain) HistogramView* histogram;
 @property (nonatomic, retain) UISlider* slider;
 @property (nonatomic, retain) UIImageView* histoCover;
+@property (nonatomic, assign, readwrite) NSInteger value;
+
 //@property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef grayscaleImage;
 //@property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef houghImage;
 
@@ -23,6 +25,7 @@
 @end
 
 @implementation HistogramControl
+@synthesize value;
 @synthesize histogram;
 @synthesize slider;
 @synthesize histoCover;
@@ -36,33 +39,34 @@
 @synthesize histogramInput;
 
 -(id)initWithFrame:(CGRect)frame{
-
-    if ((self = [super initWithFrame:frame])) {
     
+    if ((self = [super initWithFrame:frame])) {
+        
         self.histogram  = [[[HistogramView alloc] initWithFrame:CGRectZero] autorelease];
         self.slider     = [[[UISlider alloc] initWithFrame:CGRectZero] autorelease];
         self.histoCover = [[[UIImageView alloc] initWithFrame:CGRectZero] autorelease];
-    
+        
         [self.slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
         [self.slider addTarget:self action:@selector(sliderEnd:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
         
         self.histoCover = [[[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"semitransparent.png"] stretchableImageWithLeftCapWidth:1 topCapHeight:1]] autorelease];
-
+        
         self.histogram.delegate = self;
-
+        
         self.positionSliderToLeft = NO;
+        self.value = 0;
         
         [self addSubview:self.histogram];
         [self addSubview:self.histoCover];
         [self addSubview:self.slider];
-
+        
         [self layoutViews];
     }
     return self;
 }
 
 -(void)dealloc{
-
+    
     self.histogram = nil;
     self.slider = nil;
     self.histoCover = nil;
@@ -112,26 +116,70 @@
     
     CGFloat min = self.slider.minimumValue;
     CGFloat max = self.slider.maximumValue;
-    CGFloat value = self.slider.value;
+    CGFloat sliderValue = self.slider.value;
     
-    CGFloat newHeight = histoRect.size.height * value/(max - min);
+    CGFloat newHeight = histoRect.size.height * sliderValue/(max - min);
     
     CGRectDivide(histoRect, &histoRect, &coverRect, newHeight, CGRectMinYEdge);
     
     self.histoCover.frame = coverRect;
-
+    
+    self.value = (NSInteger)sliderValue;
     [self sendActionsForControlEvents:UIControlEventValueChanged];
+
+    NSLog(@"New value: %d", self.value);
 }
 -(void)sliderEnd:(id)sender{
+    self.value = (NSInteger)self.slider.value;
     [self sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
+// Convert slider value if histogram is flipped
+-(NSInteger)value{
+    NSInteger outValue = value;
+    NSInteger sliderMin = self.slider.minimumValue;
+    NSInteger sliderMax = self.slider.maximumValue;
+    
+    if (self.histogramStyle == EHistogramStyleFlipHorizontal) {
+        outValue = (sliderMax - outValue) + sliderMin;
+    }
+    
+    return outValue;
+}
 #pragma mark - Delegates
 
 -(void)didFinish:(CVImageBufferRef)image withHistogram:(NSDictionary *)dictionary{
     NSLog(@"didFinishWithHistogram");
+    NSArray* componentKeys = [dictionary allKeys];
     
-    // TODO: Harvest info from histograms and add to the histograms
+    NSDictionary* tmpDict = nil;
+    NSDictionary* statsDict = nil;
+    NSNumber* tmpVal = nil;
+    NSInteger minVal = 0;
+    NSInteger maxVal = 0;
+    NSInteger minInt = 0;
+    NSInteger maxInt = 0;
+    
+    if (componentKeys.count > 0) {
+        
+        tmpDict   = [dictionary objectForKey:[componentKeys objectAtIndex:0]]; // TODO: Don't always take first object, think about it.
+        statsDict = [tmpDict objectForKey:kHistogramStatisticsKey];
+        
+        tmpVal = [statsDict objectForKey:kHistogramMinValueKey];
+        minVal = tmpVal.integerValue;
+        
+        tmpVal = [statsDict objectForKey:kHistogramMaxValueKey];
+        maxVal = tmpVal.integerValue;
+        
+        tmpVal = [statsDict objectForKey:kHistogramMinIntensityKey];
+        minInt = tmpVal.integerValue;
+        
+        tmpVal = [statsDict objectForKey:kHistogramMaxIntensityKey];
+        maxInt = tmpVal.integerValue;
+        
+        self.slider.minimumValue = minVal;
+        self.slider.maximumValue = maxVal;
+    }
 }
 
 #pragma mark - Protocol implementation

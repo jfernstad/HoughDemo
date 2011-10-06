@@ -467,6 +467,19 @@
     [self.operationQueue addOperation:analyzeHoughSpaceOp];
 }
 
+-(void)executeHoughSpaceOperation{
+    NSOperation* createHoughSpaceOp  = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(createHoughSpaceOp) object:nil] autorelease];
+    NSOperation* analyzeHoughSpaceOp = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(analyzeHoughSpaceOp) object:nil] autorelease];
+    [analyzeHoughSpaceOp addDependency:createHoughSpaceOp];
+    [self.operationQueue addOperation:createHoughSpaceOp];
+    [self.operationQueue addOperation:analyzeHoughSpaceOp];
+}
+-(void)executeAnalysisOperation{
+    NSOperation* analyzeHoughSpaceOp = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(analyzeHoughSpaceOp) object:nil] autorelease];
+
+    [self.operationQueue addOperation:analyzeHoughSpaceOp];
+}
+
 -(void)cancelOperations{
     [self.operationQueue cancelAllOperations];
 }
@@ -551,7 +564,7 @@
     
     // DEBUG
     CGImageRef copiedImage = [self CGImageWithCVPixelBuffer:self.grayScaleImage];
-    UIImage* hImg = NULL;//[UIImage imageWithCGImage:copiedImage];
+    UIImage* hImg = [UIImage imageWithCGImage:copiedImage];
     
     CGImageRelease(copiedImage);
     // DEBUG
@@ -659,7 +672,7 @@
     
     // DEBUG
     CGImageRef copiedImage = [self CGImageWithCVPixelBuffer:self.edgeImage];
-    UIImage* hImg = NULL;//[UIImage imageWithCGImage:copiedImage];
+    UIImage* hImg = nil;//[UIImage imageWithCGImage:copiedImage];
     
     CGImageRelease(copiedImage);
     

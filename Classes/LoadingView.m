@@ -9,7 +9,13 @@
 #import "LoadingView.h"
 #import "CGGeometry+HoughExtensions.h"
 
+@interface LoadingView ()
+@property (nonatomic, readwrite, assign) BOOL inProgress;
+
+@end
+
 @implementation LoadingView
+@synthesize inProgress;
 @dynamic text;
 
 - (id)initWithFrame:(CGRect)frame
@@ -28,6 +34,7 @@
         [self addSubview:progress];
      
         self.hidden = YES;
+        self.inProgress = NO;
     }
     return self;
 }
@@ -71,6 +78,7 @@
     [progress startAnimating];
 
     self.hidden = NO;
+    self.inProgress = YES;
     [self.superview bringSubviewToFront:self]; // TODO: Might need to change this
     
     [UIView beginAnimations:@"ShowView" context:nil];
@@ -81,6 +89,7 @@
     
 }
 - (void)stopProgress{
+    self.inProgress = NO;
     [UIView beginAnimations:@"HideView" context:nil];
     self.alpha         = 0.0;
     loadingLabel.alpha = 0.0;
