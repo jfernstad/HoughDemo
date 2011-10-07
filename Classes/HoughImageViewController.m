@@ -247,7 +247,7 @@
         if ([dict objectForKey:kHoughIntersectionArrayKey]) {
             intersections = [dict objectForKey:kHoughIntersectionArrayKey];
             // Do the bucket thing
-            [self.confView setGrayscaleInput:self.hough.GrayScaleImage];
+            [self.confView setGrayscaleInput:self.hough.EdgeImage];
             [self.confView setHoughInput:self.hough.HoughImage];
             [self.bucket clearBuckets];
             [self.bucket addIntersections:intersections];
@@ -295,18 +295,17 @@
 }
 
 -(void)updateConfigurationWithDictionary:(NSDictionary*)changedValues{
-    NSNumber* houghThresholdChanged   = [changedValues objectForKey:kHoughThresholdChanged];
     NSNumber* grayThresholdChanged    = [changedValues objectForKey:kHoughGrayscaleThresholdChanged];
-    
-    if (houghThresholdChanged && (houghThresholdChanged.integerValue != self.hough.houghThreshold)) {
-        NSLog(@"New hough threshold: %d", houghThresholdChanged.integerValue);
-        self.hough.houghThreshold = houghThresholdChanged.integerValue;
-        [self.hough executeHoughSpaceOperation];
-    }
+    NSNumber* houghThresholdChanged   = [changedValues objectForKey:kHoughThresholdChanged];
     
     if (grayThresholdChanged && (grayThresholdChanged.integerValue != self.hough.grayscaleThreshold)) {
         NSLog(@"New grayscale threshold: %d", grayThresholdChanged.integerValue);
         self.hough.grayscaleThreshold = grayThresholdChanged.integerValue;
+        [self.hough executeHoughSpaceOperation];
+    }
+    if (houghThresholdChanged && (houghThresholdChanged.integerValue != self.hough.houghThreshold)) {
+        NSLog(@"New hough threshold: %d", houghThresholdChanged.integerValue);
+        self.hough.houghThreshold = houghThresholdChanged.integerValue;
         [self.hough executeAnalysisOperation];
     }
 }

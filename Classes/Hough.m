@@ -468,6 +468,9 @@
 }
 
 -(void)executeHoughSpaceOperation{
+    
+    [self clear];
+    
     NSOperation* createHoughSpaceOp  = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(createHoughSpaceOp) object:nil] autorelease];
     NSOperation* analyzeHoughSpaceOp = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(analyzeHoughSpaceOp) object:nil] autorelease];
     [analyzeHoughSpaceOp addDependency:createHoughSpaceOp];
@@ -564,7 +567,7 @@
     
     // DEBUG
     CGImageRef copiedImage = [self CGImageWithCVPixelBuffer:self.grayScaleImage];
-    UIImage* hImg = [UIImage imageWithCGImage:copiedImage];
+    UIImage* hImg = nil;//[UIImage imageWithCGImage:copiedImage];
     
     CGImageRelease(copiedImage);
     // DEBUG
@@ -633,6 +636,24 @@
         }
     }
 
+    // Skip edge row, edge y-direction, add results
+    for (yy = 1; yy < h - 1; yy++) {
+        for (xx = 1; xx < w - 1; xx++) {
+            
+            // Offset to RED channel
+            edge = (pixelsIn[(xx)*4 + 1 + (yy - 1) * ws]  +
+                    pixelsIn[(xx)*4 + 1 + (yy + 0) * ws]  +
+                    pixelsIn[(xx)*4 + 1 + (yy + 1) * ws])/3;
+            
+            // Per color-component
+            //pixels[xx * 4 + 0 + yy * ws]  = 255;
+            pixelsOut[xx * 4 + 1 + yy * ws] += edge;
+            pixelsOut[xx * 4 + 2 + yy * ws] += edge;
+            pixelsOut[xx * 4 + 3 + yy * ws] += edge;
+        }
+    }
+    
+
     pixelsIn = blur; // Replace pointers
     
     // EDGE
@@ -672,7 +693,7 @@
     
     // DEBUG
     CGImageRef copiedImage = [self CGImageWithCVPixelBuffer:self.edgeImage];
-    UIImage* hImg = nil;//[UIImage imageWithCGImage:copiedImage];
+    UIImage* hImg = [UIImage imageWithCGImage:copiedImage];
     
     CGImageRelease(copiedImage);
     
@@ -756,7 +777,7 @@
     CGImageRef  tImg = [self newHoughSpaceFromPoints:points persistent:YES]; 
     CGImageRef imgTest = [self CGImageWithCVPixelBuffer:self.houghSpace];
     
-    UIImage* hImg = NULL;//[UIImage imageWithCGImage:tImg]; 
+    UIImage* hImg = [UIImage imageWithCGImage:tImg]; 
     //    UIImage* hImg = [UIImage imageWithCGImage:imgTest];
     
     CGImageRelease(tImg);

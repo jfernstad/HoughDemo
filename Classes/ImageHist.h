@@ -52,6 +52,7 @@ typedef enum EHistogramType{
 @property (nonatomic, assign) EPixelBufferComponent histogramPixelBufferComponent;
 @property (nonatomic, assign) EHistogramType        histogramType;
 @property (nonatomic, copy)   HistogramFinished     finishBlock;
+@property (nonatomic, assign) BOOL ignoreZeroIntensity;
 
 -(void)createHistogram;
 @end

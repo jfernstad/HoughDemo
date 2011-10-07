@@ -13,6 +13,7 @@
 @synthesize histogramPixelBufferComponent;
 @synthesize histogramType;
 @synthesize finishBlock;
+@synthesize ignoreZeroIntensity;
 
 -(id)init{
     
@@ -22,6 +23,7 @@
         
         self.finishBlock = nil;
         self.image = nil;
+        self.ignoreZeroIntensity = YES;
     }
     return self;
 }
@@ -82,7 +84,9 @@
         
         for (ii = 0; ii < bufferSize; ii+=4) {
             value = pixels[ii + offset];
-            histogram[offset][value] += 1;
+
+            if (value > 0)
+                histogram[offset][value] += 1;
         }
     }
 
