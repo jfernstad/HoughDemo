@@ -10,6 +10,7 @@
 #import "CGGeometry+HoughExtensions.h"
 #import <Accelerate/Accelerate.h>
 #import <CoreVideo/CoreVideo.h>
+#import "PointLinkedList.h"
 
 #define Y_SCALE 2.0f
 #define MIN_INTENSITY 100    // TODO: Parameterize
@@ -209,6 +210,9 @@
     
     NSAssert(isSetup, @"! Hough doesn't have a frame! call .frame = rect. ");
     
+    PointLinkedList* list = [points objectAtIndex:0];
+    PointNode* node = NULL;
+    
     int maxVals = self.size.width;
     
 	float startVal	= 0.0f;
@@ -245,11 +249,16 @@
 	
 	float compressedOffset = (self.size.height - self.imgSize.height/self.yScale)/2.0f; // To see the entire wave we need to scale and offset the amplitude. 
 	
-    NSMutableArray* outArray = [NSMutableArray arrayWithCapacity:points.count];
+    NSMutableArray* outArray = [NSMutableArray arrayWithCapacity:list.size];
+//    NSMutableArray* outArray = [NSMutableArray arrayWithCapacity:points.count];
     
-	for (NSValue* val in points) {
+    PointLinkedList* tmpList = NULL;
+    
+//	for (NSValue* val in points) {
+    while ((node = [list next])) {
 		
-		p = [val CGPointValue];
+//		p = [val CGPointValue];
+		p = *(node->point);
         
         // Offset point to middle of hough space
 		xAmp	 = xOff - p.x;
@@ -263,17 +272,20 @@
 		vDSP_vadd(cosPart, 1, sinPart, 1, yValues, 1, maxVals);
 		vDSP_vsadd(yValues,1, &yOff, yOffset, 1, maxVals);
 		
-		tmpArray = [NSMutableArray arrayWithCapacity:maxVals];
+//		tmpArray = [NSMutableArray arrayWithCapacity:maxVals];
+        tmpList = [[[PointLinkedList alloc] init] autorelease];
 		
 		// TODO: SIMD this
 		for(k = 0; k < maxVals; k++){
 			p2.x = k;
 			p2.y = (int)(yOffset[k]/self.yScale + compressedOffset);
 			
-			[tmpArray addObject:[NSValue valueWithCGPoint:p2]];
+//			[tmpArray addObject:[NSValue valueWithCGPoint:p2]];
+			[tmpList addPoint:p2];
 		}
         
-        [outArray addObject:tmpArray];
+//        [outArray addObject:tmpArray];
+        [outArray addObject:tmpList];
 	}
     
     return outArray;
@@ -305,10 +317,23 @@
 	int y = 0;
 	CGPoint p;
 	int position = 0;
-	for (NSArray* curve in newCurves) {
-		for (NSValue* val in curve) {
+//	for (NSArray* curve in newCurves) {
+//		for (NSValue* val in curve) {
+//			
+//			p = [val CGPointValue];
+//			y = (int)p.y;
+//			
+//			if (y > 0 && y <= maxDist){
+//				position = (int)(p.x + y * maxVals);
+//				pointer[ position ]++;
+//			}
+//		}
+//	}
+    PointNode* node = NULL;
+	for (PointLinkedList* curve in newCurves) {
+		while ((node = [curve next])) {
 			
-			p = [val CGPointValue];
+			p = *(node->point);
 			y = (int)p.y;
 			
 			if (y > 0 && y <= maxDist){
@@ -760,7 +785,8 @@
         [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationCreateHoughSpaceImage waitUntilDone:NO];
     }
     
-    NSMutableArray* points = [NSMutableArray arrayWithCapacity:self.maxHoughInput]; // TODO: Tie to parameter
+//    NSMutableArray* points = [NSMutableArray arrayWithCapacity:self.maxHoughInput];
+    NSMutableArray* points = [NSMutableArray array];
     
     CVPixelBufferLockBaseAddress(self.edgeImage, 0); // Is this neccessary?
     unsigned char *pixels = CVPixelBufferGetBaseAddress(self.edgeImage);
@@ -773,6 +799,8 @@
     UInt8 intensity = 0;
     NSUInteger counter = 0;
     
+    PointLinkedList* list = [[[PointLinkedList alloc] init] autorelease];
+
 	// Get Positions from pixels in edge image
     for( yy = 0; yy < h; yy++){
         if (counter > self.maxHoughInput) { 
@@ -783,15 +811,22 @@
             intensity = pixels[xx*4 + 1 + yy * ws];
             
             if( intensity > self.grayscaleThreshold ){ // Threshold, Parametrize
-                [points addObject:[NSValue valueWithCGPoint:CGPointMake(xx, yy)]];
+                [list addPoint:CGPointMake(xx, yy)];
+//                [points addObject:[NSValue valueWithCGPoint:CGPointMake(xx, yy)]];
+                
+//                DLog(@"List: %@", list);
                 
                 if (++counter > self.maxHoughInput) {
-                    DLog(@"Hit limit @ (%d,%d) %d pixels examined. ", xx,yy,xx*yy);
+                    DLog(@"Hit limit @ (%d,%d) %d pixels examined. ", xx,yy,xx*yy*w);
                     break;
                 }
             }
         }
     }
+    
+//    [list clear];
+//    [list release];
+    [points addObject:list];
     
     DLog(@"Got %d points. ", points.count);
     

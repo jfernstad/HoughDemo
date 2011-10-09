@@ -95,7 +95,7 @@
     self.hough.size = totalRect.size; // Setup hough size, WRONG. Do this for the image instead. 
     self.hough.operationDelegate = self;
     self.hough.yScale = 1;
-    self.hough.maxHoughInput = 1000;
+    self.hough.maxHoughInput = 10000;
     self.hough.houghThreshold = 20;
     self.hough.grayscaleThreshold = 250;
     

@@ -43,13 +43,13 @@
         [self.grayHistControl addTarget:self action:@selector(grayThresholdSet:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
         [self.houghHistControl addTarget:self action:@selector(houghThresholdSet:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
         
-        self.grayHistControl.logHistogram = NO;
+        self.grayHistControl.logHistogram = YES;
         self.grayHistControl.histogramColor = [UIColor houghYellow];
         self.grayHistControl.histogramType  = EHistogramTypeNormal; // High intensity = Low count
         self.grayHistControl.histogramStyle = EHistogramStyleFlipHorizontal; // Top = High intensity
         self.houghHistControl.positionSliderToLeft = NO;
         
-        self.houghHistControl.logHistogram = NO;
+        self.houghHistControl.logHistogram = YES;
         self.houghHistControl.histogramColor = [UIColor houghYellow];
         self.houghHistControl.histogramType  = EHistogramTypeReverseCumulative; // High intensity = Low count
         self.houghHistControl.histogramStyle = EHistoGramStyleFlipBoth; // Top = High intensity

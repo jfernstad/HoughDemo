@@ -45,6 +45,7 @@
 		839C9DC71373BC770074A39C /* hand.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 839C9DC61373BC770074A39C /* hand.jpg */; };
 		83A23BC3141C5DA6007C2158 /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A23BC2141C5DA6007C2158 /* InfoViewController.m */; };
 		83A23BC5141C618A007C2158 /* information.html in Resources */ = {isa = PBXBuildFile; fileRef = 83A23BC4141C618A007C2158 /* information.html */; };
+		83C0E26514421E1A00A4A149 /* PointLinkedList.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C0E26414421E1A00A4A149 /* PointLinkedList.m */; };
 		83CBB19F131997300092FE93 /* HoughInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBB19E131997300092FE93 /* HoughInputView.m */; };
 		83CBB2261319B9160092FE93 /* Hough.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBB2251319B9160092FE93 /* Hough.m */; };
 		83CBB22C1319BC160092FE93 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83CBB22B1319BC160092FE93 /* Accelerate.framework */; };
@@ -113,6 +114,8 @@
 		83A23BC1141C5DA6007C2158 /* InfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoViewController.h; sourceTree = "<group>"; };
 		83A23BC2141C5DA6007C2158 /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
 		83A23BC4141C618A007C2158 /* information.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = information.html; path = assets/information.html; sourceTree = "<group>"; };
+		83C0E26314421E1A00A4A149 /* PointLinkedList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointLinkedList.h; sourceTree = "<group>"; };
+		83C0E26414421E1A00A4A149 /* PointLinkedList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PointLinkedList.m; sourceTree = "<group>"; };
 		83CBB19D131997300092FE93 /* HoughInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoughInputView.h; sourceTree = "<group>"; };
 		83CBB19E131997300092FE93 /* HoughInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = HoughInputView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		83CBB2241319B9160092FE93 /* Hough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Hough.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -303,6 +306,8 @@
 				837A9CB913A44F7D00B4CE95 /* Bucket2D.m */,
 				83FF4113141539C600BA91D4 /* ImageHist.h */,
 				83FF4114141539C600BA91D4 /* ImageHist.m */,
+				83C0E26314421E1A00A4A149 /* PointLinkedList.h */,
+				83C0E26414421E1A00A4A149 /* PointLinkedList.m */,
 			);
 			name = Algorithms;
 			sourceTree = "<group>";
@@ -498,6 +503,7 @@
 				8397FEB1141D673C00A4678E /* FreeHandConfigurationView.m in Sources */,
 				834C1FD11438FB4700FE50FB /* ImageConfigurationView.m in Sources */,
 				83E1188914392B4700216098 /* HistogramControl.m in Sources */,
+				83C0E26514421E1A00A4A149 /* PointLinkedList.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

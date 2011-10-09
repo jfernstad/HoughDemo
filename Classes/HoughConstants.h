@@ -11,12 +11,12 @@
 
 // From http://stackoverflow.com/questions/969130/nslog-tips-and-tricks
 #ifdef DEBUG
-#   define DLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#   define DLog(fmt, ...) NSLog((@"%s:%d | " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
 #else
 #   define DLog(...)
 #endif
 
-#define ALog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#define ALog(fmt, ...) NSLog((@"%s:%d | " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
 
 #define CORNER_RADIUS 10
 #define EDGE_WIDTH     2
