@@ -46,7 +46,7 @@
         [self.buckets setValue:bucket forKey:bucketKey];
     }
     
-//    NSLog(@"Adding TO Bucket: %@ -> %@", bucketKey, intersection);
+//    DLog(@"Adding TO Bucket: %@ -> %@", bucketKey, intersection);
     [bucket addObject:intersection];
 }
 
@@ -73,14 +73,14 @@
     
         totalIntensity += i.intensity;
         
-//        NSLog(@"%f * %d = %f", i.length, i.intensity, i.length * i.intensity);
+//        DLog(@"%f * %d = %f", i.length, i.intensity, i.length * i.intensity);
 //        if (i.intensity > maxIntensity) {
 //            maxIntensity = i.intensity;
 //        }
     }
 
-//    NSLog(@"------");
-//    NSLog(@"cog.y / totalIntensity =  %f / %d = %f", cog.y, totalIntensity, cog.y / (float)totalIntensity);
+//    DLog(@"------");
+//    DLog(@"cog.y / totalIntensity =  %f / %d = %f", cog.y, totalIntensity, cog.y / (float)totalIntensity);
     
     if (totalIntensity) {
         cog.x /= (float)totalIntensity;

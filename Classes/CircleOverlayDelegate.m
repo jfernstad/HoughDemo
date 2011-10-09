@@ -34,7 +34,7 @@
     
     if (!self.points) return;
     
-    //    NSLog(@"layerDelegate is being used!");
+    //    DLog(@"layerDelegate is being used!");
     
     CGContextSetLineCap(ctx, kCGLineCapRound);
     CGContextSetShadow(ctx, CGSizeMake(3, 3), 1.0);
@@ -75,7 +75,7 @@
         CGContextDrawPath(ctx, kCGPathStroke);
     }
 	
-    //	NSLog(@"Got Vector (%f, %f)", 360*theta, len);
+    //	DLog(@"Got Vector (%f, %f)", 360*theta, len);
     
 }
 

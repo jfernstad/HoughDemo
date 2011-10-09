@@ -127,7 +127,7 @@
     self.value = (NSInteger)sliderValue;
     [self sendActionsForControlEvents:UIControlEventValueChanged];
 
-    NSLog(@"New value: %d", self.value);
+    DLog(@"New value: %d", self.value);
 }
 -(void)sliderEnd:(id)sender{
     self.value = (NSInteger)self.slider.value;
@@ -149,7 +149,7 @@
 #pragma mark - Delegates
 
 -(void)didFinish:(CVImageBufferRef)image withHistogram:(NSDictionary *)dictionary{
-    NSLog(@"didFinishWithHistogram");
+    DLog(@"didFinishWithHistogram");
     NSArray* componentKeys = [dictionary allKeys];
     
     NSDictionary* tmpDict = nil;

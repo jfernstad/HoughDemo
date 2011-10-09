@@ -47,14 +47,14 @@
     xScale = self.imgSize.width  / layer.bounds.size.width;
     yScale = self.imgSize.height / layer.bounds.size.height;
     
-//    NSLog(@"LineDelegate scale: (%f, %f)",xScale, yScale);
+//    DLog(@"LineDelegate scale: (%f, %f)",xScale, yScale);
     
     CGColorRef color = lineColor.CGColor;
     CGContextSetLineWidth(ctx, 2.0); // TODO: Parametrize
     
     for (HoughIntersection* i in self.lines) {
         
-        //NSLog(@"%@", i);
+        //DLog(@"%@", i);
         theta   = i.theta;
         len     = i.length;
         
@@ -88,7 +88,7 @@
         
     }
 	
-//	NSLog(@"Got Vector (%f, %f)", 360*theta, len);
+//	DLog(@"Got Vector (%f, %f)", 360*theta, len);
 
 }
 

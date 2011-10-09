@@ -255,7 +255,7 @@
 
 -(void)startAnalysis:(NSTimer*)timer{
     if (self.shouldAnalyzeAutomatically && !self.busy && self.pointAdded && self.readyForAnalysis) {
-        //NSLog(@"Executing analysis.");
+        //DLog(@"Executing analysis.");
         
         self.readyForAnalysis = NO;
         self.pointAdded = NO;
@@ -302,7 +302,7 @@
 		self.busy = NO;
 	}
 	else {
-		NSLog(@" BUSY! Not finished with previous image");
+		DLog(@" BUSY! Not finished with previous image");
 	}
 }
 -(void)overlayLines:(NSArray *)lines{
@@ -384,7 +384,7 @@
     if (thresholdChanged) {
         self.hough.houghThreshold = [thresholdChanged integerValue];
         self.pointAdded = YES;
-        NSLog(@"%@", thresholdChanged);
+        DLog(@"%@", thresholdChanged);
     }
     
 }

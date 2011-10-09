@@ -261,7 +261,7 @@
  
 }
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
-//    NSLog(@"info: %@", info);
+//    DLog(@"info: %@", info);
     UIImage* selectedImage = nil;
     
     // Close picker
@@ -291,20 +291,25 @@
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController{
-    NSLog(@"popoverControllerDidDismissPopover");
+    DLog(@"popoverControllerDidDismissPopover");
 }
 
 -(void)updateConfigurationWithDictionary:(NSDictionary*)changedValues{
     NSNumber* grayThresholdChanged    = [changedValues objectForKey:kHoughGrayscaleThresholdChanged];
     NSNumber* houghThresholdChanged   = [changedValues objectForKey:kHoughThresholdChanged];
     
+#ifdef DEBUG
+    NSNumber* debugFlag = [changedValues objectForKey:kHoughDebugFlagChanged];
+    self.hough.debugEnabled = debugFlag.boolValue;
+#endif
+    
     if (grayThresholdChanged && (grayThresholdChanged.integerValue != self.hough.grayscaleThreshold)) {
-        NSLog(@"New grayscale threshold: %d", grayThresholdChanged.integerValue);
+        DLog(@"New grayscale threshold: %d", grayThresholdChanged.integerValue);
         self.hough.grayscaleThreshold = grayThresholdChanged.integerValue;
         [self.hough executeHoughSpaceOperation];
     }
     if (houghThresholdChanged && (houghThresholdChanged.integerValue != self.hough.houghThreshold)) {
-        NSLog(@"New hough threshold: %d", houghThresholdChanged.integerValue);
+        DLog(@"New hough threshold: %d", houghThresholdChanged.integerValue);
         self.hough.houghThreshold = houghThresholdChanged.integerValue;
         [self.hough executeAnalysisOperation];
     }

@@ -129,11 +129,11 @@
     }
     else if (frameDelta >= originalRect.size.height/2.0) {
         [self showViewAnimated:YES];
-        NSLog(@"Showing view");
+        DLog(@"Showing view");
     }
     else{
         [self dismissViewAnimated:YES];
-        NSLog(@"Dismissing view");
+        DLog(@"Dismissing view");
     }
 }
 @end

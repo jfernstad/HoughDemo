@@ -80,7 +80,7 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
 }
 
 -(void)executeWithImage:(CVPixelBufferRef)inputForHistogram{
-    NSLog(@"Execute histogramView");
+    DLog(@"Execute histogramView");
     self.histogramObject.histogramPixelBufferComponent = self.useComponents;
     self.histogramObject.histogramType  = self.histogramType;
     self.histogramObject.image          = inputForHistogram;
@@ -98,7 +98,7 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
 
 -(void)executeInBackground{
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; 
-    NSLog(@"Background execution");
+    DLog(@"Background execution");
 
     [self.histogramObject createHistogram];
     // Reorder histogram to internal representation
@@ -172,15 +172,15 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
             }
             if ((1 << component) == EPixelBufferRed) {
                 color = [UIColor colorWithRed:1 green:0 blue:0 alpha:1/alpha].CGColor;
-                NSLog(@"RED");
+                DLog(@"RED");
             }
             if ((1 << component) == EPixelBufferGreen) {
                 color = [UIColor colorWithRed:0 green:1 blue:0 alpha:1/alpha].CGColor;
-                NSLog(@"GREEN");
+                DLog(@"GREEN");
             }
             if ((1 << component) == EPixelBufferBlue) {
                 color = [UIColor colorWithRed:0 green:0 blue:1 alpha:1/alpha].CGColor;
-                NSLog(@"BLUE");
+                DLog(@"BLUE");
             }
         }
         

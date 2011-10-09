@@ -122,7 +122,7 @@
             [tmpPoints addObject:pointVal];
         }
     }
-//    NSLog(@"GestureState: %d", gestureRecognizer.state);
+//    DLog(@"GestureState: %d", gestureRecognizer.state);
 	self.currentPoint = [NSValue valueWithCGPoint:p];
 
     if (self.persistentTouch) {
@@ -154,7 +154,7 @@
                 }
                 break;
             case UIGestureRecognizerStateCancelled:
-                NSLog(@"Touch cancelled. Decide what to do here");
+                DLog(@"Touch cancelled. Decide what to do here");
                 break;
                 
             default:

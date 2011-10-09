@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "HoughConstants.h"
 
 // Dictionary keys
 #define kOperationNameKey           @"OperationName"
@@ -93,6 +94,10 @@
 @property (nonatomic, assign) NSUInteger maxHoughInput;
 @property (nonatomic, assign) NSUInteger grayscaleThreshold;
 @property (nonatomic, assign) NSUInteger houghThreshold;
+#ifdef DEBUG
+@property (nonatomic, assign) BOOL debugEnabled;
+#endif
+
 
 // Manual Interaction methods
 -(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points persistent:(BOOL)pointsArePersistent; // Completely redraw houghImage. TODO: Remove?

@@ -53,7 +53,7 @@
         y = origSize.height/2;// - size.height/5;
         
         [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
-        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
+        DLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
     }
     
     // Line 2
@@ -62,7 +62,7 @@
         x = origSize.width/2;// - size.height/5;
         
         [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
-        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
+        DLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
     }
     
     // Line 3
@@ -71,14 +71,14 @@
         x = origSize.width/2  + ii * origSize.width/50;// - size.height/5;
         
         [points addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
-        NSLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
+        DLog(@"P: %@", NSStringFromCGPoint(CGPointMake(x, y)));
     }
 
     CGImageRelease([instance newHoughSpaceFromPoints:points persistent:YES]);
     
     [instance analyzeHoughSpaceOp];
     
-//    NSLog(@"%@", [instance allIntersections]);
+//    DLog(@"%@", [instance allIntersections]);
     
     [bucket addIntersections:[instance allIntersections]];
     
@@ -88,7 +88,7 @@
  
     STAssertEquals((int)cogs.count, (int)3, @"Should only be 3 lines in here. Not %d !", cogs.count);
     
-    NSLog(@"%@", cogs);
+    DLog(@"%@", cogs);
     
     HoughIntersection* l1 = nil;
     HoughIntersection* l2 = nil;

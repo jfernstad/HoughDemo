@@ -6,6 +6,7 @@
 //  Copyright 2011 Joakim Fernstad. All rights reserved.
 //
 
+#import "HoughConstants.h"
 #import "HoughDemoAppDelegate.h"
 #import "HoughFreeHandViewController.h"
 #import "HoughImageViewController.h"

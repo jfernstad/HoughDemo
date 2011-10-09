@@ -87,6 +87,9 @@
 @synthesize grayscaleThreshold;
 @synthesize houghThreshold;
 
+#ifdef DEBUG
+@synthesize debugEnabled;
+#endif
 -(id)init{
     
 	if ((self = [super init])) {
@@ -99,6 +102,11 @@
         self.maxHoughInput      = 1000;
         self.grayscaleThreshold = 128;
         self.houghThreshold     = MIN_INTENSITY;
+        
+#ifdef DEBUG
+        self.debugEnabled = YES;
+#endif
+
     }
 	
 	return self;
@@ -152,7 +160,7 @@
 
 -(void)setupHough{
     
-    NSLog(@"Setting up Hough!");
+    DLog(@"Setting up Hough!");
     
     if (isSetup) {
         self.houghSpace = nil;
@@ -163,7 +171,7 @@
     tmpHoughSpace = [self newEmptyCVPixelBuffer:self.size];
     
     if (!self.houghSpace || !self.tmpHoughSpace) {
-        NSLog(@" FAILED TO CREATE HOUGH PIXELBUFFERS !");
+        DLog(@" FAILED TO CREATE HOUGH PIXELBUFFERS !");
     }
     
     if (!colorSpace) colorSpace = [self createColorSpace];
@@ -502,8 +510,8 @@
     CGSize newSize = CGSizeIntegral(CGSizeAspectFitSize(self.inputUIImage.size, [UIScreen mainScreen].bounds.size));
     CGImageRef scaledImage = [self CGImageWithImage:self.inputUIImage.CGImage andSize:newSize]; 
 
-    NSLog(@"InputSize: %@", NSStringFromCGSize(self.inputUIImage.size));
-    NSLog(@"NewSize: %@", NSStringFromCGSize(newSize));
+    DLog(@"InputSize: %@", NSStringFromCGSize(self.inputUIImage.size));
+    DLog(@"NewSize: %@", NSStringFromCGSize(newSize));
     
     self.inputUIImage = [UIImage imageWithCGImage:scaledImage];
     self.size = newSize;
@@ -566,10 +574,17 @@
     
     
     // DEBUG
-    CGImageRef copiedImage = [self CGImageWithCVPixelBuffer:self.grayScaleImage];
-    UIImage* hImg = nil;//[UIImage imageWithCGImage:copiedImage];
+    UIImage* hImg = nil; 
+#ifdef DEBUG
+    CGImageRef copiedImage = nil;
     
-    CGImageRelease(copiedImage);
+    if (self.debugEnabled){
+        copiedImage = [self CGImageWithCVPixelBuffer:self.grayScaleImage];
+        hImg = [UIImage imageWithCGImage:copiedImage];
+        
+        CGImageRelease(copiedImage);
+    }
+#endif
     // DEBUG
 
     if (self.operationDelegate) {
@@ -613,10 +628,10 @@
     CVPixelBufferLockBaseAddress(blurBuf, 0);
     unsigned char* blur = CVPixelBufferGetBaseAddress(blurBuf);
     
-    NSLog(@"EdgeSize: %@", NSStringFromCGSize(edgeSize));
-    NSLog(@"GrayScale: {%4d,%4d,%4d}", (int)CVPixelBufferGetWidth(self.grayScaleImage), (int)CVPixelBufferGetHeight(self.grayScaleImage),  (int)CVPixelBufferGetBytesPerRow(self.grayScaleImage));
-    NSLog(@"EdgeImage: {%4d,%4d,%4d}", (int)CVPixelBufferGetWidth(self.edgeImage), (int)CVPixelBufferGetHeight(self.edgeImage), (int)CVPixelBufferGetBytesPerRow(self.edgeImage));
-    NSLog(@"BlurBuf:   {%4d,%4d,%4d}", (int)CVPixelBufferGetWidth(blurBuf), (int)CVPixelBufferGetHeight(blurBuf), (int)CVPixelBufferGetBytesPerRow(blurBuf));
+    DLog(@"EdgeSize: %@", NSStringFromCGSize(edgeSize));
+    DLog(@"GrayScale: {%4d,%4d,%4d}", (int)CVPixelBufferGetWidth(self.grayScaleImage), (int)CVPixelBufferGetHeight(self.grayScaleImage),  (int)CVPixelBufferGetBytesPerRow(self.grayScaleImage));
+    DLog(@"EdgeImage: {%4d,%4d,%4d}", (int)CVPixelBufferGetWidth(self.edgeImage), (int)CVPixelBufferGetHeight(self.edgeImage), (int)CVPixelBufferGetBytesPerRow(self.edgeImage));
+    DLog(@"BlurBuf:   {%4d,%4d,%4d}", (int)CVPixelBufferGetWidth(blurBuf), (int)CVPixelBufferGetHeight(blurBuf), (int)CVPixelBufferGetBytesPerRow(blurBuf));
     
     // BOX BLUR
     // Skip edge row, edge x-direction
@@ -692,14 +707,20 @@
     }
     
     // DEBUG
-    CGImageRef copiedImage = [self CGImageWithCVPixelBuffer:self.edgeImage];
-    UIImage* hImg = [UIImage imageWithCGImage:copiedImage];
+    UIImage* hImg = nil; 
+#ifdef DEBUG
+    CGImageRef copiedImage = nil;
     
-    CGImageRelease(copiedImage);
+    if (self.debugEnabled){
+        copiedImage = [self CGImageWithCVPixelBuffer:self.edgeImage];
+        hImg = [UIImage imageWithCGImage:copiedImage];
+        
+        CGImageRelease(copiedImage);
+    }
+#endif
     
     CVPixelBufferUnlockBaseAddress(blurBuf, 0);
     CVPixelBufferRelease(blurBuf);
-    // DEBUG
 
     CVPixelBufferUnlockBaseAddress(self.edgeImage, 0);
     CVPixelBufferUnlockBaseAddress(self.grayScaleImage, 0);
@@ -765,23 +786,28 @@
                 [points addObject:[NSValue valueWithCGPoint:CGPointMake(xx, yy)]];
                 
                 if (++counter > self.maxHoughInput) {
-                    NSLog(@"Hit limit @ (%d,%d) %d pixels examined. ", xx,yy,xx*yy);
+                    DLog(@"Hit limit @ (%d,%d) %d pixels examined. ", xx,yy,xx*yy);
                     break;
                 }
             }
         }
     }
     
-    NSLog(@"Got %d points. ", points.count);
+    DLog(@"Got %d points. ", points.count);
     
     CGImageRef  tImg = [self newHoughSpaceFromPoints:points persistent:YES]; 
-    CGImageRef imgTest = [self CGImageWithCVPixelBuffer:self.houghSpace];
     
-    UIImage* hImg = [UIImage imageWithCGImage:tImg]; 
-    //    UIImage* hImg = [UIImage imageWithCGImage:imgTest];
+    UIImage* hImg = nil; 
+#ifdef DEBUG
+    CGImageRef copiedImage = nil;
+    
+    if (self.debugEnabled){
+        hImg = [UIImage imageWithCGImage:tImg];      
+        CGImageRelease(copiedImage);
+    }
+#endif
     
     CGImageRelease(tImg);
-    CGImageRelease(imgTest);
     
     if (self.operationDelegate) {
         NSDictionary* dic = [NSDictionary dictionaryWithObjectsAndKeys:kOperationCreateHoughSpaceImage, kOperationNameKey, hImg, kOperationUIImageKey, nil];
@@ -957,7 +983,7 @@
     CGImageRelease(convertedImg); // Should I?
     
     if (ret != kCVReturnSuccess) {
-        NSLog(@"CVPixelBufferWithCGImage: FAILED TO CREATE PIXELBUFFER FROM CGIMAGE!");
+        DLog(@"CVPixelBufferWithCGImage: FAILED TO CREATE PIXELBUFFER FROM CGIMAGE!");
         outBuf = NULL;
     }
     
@@ -980,7 +1006,7 @@
                               &newBuffer);
     
     if (ret != kCVReturnSuccess) {
-        NSLog(@"newEmptyCVPixelBuffer: FAILED TO CREATE NEW PIXELBUFFER !");
+        DLog(@"newEmptyCVPixelBuffer: FAILED TO CREATE NEW PIXELBUFFER !");
         newBuffer = NULL;
     }
     

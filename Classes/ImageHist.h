@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "HoughConstants.h"
 
 #define kHistogramOnRedComponentKey    @"HistogramOnRed"
 #define kHistogramOnGreenComponentKey  @"HistogramOnGreen"
