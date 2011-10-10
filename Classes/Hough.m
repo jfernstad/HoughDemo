@@ -11,6 +11,7 @@
 #import <Accelerate/Accelerate.h>
 #import <CoreVideo/CoreVideo.h>
 #import "PointLinkedList.h"
+#import "ListLinkedList.h"
 
 #define Y_SCALE 2.0f
 #define MIN_INTENSITY 100    // TODO: Parameterize
@@ -249,8 +250,11 @@
 	
 	float compressedOffset = (self.size.height - self.imgSize.height/self.yScale)/2.0f; // To see the entire wave we need to scale and offset the amplitude. 
 	
-    NSMutableArray* outArray = [NSMutableArray arrayWithCapacity:list.size];
+    NSMutableArray* outArray = [NSMutableArray arrayWithCapacity:1];
+    ListLinkedList* curves = [[[ListLinkedList alloc] init] autorelease];
 //    NSMutableArray* outArray = [NSMutableArray arrayWithCapacity:points.count];
+
+    [outArray addObject:curves];
     
     PointLinkedList* tmpList = NULL;
     
@@ -285,7 +289,8 @@
 		}
         
 //        [outArray addObject:tmpArray];
-        [outArray addObject:tmpList];
+//        [outArray addObject:tmpList];
+        [curves addPointList:tmpList];
 	}
     
     return outArray;
@@ -330,8 +335,16 @@
 //		}
 //	}
     PointNode* node = NULL;
-	for (PointLinkedList* curve in newCurves) {
-		while ((node = [curve next])) {
+	PointLinkedList * curve = NULL;
+	PointListNode * curvesNode = NULL;
+    ListLinkedList* curves = [newCurves objectAtIndex:0];
+    
+//	for (PointLinkedList* curve in newCurves) {
+    while ((curvesNode = [curves next])) {
+		
+        curve = curvesNode->list;
+        
+        while ((node = [curve next])) {
 			
 			p = *(node->point);
 			y = (int)p.y;
