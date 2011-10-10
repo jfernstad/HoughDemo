@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "HoughConstants.h"
+#import "IntersectionLinkedList.h"
 
 // Dictionary keys
 #define kOperationNameKey           @"OperationName"
@@ -49,7 +50,8 @@
     CGSize imgSize;
 	
     // Result arrays
-    NSMutableArray* intersections; // HoughIntersection objects
+//    NSMutableArray* intersections; // HoughIntersection objects
+    IntersectionLinkedList* intersections; // HoughIntersection objects
     
     // Interaction flags
     BOOL isSetup;
@@ -109,7 +111,7 @@
 -(void)clear;
 -(void)makePersistent;  // Stores tmpHoughImage to houghImage;
 -(CGPoint)equationForPoint:(CGRect)pointInRect;
--(NSArray*)allIntersections;
+-(IntersectionLinkedList*)allIntersections;
 
 // Operations
 -(void)executeOperationsWithImage:(UIImage*)rawImage;

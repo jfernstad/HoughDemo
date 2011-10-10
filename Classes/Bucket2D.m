@@ -50,9 +50,11 @@
     [bucket addObject:intersection];
 }
 
--(void)addIntersections:(NSArray*)intersections{
-    for (HoughIntersection* h in intersections) {
-        [self addIntersection:h];
+-(void)addIntersections:(IntersectionLinkedList*)intersections{
+//    for (HoughIntersection* h in intersections) {
+    IntersectionNode* node = NULL;
+    while ((node = [intersections next])) {
+        [self addIntersection:node->intersection];
     }
 }
 

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Hough.h"
+#import "IntersectionLinkedList.h"
 
 @interface Bucket2D : NSObject {
     CGPoint bucketAccuracy;
@@ -19,7 +20,7 @@
 -(NSSet*)allBuckets;
 -(void)clearBuckets;
 -(void)addIntersection:(HoughIntersection*)intersection;
--(void)addIntersections:(NSArray*)intersections;
+-(void)addIntersections:(IntersectionLinkedList*)intersections;
 -(HoughIntersection*)cogIntersectionForBucket:(NSSet*)bucket; // Center of gravity for intersections in bucket
 -(NSArray*)cogIntersectionsForAllBuckets; // Array of cogs all buckets
 

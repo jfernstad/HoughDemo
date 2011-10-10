@@ -59,6 +59,7 @@
 		83E4BCB41347C11700BFF07D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E4BCB31347C11700BFF07D /* QuartzCore.framework */; };
 		83F1366713FB631300A6CEF3 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83F1366613FB631300A6CEF3 /* CoreVideo.framework */; };
 		83F34CD31442744600337A25 /* ListLinkedList.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F34CD21442744600337A25 /* ListLinkedList.m */; };
+		83F34CD61442A03A00337A25 /* IntersectionLinkedList.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F34CD51442A03A00337A25 /* IntersectionLinkedList.m */; };
 		83FD84141389FB20000D4F48 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83FD84131389FB20000D4F48 /* LoadingView.m */; };
 		83FF4115141539C600BA91D4 /* ImageHist.m in Sources */ = {isa = PBXBuildFile; fileRef = 83FF4114141539C600BA91D4 /* ImageHist.m */; };
 		83FF41181415689000BA91D4 /* HistogramView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83FF41171415689000BA91D4 /* HistogramView.m */; };
@@ -136,6 +137,8 @@
 		83F1366613FB631300A6CEF3 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		83F34CD11442744600337A25 /* ListLinkedList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListLinkedList.h; sourceTree = "<group>"; };
 		83F34CD21442744600337A25 /* ListLinkedList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListLinkedList.m; sourceTree = "<group>"; };
+		83F34CD41442A03A00337A25 /* IntersectionLinkedList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntersectionLinkedList.h; sourceTree = "<group>"; };
+		83F34CD51442A03A00337A25 /* IntersectionLinkedList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntersectionLinkedList.m; sourceTree = "<group>"; };
 		83FD84121389FB20000D4F48 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
 		83FD84131389FB20000D4F48 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
 		83FF4113141539C600BA91D4 /* ImageHist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageHist.h; sourceTree = "<group>"; };
@@ -309,10 +312,12 @@
 				837A9CB913A44F7D00B4CE95 /* Bucket2D.m */,
 				83FF4113141539C600BA91D4 /* ImageHist.h */,
 				83FF4114141539C600BA91D4 /* ImageHist.m */,
-				83C0E26314421E1A00A4A149 /* PointLinkedList.h */,
-				83C0E26414421E1A00A4A149 /* PointLinkedList.m */,
 				83F34CD11442744600337A25 /* ListLinkedList.h */,
 				83F34CD21442744600337A25 /* ListLinkedList.m */,
+				83C0E26314421E1A00A4A149 /* PointLinkedList.h */,
+				83C0E26414421E1A00A4A149 /* PointLinkedList.m */,
+				83F34CD41442A03A00337A25 /* IntersectionLinkedList.h */,
+				83F34CD51442A03A00337A25 /* IntersectionLinkedList.m */,
 			);
 			name = Algorithms;
 			sourceTree = "<group>";
@@ -510,6 +515,7 @@
 				83E1188914392B4700216098 /* HistogramControl.m in Sources */,
 				83C0E26514421E1A00A4A149 /* PointLinkedList.m in Sources */,
 				83F34CD31442744600337A25 /* ListLinkedList.m in Sources */,
+				83F34CD61442A03A00337A25 /* IntersectionLinkedList.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

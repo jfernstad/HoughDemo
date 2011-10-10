@@ -12,6 +12,7 @@
 #import "UIColor+HoughExtensions.h"
 #import "NotificationView.h"
 #import "HoughConstants.h"
+#import "IntersectionLinkedList.h"
 
 @interface HoughFreeHandViewController ()
 -(void)layoutViews;
@@ -343,7 +344,8 @@
 }
 -(void)houghDidFinishOperationWithDictionary:(NSDictionary*)dict{ // Operation in kOperationNameKey
 
-    NSArray* filteredArray = [self.hough allIntersections];
+//    NSArray* filteredArray = [self.hough allIntersections];
+    IntersectionLinkedList* filteredArray = [self.hough allIntersections];
     [self.bucket clearBuckets];
     
     // Add points to buckets

@@ -45,7 +45,7 @@
 @end
 
 @interface Hough ()
-@property (retain) NSMutableArray* intersections;
+@property (retain) IntersectionLinkedList* intersections;
 @property (nonatomic, retain) NSOperationQueue* operationQueue;
 @property (nonatomic, retain) UIImage* inputUIImage;
 @property (nonatomic, assign) CGSize imgSize;
@@ -239,7 +239,7 @@
 	}
 #endif
     
-	NSMutableArray* tmpArray = nil;
+//	NSMutableArray* tmpArray = nil;
 	CGPoint p, p2;
 	int k			= 0;
 	
@@ -430,7 +430,7 @@
     
 }
 
--(NSArray*)allIntersections{
+-(IntersectionLinkedList*)allIntersections{
     return self.intersections;
 }
 //
@@ -876,7 +876,8 @@
         [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationAnalyzeHoughSpace waitUntilDone:NO];
     }
     
-    self.intersections = [[[NSMutableArray alloc] init] autorelease];
+//    self.intersections = [[[NSMutableArray alloc] init] autorelease];
+    self.intersections = [[[IntersectionLinkedList alloc] init] autorelease];
     
 	int maxPoint = 0;
 	int x = 0, y = 0;
@@ -903,7 +904,8 @@
                 equation = [self equationForPoint:pointRect];
                 maxPoint = intensity;
                 
-                [self.intersections addObject:
+//                [self.intersections addObject:
+                [self.intersections addIntersection:
                  [HoughIntersection houghIntersectionWithTheta:equation.x 
                                                         length:equation.y 
                                                   andIntensity:maxPoint]];
