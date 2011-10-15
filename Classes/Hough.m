@@ -58,8 +58,7 @@
 @property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef thinnedImage;
 
 -(void) setupHough;
--(NSArray*) createCurvesForPoints:(NSArray*)points;
--(CGImageRef) houghImageFromCurves:(NSArray*)curves persistant:(BOOL)pointsArePersistent;
+-(CGImageRef) houghImageFromPoints:(PointLinkedList*)points persistant:(BOOL)pointsArePersistent;
 -(CGColorSpaceRef)createColorSpace;
 
 -(CGImageRef)CGImageWithCVPixelBuffer:(CVPixelBufferRef)pixBuf;
@@ -207,15 +206,27 @@
 
 #pragma mark - Hough Stuff
 
--(NSArray*)createCurvesForPoints: (NSArray*)points{
+-(CGImageRef) houghImageFromPoints:(PointLinkedList*)points persistant:(BOOL)pointsArePersistent;{
     
     NSAssert(isSetup, @"! Hough doesn't have a frame! call .frame = rect. ");
     
-    PointLinkedList* list = [points objectAtIndex:0];
     PointNode* node = NULL;
     
-    int maxVals = self.size.width;
+    int maxDist = self.size.height;
+	int maxVals = self.size.width;
+	
+    CVPixelBufferLockBaseAddress(self.houghSpace, 0);
+    CVPixelBufferLockBaseAddress(self.tmpHoughSpace, 0);
     
+    unsigned char* pointer = CVPixelBufferGetBaseAddress(self.tmpHoughSpace);
+    
+    if (pointsArePersistent) {
+        pointer = CVPixelBufferGetBaseAddress(self.houghSpace);
+    }else{
+        unsigned char* d = CVPixelBufferGetBaseAddress(self.houghSpace);
+        memcpy(pointer, d, CVPixelBufferGetDataSize(self.houghSpace));
+    }
+
 	float startVal	= 0.0f;
 	float thetaInc	= M_PI/self.size.width;
 	float angles   [ maxVals ] __attribute__((aligned));
@@ -239,7 +250,6 @@
 	}
 #endif
     
-//	NSMutableArray* tmpArray = nil;
 	CGPoint p, p2;
 	int k			= 0;
 	
@@ -249,19 +259,12 @@
 	float yAmp = 0.0;
 	
 	float compressedOffset = (self.size.height - self.imgSize.height/self.yScale)/2.0f; // To see the entire wave we need to scale and offset the amplitude. 
-	
-    NSMutableArray* outArray = [NSMutableArray arrayWithCapacity:1];
-    ListLinkedList* curves = [[[ListLinkedList alloc] init] autorelease];
-//    NSMutableArray* outArray = [NSMutableArray arrayWithCapacity:points.count];
-
-    [outArray addObject:curves];
     
     PointLinkedList* tmpList = NULL;
-    
-//	for (NSValue* val in points) {
-    while ((node = [list next])) {
+    int position = 0;
+
+    while ((node = [points next])) {
 		
-//		p = [val CGPointValue];
 		p = *(node->point);
         
         // Offset point to middle of hough space
@@ -276,7 +279,6 @@
 		vDSP_vadd(cosPart, 1, sinPart, 1, yValues, 1, maxVals);
 		vDSP_vsadd(yValues,1, &yOff, yOffset, 1, maxVals);
 		
-//		tmpArray = [NSMutableArray arrayWithCapacity:maxVals];
         tmpList = [[[PointLinkedList alloc] init] autorelease];
 		
 		// TODO: SIMD this
@@ -284,79 +286,16 @@
 			p2.x = k;
 			p2.y = (int)(yOffset[k]/self.yScale + compressedOffset);
 			
-//			[tmpArray addObject:[NSValue valueWithCGPoint:p2]];
-			[tmpList addPoint:p2];
-		}
-        
-//        [outArray addObject:tmpArray];
-//        [outArray addObject:tmpList];
-        [curves addPointList:tmpList];
-	}
-    
-    return outArray;
-}
-
--(CGImageRef)houghImageFromCurves:(NSArray*)newCurves persistant:(BOOL)pointsArePersistent{
-	CGImageRef outImg = NULL; // 8 bit grayscale
-    
-    NSAssert(isSetup, @"! Hough doesn't have a frame! call .frame = rect. ");
-    
-	int maxDist = self.size.height;
-	int maxVals = self.size.width;
-	
-    CVPixelBufferLockBaseAddress(self.houghSpace, 0);
-    CVPixelBufferLockBaseAddress(self.tmpHoughSpace, 0);
-    
-    unsigned char* pointer = CVPixelBufferGetBaseAddress(self.tmpHoughSpace);
-    
-    //    CVPixelBufferLockBaseAddress(buffer, 0);
-    
-    if (pointsArePersistent) {
-        pointer = CVPixelBufferGetBaseAddress(self.houghSpace);
-    }else{
-        unsigned char* d = CVPixelBufferGetBaseAddress(self.houghSpace);
-        memcpy(pointer, d, CVPixelBufferGetDataSize(self.houghSpace));
-    }
-	
-	// Draw the curves
-	int y = 0;
-	CGPoint p;
-	int position = 0;
-//	for (NSArray* curve in newCurves) {
-//		for (NSValue* val in curve) {
-//			
-//			p = [val CGPointValue];
-//			y = (int)p.y;
-//			
-//			if (y > 0 && y <= maxDist){
-//				position = (int)(p.x + y * maxVals);
-//				pointer[ position ]++;
-//			}
-//		}
-//	}
-    PointNode* node = NULL;
-	PointLinkedList * curve = NULL;
-	PointListNode * curvesNode = NULL;
-    ListLinkedList* curves = [newCurves objectAtIndex:0];
-    
-//	for (PointLinkedList* curve in newCurves) {
-    while ((curvesNode = [curves next])) {
-		
-        curve = curvesNode->list;
-        
-        while ((node = [curve next])) {
-			
-			p = *(node->point);
-			y = (int)p.y;
-			
-			if (y > 0 && y <= maxDist){
-				position = (int)(p.x + y * maxVals);
+			if (p2.y > 0 && p2.y <= maxDist){ // Store pixels
+				position = (int)(p2.x + p2.y * maxVals);
 				pointer[ position ]++;
 			}
 		}
 	}
-	
-	CGFloat decode [] = {0.0f, 255.0f}; // TODO: Change to dynamic range. Calc Max/Min per image.
+
+    // Render
+    
+    CGFloat decode [] = {0.0f, 255.0f}; // TODO: Change to dynamic range. Calc Max/Min per image.
     CFDataRef cfImgData = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, pointer, maxDist * maxVals, kCFAllocatorNull);
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(cfImgData);
 	
@@ -379,20 +318,19 @@
 	// Convert to 8 bit from whatever.. 
 	CGContextDrawImage(cr, CGRectMake(0, 0, maxVals, maxDist), tmp);
 	
-	outImg = CGBitmapContextCreateImage(cr);
+	CGImageRef outImg = CGBitmapContextCreateImage(cr);
 	
 	CGDataProviderRelease(dataProvider);
 	CFRelease(scpr);
 	CGImageRelease(tmp);
 	CFRelease(cfImgData);
 	CGContextRelease(cr);
-	return outImg;
+
+    return outImg;
 }
 
--(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points persistent:(BOOL)pointsArePersistent{
-	NSArray* newCurves = [self createCurvesForPoints:points];
-    
-    CGImageRef outImage = [self houghImageFromCurves:newCurves persistant:pointsArePersistent];
+-(CGImageRef)newHoughSpaceFromPoints: (PointLinkedList*)points persistent:(BOOL)pointsArePersistent{
+	CGImageRef outImage = [self houghImageFromPoints:points persistant:pointsArePersistent];
     
     if (self.storeAfterDraw && !pointsArePersistent) {
         [self makePersistent];
@@ -798,9 +736,6 @@
         [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationCreateHoughSpaceImage waitUntilDone:NO];
     }
     
-//    NSMutableArray* points = [NSMutableArray arrayWithCapacity:self.maxHoughInput];
-    NSMutableArray* points = [NSMutableArray array];
-    
     CVPixelBufferLockBaseAddress(self.edgeImage, 0); // Is this neccessary?
     unsigned char *pixels = CVPixelBufferGetBaseAddress(self.edgeImage);
     CVPixelBufferUnlockBaseAddress(self.edgeImage, 0);
@@ -825,9 +760,6 @@
             
             if( intensity > self.grayscaleThreshold ){ // Threshold, Parametrize
                 [list addPoint:CGPointMake(xx, yy)];
-//                [points addObject:[NSValue valueWithCGPoint:CGPointMake(xx, yy)]];
-                
-//                DLog(@"List: %@", list);
                 
                 if (++counter > self.maxHoughInput) {
                     DLog(@"Hit limit @ (%d,%d) %d pixels examined. ", xx,yy,xx*yy*w);
@@ -837,13 +769,9 @@
         }
     }
     
-//    [list clear];
-//    [list release];
-    [points addObject:list];
+    DLog(@"Got %d points. ", list.size);
     
-    DLog(@"Got %d points. ", points.count);
-    
-    CGImageRef  tImg = [self newHoughSpaceFromPoints:points persistent:YES]; 
+    CGImageRef  tImg = [self newHoughSpaceFromPoints:list persistent:YES]; 
     
     UIImage* hImg = nil; 
 #ifdef DEBUG
@@ -876,7 +804,6 @@
         [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationAnalyzeHoughSpace waitUntilDone:NO];
     }
     
-//    self.intersections = [[[NSMutableArray alloc] init] autorelease];
     self.intersections = [[[IntersectionLinkedList alloc] init] autorelease];
     
 	int maxPoint = 0;
@@ -904,7 +831,6 @@
                 equation = [self equationForPoint:pointRect];
                 maxPoint = intensity;
                 
-//                [self.intersections addObject:
                 [self.intersections addIntersection:
                  [HoughIntersection houghIntersectionWithTheta:equation.x 
                                                         length:equation.y 

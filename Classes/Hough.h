@@ -23,6 +23,8 @@
 #define kOperationCreateHoughSpaceImage @"OperationCreateHoughSpace"
 #define kOperationAnalyzeHoughSpace     @"OperationAnalyzeHoughSpace"
 
+@class PointLinkedList;
+
 @protocol HoughOperationDelegate
 
 -(void)houghWillBeginOperation:(NSString*)operation;
@@ -102,10 +104,7 @@
 
 
 // Manual Interaction methods
--(CGImageRef)newHoughSpaceFromPoints: (NSArray*)points persistent:(BOOL)pointsArePersistent; // Completely redraw houghImage. TODO: Remove?
-//-(void)createHoughWithWithPoints:(NSArray*)points persistent:(BOOL)pointsArePersistent;
-//-(CGImageRef)renderHough;
-
+-(CGImageRef)newHoughSpaceFromPoints: (PointLinkedList*)points persistent:(BOOL)pointsArePersistent;
 
 // Useful methods?
 -(void)clear;
