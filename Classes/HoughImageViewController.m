@@ -243,7 +243,7 @@
         // We got what we needed
         
         // TODO: Make this an operation instead. Might block interface.
-        NSArray* intersections = nil;
+        IntersectionLinkedList* intersections = nil;
         if ([dict objectForKey:kHoughIntersectionArrayKey]) {
             intersections = [dict objectForKey:kHoughIntersectionArrayKey];
             // Do the bucket thing

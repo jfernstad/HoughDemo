@@ -52,7 +52,6 @@
     CGSize imgSize;
 	
     // Result arrays
-//    NSMutableArray* intersections; // HoughIntersection objects
     IntersectionLinkedList* intersections; // HoughIntersection objects
     
     // Interaction flags

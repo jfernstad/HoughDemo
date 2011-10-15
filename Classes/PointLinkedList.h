@@ -11,11 +11,21 @@
 typedef struct PointNode{
     CGPoint* point;
     struct PointNode* next;
+    struct PointNode* previous;
 }PointNode;
 
 @interface PointLinkedList : NSObject
 @property (nonatomic, readonly) NSUInteger size;
--(void)addPoint:(CGPoint)p;
+@property (nonatomic, readonly) PointNode* startPosition;
+@property (nonatomic, readonly) PointNode* currentPosition;  // Read position
+@property (nonatomic, readonly) PointNode* lastPosition;     // Write position
+
+// Read node
 -(PointNode*)next;
+
+// Manipulate list
+-(void)addPoint:(CGPoint)p;
 -(void)clear;
+-(void)resetPosition;
+-(void)replaceLastPointWithPoint:(CGPoint)newLastPoint;
 @end

@@ -17,6 +17,7 @@
 @class HoughTouchView;
 @class Bucket2D;
 @class FreeHandConfigurationView;
+@class PointLinkedList;
 
 @interface HoughFreeHandViewController : HoughBaseViewController <HoughInputProtocol, HoughOverlayProtocol, HoughOperationDelegate, ConfigurationProtocol>{
     // View elements
@@ -56,7 +57,7 @@
 @property (nonatomic, retain) FreeHandConfigurationView* confView;
 
 -(void)clear;
--(void)updateInputWithPoints:(NSArray*)pointArray;
+-(void)updateInputWithPoints:(PointLinkedList*)pointArray;
 -(void)overlayLines:(NSArray *)lines;  
 -(void)overlayCircles:(NSArray *)circles;
 @end

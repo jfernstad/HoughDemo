@@ -15,7 +15,9 @@
 @property (nonatomic, assign) PointNode* currentPosition;  // Read position
 @property (nonatomic, assign) PointNode* lastPosition;     // Write position
 -(PointNode*)newNode;
--(void)resetPosition; // Cur -> Start
+-(void)addNode:(PointNode*)newNode;
+-(void)removeNode:(PointNode*)removeNode;
+-(void)freeNode:(PointNode*)deleteNode;
 @end
 
 //
@@ -44,25 +46,31 @@
 #pragma mark - Methods
 -(PointNode*)newNode{
     PointNode* l = (PointNode*)malloc(sizeof(PointNode));
-    l->point     = (CGPoint*)malloc(sizeof(CGPoint));
     
     if (!l) return NULL;
     
-    // Fist addition
-    if (!self.startPosition){ 
-        self.startPosition   = l;
-        self.lastPosition    = l;
-        self.currentPosition = l;
-        self.size     = 1;
-    }else{
-        self.lastPosition->next = l;
-        self.lastPosition       = l;
-        self.size++;
-    }
-
+    // Initialize
+    l->point    = (CGPoint*)malloc(sizeof(CGPoint));
+    l->previous = NULL;
+    l->next     = NULL;
+    
     return l;
 }
-
+-(void)addNode:(PointNode*)newNode{
+    // Fist addition
+    if (!self.startPosition){ 
+        self.startPosition   = newNode;
+        self.lastPosition    = newNode;
+        self.currentPosition = newNode;
+        self.size            = 1;
+        newNode->previous    = NULL;
+    }else{
+        newNode->previous       = self.lastPosition;
+        self.lastPosition->next = newNode;
+        self.lastPosition       = newNode;
+        self.size++;
+    }
+}
 -(void)resetPosition{
     self.currentPosition = self.startPosition;
 }
@@ -72,9 +80,10 @@
 
     if (l) {
         // Initialize node
-        l->next = NULL;
         l->point->x = p.x;
         l->point->y = p.y;
+
+        [self addNode:l];
     }
 }
 -(PointNode*)next{
@@ -92,19 +101,87 @@
 //    DLog(@"Freeing %d nodes", self.size);
     
     [self resetPosition];
-    self.startPosition = NULL;
     
     while ((node = [self next])) {
-        self.size--;
-        free(node->point);
-        free(node);
+        [self removeNode:node];
+        [self freeNode:node];
     }
     
+    self.startPosition = NULL;
     self.currentPosition = NULL;
     self.lastPosition    = NULL;
 
 //    DLog(@"End size: %d", self.size);
 }
+
+-(void)replaceLastPointWithPoint:(CGPoint)newLastPoint{
+    PointNode* newNode  = [self newNode];
+    PointNode* lastNode = self.lastPosition;
+    
+    // Copy info from input node
+    if (newNode) {
+        newNode->point->x = newLastPoint.x;
+        newNode->point->y = newLastPoint.y;
+        newNode->previous = lastNode->previous; 
+        newNode->previous->next = newNode;
+        
+        [self removeNode:lastNode];
+        [self addNode:newNode];
+        [self freeNode:lastNode];
+    }
+}
+
+// Remove node without corrupting list
+-(void)removeNode:(PointNode*)removeNode{
+
+    if (removeNode->previous) {
+        // Middle of list
+        if (removeNode->next) {
+            removeNode->previous->next = removeNode->next;
+            removeNode->next->previous = removeNode->previous;
+
+            if (self.currentPosition == removeNode) 
+                self.currentPosition = removeNode->previous;
+        }
+        // End of list
+        else{
+            self.lastPosition = removeNode->previous;
+            removeNode->previous->next = NULL; // Remove self from previous node
+
+            if (self.currentPosition == removeNode) 
+                self.currentPosition = self.lastPosition;
+        }
+    }
+    else{
+        // Top of list
+        if (removeNode->next) {
+            self.startPosition = removeNode->next;
+            removeNode->next->previous = NULL;
+            
+            if (self.currentPosition == removeNode) 
+                self.currentPosition = self.startPosition;
+        }
+        // Alone in list
+        else{
+            // Do nothing
+            //DLog(@"List is now empty");
+
+            self.startPosition   = NULL;
+            self.lastPosition    = NULL;
+            self.currentPosition = NULL;
+
+        }
+    }
+    
+    self.size--;
+}
+-(void)freeNode:(PointNode*)deleteNode{
+    if (deleteNode != NULL) {
+        free(deleteNode->point);
+        free(deleteNode);
+    }
+}
+
 -(NSString*)description{
     return [NSString stringWithFormat:@"TotalNodes: %d, Start: 0x%x, End: 0x%x, Current: 0x%x", self.size, self.startPosition, self.lastPosition, self.currentPosition];
 }

@@ -11,6 +11,7 @@
 #import "HoughLineOverlayDelegate.h"
 #import "CGGeometry+HoughExtensions.h"
 #import "Hough.h"
+#import "PointLinkedList.h"
 
 @interface HoughInputView ()
 - (CGPoint)convertPoint:(CGPoint)point withAccuracy:(CGPoint)accuracy;
@@ -52,7 +53,7 @@
 }
 
 - (void)setup{
-    self.points  = [NSMutableArray arrayWithCapacity:0];
+    self.points  = [[[PointLinkedList alloc] init] autorelease];
     self.persistentTouch = NO;
     
     tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
@@ -76,18 +77,20 @@
 	CGContextSetStrokeColorWithColor(context, pointsColor.CGColor);
 	CGContextSetLineWidth(context, 3.0);
     
-	CGPoint p;
-	for (NSValue* val in self.points) {
-		[val getValue:&p];
+//	CGPoint p;
+    PointNode* node = NULL;
+    [self.points resetPosition];
+    
+	while ((node = [self.points next])) {
 		
-		CGContextAddEllipseInRect(context, CGRectWithCenter(p, 1.0));
+		CGContextAddEllipseInRect(context, CGRectWithCenter(*(node->point), 1.0));
 	}
 	
 	CGContextDrawPath(context, kCGPathFillStroke);
 }
 
 -(void) clear{
-	[self.points removeAllObjects];
+	[self.points clear];
 }
 - (void)dealloc {
 	self.points = nil;
@@ -110,47 +113,53 @@
 	CGPoint p = [gestureRecognizer locationInView:self];
     NSInteger start = 0;
     NSRange r;
-	NSValue* pointVal = nil;
-    NSMutableArray* tmpPoints = [NSMutableArray arrayWithCapacity:gestureRecognizer.numberOfTouches];
+    PointLinkedList* tmpPoints = [[[PointLinkedList alloc] init] autorelease];
+    PointNode* node = NULL;
     
     for (NSUInteger i = 0; i < gestureRecognizer.numberOfTouches; i++) {
         p = [gestureRecognizer locationOfTouch:i inView:self];
         p = [self convertPoint:p withAccuracy:CGPointMake(5.0, 5.0)]; // TODO: Parametrize
 
-        pointVal = [NSValue valueWithCGPoint:p];
-        if (!self.persistentTouch || ![self.points containsObject:pointVal]) { // Don't add same point again.  
-            [tmpPoints addObject:pointVal];
-        }
+//        if (!self.persistentTouch){// || ![self.points containsObject:pointVal]) { // Don't add same point again.  
+            [tmpPoints addPoint:p];
+//        }
     }
 //    DLog(@"GestureState: %d", gestureRecognizer.state);
 	self.currentPoint = [NSValue valueWithCGPoint:p];
 
     if (self.persistentTouch) {
-        [self.points addObjectsFromArray:tmpPoints]; // Add first points
+        while ((node = [tmpPoints next])) {
+            [self.points addPoint:*(node->point)]; // Add first points
+        }
     }else{
     
         switch (gestureRecognizer.state) {
             case UIGestureRecognizerStateBegan:
-                [self.points addObjectsFromArray:tmpPoints]; // Add first points
+                while ((node = [tmpPoints next])) {
+                    [self.points addPoint:*(node->point)];
+                }
                 break;
             case UIGestureRecognizerStateEnded:
                 if (gestureRecognizer == tap){
-                    [self.points addObjectsFromArray:tmpPoints];
+                    while ((node = [tmpPoints next])) {
+                        [self.points addPoint:*(node->point)];
+                    }
                 }else{
-                    [tmpPoints addObject:[self.points lastObject]]; // ONE POINT ONLY, Thats all we know. 
+                    [tmpPoints addPoint:*(self.points.lastPosition->point)]; // ONE POINT ONLY, Thats all we know. 
                 }
                 houghRef.storeAfterDraw = YES; // Store temporary image
 
                 break;
             case UIGestureRecognizerStateChanged:
-                if (self.points.count) {
-                    start = self.points.count-tmpPoints.count;
+                if (self.points.size) {
+                    start = self.points.size-tmpPoints.size;
                     start = MAX(start, 0);
                     
                     r.location = start;
-                    r.length = tmpPoints.count;
-                    
-                    [self.points replaceObjectsInRange:r withObjectsFromArray:tmpPoints];
+                    r.length = tmpPoints.size;
+
+                    // TODO: Add support for multiple additions from end?
+                    [self.points replaceLastPointWithPoint:*(tmpPoints.lastPosition->point)];
                 }
                 break;
             case UIGestureRecognizerStateCancelled:

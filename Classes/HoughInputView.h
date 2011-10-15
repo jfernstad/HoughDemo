@@ -13,14 +13,15 @@
 
 @class HoughLineOverlayDelegate;
 @class Hough;
+@class PointLinkedList;
 
 @protocol HoughInputProtocol
--(void)updateInputWithPoints:(NSArray*)pointArray;
+-(void)updateInputWithPoints:(PointLinkedList*)pointArray;
 @end
 
 
 @interface HoughInputView : UIView {
-	NSMutableArray* points;
+	PointLinkedList* points;
 	UIColor* pointsColor;
     
 	UITapGestureRecognizer* tap;
@@ -34,7 +35,7 @@
     BOOL persistentTouch;
 }
 
-@property (nonatomic, retain) NSMutableArray* points; // Array of CGPoints
+@property (nonatomic, retain) PointLinkedList* points; // Array of CGPoints
 @property (nonatomic, retain) NSValue* currentPoint; 
 @property (nonatomic, assign) NSObject<HoughInputProtocol>* delegate;
 @property (nonatomic, retain) UIColor* pointsColor;

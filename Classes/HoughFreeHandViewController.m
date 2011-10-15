@@ -13,6 +13,7 @@
 #import "NotificationView.h"
 #import "HoughConstants.h"
 #import "IntersectionLinkedList.h"
+#import "PointLinkedList.h"
 
 @interface HoughFreeHandViewController ()
 -(void)layoutViews;
@@ -275,9 +276,10 @@
 
 #pragma mark - Delegates
 
--(void)updateInputWithPoints:(NSArray*)pointArray{
+-(void)updateInputWithPoints:(PointLinkedList*)points{
 	// If we are not busy drawing the hough, update the input. 
 	
+    [points retain];
     CGImageRef img = nil;
 	
 	NSDate* start;
@@ -285,12 +287,12 @@
 	
     // TODO: Save points temporarily, draw them when hough isn't busy anymore.
     
-	if (!self.busy) {
+	if (!self.busy && points.size > 0) {
 		
 		self.busy = YES;
 		
         start = [NSDate date];
-		img   = [hough newHoughSpaceFromPoints:pointArray persistent:self.persistentTouch];
+		img   = [hough newHoughSpaceFromPoints:points persistent:self.persistentTouch];
 		imgCreation = [start timeIntervalSinceNow];
 
         // Show hough image
@@ -302,9 +304,18 @@
         self.pointAdded = YES;
 		self.busy = NO;
 	}
+#ifdef DEBUG
 	else {
-		DLog(@" BUSY! Not finished with previous image");
+        if (self.busy) {
+            DLog(@" BUSY! Not finished with previous image");
+        }
+//        else{
+//            DLog(@" No points to add");
+//        }
 	}
+#endif
+    
+    [points release];
 }
 -(void)overlayLines:(NSArray *)lines{
     self.lineDelegate.lines = lines;

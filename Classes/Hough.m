@@ -210,6 +210,8 @@
     
     NSAssert(isSetup, @"! Hough doesn't have a frame! call .frame = rect. ");
     
+    if (points.size == 0) return NULL;
+    
     PointNode* node = NULL;
     
     int maxDist = self.size.height;
@@ -260,9 +262,9 @@
 	
 	float compressedOffset = (self.size.height - self.imgSize.height/self.yScale)/2.0f; // To see the entire wave we need to scale and offset the amplitude. 
     
-    PointLinkedList* tmpList = NULL;
     int position = 0;
 
+    [points resetPosition];
     while ((node = [points next])) {
 		
 		p = *(node->point);
@@ -278,8 +280,6 @@
 		
 		vDSP_vadd(cosPart, 1, sinPart, 1, yValues, 1, maxVals);
 		vDSP_vsadd(yValues,1, &yOff, yOffset, 1, maxVals);
-		
-        tmpList = [[[PointLinkedList alloc] init] autorelease];
 		
 		// TODO: SIMD this
 		for(k = 0; k < maxVals; k++){
@@ -731,7 +731,8 @@
 }
 -(void)createHoughSpaceOp{
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    
+    PointLinkedList* list   = [[PointLinkedList alloc] init];
+
     if (self.operationDelegate) {
         [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationCreateHoughSpaceImage waitUntilDone:NO];
     }
@@ -747,8 +748,6 @@
     UInt8 intensity = 0;
     NSUInteger counter = 0;
     
-    PointLinkedList* list = [[[PointLinkedList alloc] init] autorelease];
-
 	// Get Positions from pixels in edge image
     for( yy = 0; yy < h; yy++){
         if (counter > self.maxHoughInput) { 
@@ -772,6 +771,7 @@
     DLog(@"Got %d points. ", list.size);
     
     CGImageRef  tImg = [self newHoughSpaceFromPoints:list persistent:YES]; 
+    [list release];
     
     UIImage* hImg = nil; 
 #ifdef DEBUG
