@@ -21,7 +21,6 @@
 
 @implementation HoughInputView
 @synthesize points;
-@synthesize currentPoint;
 @synthesize delegate;
 @synthesize pointsColor;
 @synthesize houghRef;
@@ -94,7 +93,6 @@
 }
 - (void)dealloc {
 	self.points = nil;
-	self.currentPoint = nil;
     self.pointsColor = nil;
     self.delegate = nil;
     self.houghRef = nil;
@@ -120,12 +118,10 @@
         p = [gestureRecognizer locationOfTouch:i inView:self];
         p = [self convertPoint:p withAccuracy:CGPointMake(5.0, 5.0)]; // TODO: Parametrize
 
-//        if (!self.persistentTouch){// || ![self.points containsObject:pointVal]) { // Don't add same point again.  
+        if (!self.persistentTouch || ![self.points containsPoint:p]) { // Don't add same point again.  
             [tmpPoints addPoint:p];
-//        }
+        }
     }
-//    DLog(@"GestureState: %d", gestureRecognizer.state);
-	self.currentPoint = [NSValue valueWithCGPoint:p];
 
     if (self.persistentTouch) {
         while ((node = [tmpPoints next])) {

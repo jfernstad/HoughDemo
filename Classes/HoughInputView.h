@@ -36,7 +36,6 @@
 }
 
 @property (nonatomic, retain) PointLinkedList* points; // Array of CGPoints
-@property (nonatomic, retain) NSValue* currentPoint; 
 @property (nonatomic, assign) NSObject<HoughInputProtocol>* delegate;
 @property (nonatomic, retain) UIColor* pointsColor;
 @property (nonatomic, assign) Hough* houghRef;

@@ -28,4 +28,5 @@ typedef struct PointNode{
 -(void)clear;
 -(void)resetPosition;
 -(void)replaceLastPointWithPoint:(CGPoint)newLastPoint;
+-(BOOL)containsPoint:(CGPoint)point;
 @end

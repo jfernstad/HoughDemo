@@ -131,6 +131,21 @@
     }
 }
 
+-(BOOL)containsPoint:(CGPoint)point{
+    //Traverse list without affecting current read position
+    BOOL pointFound = NO;
+    PointNode* currentNode = self.startPosition;
+    
+    while (currentNode) {
+        if (CGPointEqualToPoint(*(currentNode->point), point)) {
+            pointFound = YES;
+            break;
+        }
+        currentNode = currentNode->next;
+    }
+    return pointFound;
+}
+
 // Remove node without corrupting list
 -(void)removeNode:(PointNode*)removeNode{
 
