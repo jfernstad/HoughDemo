@@ -98,7 +98,7 @@
         self.storeAfterDraw = NO;
         self.yScale = Y_SCALE;
         operationQueue = [[NSOperationQueue alloc] init];
-
+        
         // TODO: Find better default values
         self.maxHoughInput      = 1000;
         self.grayscaleThreshold = 128;
@@ -107,7 +107,7 @@
 #ifdef DEBUG
         self.debugEnabled = YES;
 #endif
-
+        
     }
 	
 	return self;
@@ -228,7 +228,7 @@
         unsigned char* d = CVPixelBufferGetBaseAddress(self.houghSpace);
         memcpy(pointer, d, CVPixelBufferGetDataSize(self.houghSpace));
     }
-
+    
 	float startVal	= 0.0f;
 	float thetaInc	= M_PI/self.size.width;
 	float angles   [ maxVals ] __attribute__((aligned));
@@ -263,7 +263,7 @@
 	float compressedOffset = (self.size.height - self.imgSize.height/self.yScale)/2.0f; // To see the entire wave we need to scale and offset the amplitude. 
     
     int position = 0;
-
+    
     [points resetPosition];
     while ((node = [points next])) {
 		
@@ -292,7 +292,7 @@
 			}
 		}
 	}
-
+    
     // Render
     
     CGFloat decode [] = {0.0f, 255.0f}; // TODO: Change to dynamic range. Calc Max/Min per image.
@@ -325,7 +325,7 @@
 	CGImageRelease(tmp);
 	CFRelease(cfImgData);
 	CGContextRelease(cr);
-
+    
     return outImg;
 }
 
@@ -548,6 +548,264 @@
         pixels[ii+3] = grayValue;
     }
     
+    // Put blur operation here instead
+    // --------
+    
+    // Stack Blur v1.0
+    //
+    // Author: Mario Klingemann <mario@quasimondo.com>
+    // http://incubator.quasimondo.com
+    // created Feburary 29, 2004
+    
+    
+    // This is a compromise between Gaussian Blur and Box blur
+    // It creates much better looking blurs than Box Blur, but is
+    // 7x faster than my Gaussian Blur implementation.
+    //
+    // I called it Stack Blur because this describes best how this
+    // filter works internally: it creates a kind of moving stack
+    // of colors whilst scanning through the image. Thereby it
+    // just has to add one new block of color to the right side
+    // of the stack and remove the leftmost color. The remaining
+    // colors on the topmost layer of the stack are either added on
+    // or reduced by one, depending on if they are on the right or
+    // on the left side of the stack. 
+    //
+    // If you are using this algorithm in your code please add
+    // the following line:
+    // 
+    // Stack Blur Algorithm by Mario Klingemann <mario@quasimondo.com>
+    
+    //    void fastblur(PImage img,int radius){
+    //        
+    //        if (radius<1){
+    //            return;
+    //        }
+    
+    // Pointer to pixels, 32 bit pixels
+//    int[] pix = img.pixels;
+//    int width = img.width;
+//    int height = img.height;
+    NSUInteger width  = CVPixelBufferGetWidth(self.grayScaleImage);
+    NSUInteger height = CVPixelBufferGetHeight(self.grayScaleImage);
+    int widthMax = width-1;
+    int heightMax = height-1;
+    int nPixels = width*height;
+    
+    int x,y,i,p,yp,yi,yw;
+    int sum, insum, outsum;
+
+    // Radius related vars
+    int radius = 5; // TODO: Parametrize
+    int r1     = radius+1;
+    int div    = radius + radius + 1; // Total radius 2R+1
+    
+    // divsum = ((div+1)/2)^2 ? // Total kernel size?
+    int divsum = (div + 1) >> 1;
+    divsum *= divsum;
+
+    // Planar pixel components
+    // Some kind of LUT, don't really understand why this is neccessary
+    //    int vmin[] = new int[max(w,h)];
+    int* vmin = (int*)malloc(MAX(width,height) * sizeof(int));
+    unsigned char* dv = (unsigned char*)malloc(256*divsum);    //    int dv[] = new int[256*divsum];
+    unsigned char* stack = (unsigned char*)malloc(div);         //    int[][] stack = new int[div][3];
+    unsigned char* intensity = (unsigned char*)malloc(nPixels);
+    unsigned char* sir;
+    
+    // Some kind of LUT, weird integer flooring, 
+    // results in divsum number of intensities per intensity
+    for (i = 0; i < 256 * divsum;i++){
+        dv[i] = (i/divsum);
+    }
+    
+    yw=yi=0;
+    
+
+    int stackpointer;
+    int stackstart;
+    int rbs;
+    int pixIdx = 0;
+    
+    // I'm guessing this is blurring in y-direction
+    for (y = 0;y < height; y++){
+        
+        // Reset sums for every line
+        sum = insum = outsum = 0;
+
+        // yi = y * width; // Strange use of variable
+        // Generate new sums for this line in stack
+        for(i = -radius;i <= radius;i++){
+            
+            // Get pixel values to work with, don't go farther than line allows [0, width]
+            pixIdx =  yi + MIN(widthMax, MAX(i,0));
+//            DLog(@"x -> pixIdx: %d", pixIdx);
+            p = pixels[pixIdx * 4 + 1]; // R-Channel
+            
+            // Get stack, presumably empty in the beginning
+            // Actually store pixel intensities in stack
+            sir = &stack[i + radius];
+            sir[0] = p;
+            
+//            DLog(@"Stack Index: %d, %d", i + radius, i);
+            
+            // Multiply stack components with current position in stack?
+            rbs = r1-abs(i);
+            sum += sir[0] * rbs;
+            
+            if (i>0){
+                insum += sir[0];
+            } else {
+                outsum += sir[0];
+            }
+        }
+        stackpointer=radius;
+        
+        // Actual blur for this row
+        for (x=0;x<width;x++){
+        
+            // Save intensity for current position
+            intensity[yi] = dv[sum];
+
+            pixIdx = yi * 4 + 1;
+            pixels[pixIdx + 0] = dv[sum];
+            pixels[pixIdx + 1] = dv[sum];
+            pixels[pixIdx + 2] = dv[sum];
+            
+            // Countdown sums from outsums, still wondering about this one
+            sum -= outsum;
+            
+            // New pointer position?
+            stackstart = stackpointer - radius + div;
+            sir        = &stack[ stackstart % div];      // Retrieve pixel pointer
+            
+            // Decrease outsums with what? Pixelintensity from stack.. ugh
+            outsum  -= sir[0];
+            
+            // First row only, LUT for rest
+            // Save ourselves from the left edge? 
+            if(y == 0){
+                vmin[x] = MIN(x+radius+1,widthMax);
+            }
+            
+            // Get new pixel value
+            pixIdx = yw + vmin[x];
+//            DLog(@"y -> pixIdx: %d", pixIdx);
+            p = pixels[pixIdx * 4 + 1];
+            
+            // Store pixel intensities in stack
+            sir[0] = p;
+            
+            // Add pixel intensities to insums
+            insum += sir[0];
+            
+            // Accumulate sums with insums
+            sum += insum;
+            
+//            if (sum > divsum * 256) DLog(@"Sum to high: %d > %d", sum ,divsum * 256);
+                
+            // This is to shift the middle positions, from right part of kernel (in) to left part (out)
+            stackpointer = (stackpointer + 1) % div;
+            sir = &stack[ (stackpointer) % div];
+            
+            outsum += sir[0];
+            
+            insum -= sir[0];
+            
+            yi++;
+        }
+        yw+=width;
+    }
+    
+    // I'm guessing this is blurring in y-direction
+    for (x=0;x<width;x++){
+        
+        // Reset sums for every column
+        sum = insum = outsum = 0;
+        
+        yp = -radius * width; // Why is this called yp?
+        
+        // For each part in the kernel at this x position
+        for(i = -radius;i <= radius;i++){
+            yi = MAX(0,yp) + x;
+            
+//            if (0 > yp) {
+//                DLog(@"i: %d, x: %d, yi: %d, yp: %d, i+radius: %d",i , x, yi, yp, i+radius);
+//            }
+            // Get value from stack/kernel again, kernel is now transposed
+            sir = &stack[ i + radius ];
+            
+            // Reset something with color intensities
+            sir[0] = intensity[yi];
+            
+            rbs = r1 - abs(i);
+            
+            // Accumulate sums again
+            sum += intensity[yi] * rbs;
+            
+            if (i>0){
+                insum += sir[0];
+            } else {
+                outsum += sir[0];
+            }
+            
+            if(i<heightMax){
+                yp+=width;
+            }
+        }
+        yi=x;
+        stackpointer=radius;
+        
+        // Store pixel values back to image?
+        for (y=0;y<height;y++){
+//            pix[yi]=0xff000000 | (dv[rsum]<<16) | (dv[gsum]<<8) | dv[bsum];
+//            pixIdx = yi * 4 + 1;
+            pixIdx = (y * width + x) * 4 + 1;
+            pixels[pixIdx + 0] = dv[sum];
+            pixels[pixIdx + 1] = dv[sum];
+            pixels[pixIdx + 2] = dv[sum];
+            
+            sum -= outsum;
+            
+            stackstart = stackpointer - radius + div;
+            sir = &stack[ stackstart % div ];
+            
+            outsum -= sir[0];
+            
+            if(x==0){
+                vmin[y] = MIN(y+r1,heightMax) * width;
+//                DLog(@"%d", vmin[y]);
+                //                if ((y+r1)>heightMax) DLog(@"y + r1: %d, y: %d",y + r1 , y);
+            }
+            
+            p = x+vmin[y];
+            
+            sir[0] = intensity[p];
+            
+            insum += sir[0];
+            
+            sum += insum;
+            
+            stackpointer = (stackpointer+1) % div;
+            sir = &stack[stackpointer];
+            
+            outsum += sir[0];
+            
+            insum -= sir[0];
+            
+            yi+=width;
+        }
+    }
+    free(dv);
+    free(stack);
+    free(vmin);
+    free(intensity);
+    // }
+    //
+    
+    
+    
+    // --------
     
     // DEBUG
     UIImage* hImg = nil; 
@@ -611,41 +869,41 @@
     
     // BOX BLUR
     // Skip edge row, edge x-direction
-    for (yy = 1; yy < h - 1; yy++) {
-        for (xx = 1; xx < w - 1; xx++) {
-            
-            // Offset to RED channel
-            edge = (pixelsIn[(xx - 1)*4 + 1 + yy * ws] +
-                    pixelsIn[(xx + 0)*4 + 1 + yy * ws] +
-                    pixelsIn[(xx + 1)*4 + 1 + yy * ws])/3;
-            
-            // Per color-component
-            blur[xx * 4 + 0 + yy * ws] = 255;//*xx/w;
-            blur[xx * 4 + 1 + yy * ws] = edge;
-            blur[xx * 4 + 2 + yy * ws] = edge;
-            blur[xx * 4 + 3 + yy * ws] = edge;
-        }
-    }
-
-    // Skip edge row, edge y-direction, add results
-    for (yy = 1; yy < h - 1; yy++) {
-        for (xx = 1; xx < w - 1; xx++) {
-            
-            // Offset to RED channel
-            edge = (pixelsIn[(xx)*4 + 1 + (yy - 1) * ws]  +
-                    pixelsIn[(xx)*4 + 1 + (yy + 0) * ws]  +
-                    pixelsIn[(xx)*4 + 1 + (yy + 1) * ws])/3;
-            
-            // Per color-component
-            //pixels[xx * 4 + 0 + yy * ws]  = 255;
-            pixelsOut[xx * 4 + 1 + yy * ws] += edge;
-            pixelsOut[xx * 4 + 2 + yy * ws] += edge;
-            pixelsOut[xx * 4 + 3 + yy * ws] += edge;
-        }
-    }
-    
-
-    pixelsIn = blur; // Replace pointers
+//    for (yy = 1; yy < h - 1; yy++) {
+//        for (xx = 1; xx < w - 1; xx++) {
+//            
+//            // Offset to RED channel
+//            edge = (pixelsIn[(xx - 1)*4 + 1 + yy * ws] +
+//                    pixelsIn[(xx + 0)*4 + 1 + yy * ws] +
+//                    pixelsIn[(xx + 1)*4 + 1 + yy * ws])/3;
+//            
+//            // Per color-component
+//            blur[xx * 4 + 0 + yy * ws] = 255;//*xx/w;
+//            blur[xx * 4 + 1 + yy * ws] = edge;
+//            blur[xx * 4 + 2 + yy * ws] = edge;
+//            blur[xx * 4 + 3 + yy * ws] = edge;
+//        }
+//    }
+//
+//    // Skip edge row, edge y-direction, add results
+//    for (yy = 1; yy < h - 1; yy++) {
+//        for (xx = 1; xx < w - 1; xx++) {
+//            
+//            // Offset to RED channel
+//            edge = (pixelsIn[(xx)*4 + 1 + (yy - 1) * ws]  +
+//                    pixelsIn[(xx)*4 + 1 + (yy + 0) * ws]  +
+//                    pixelsIn[(xx)*4 + 1 + (yy + 1) * ws])/3;
+//            
+//            // Per color-component
+//            //pixels[xx * 4 + 0 + yy * ws]  = 255;
+//            blur[xx * 4 + 1 + yy * ws] += edge;
+//            blur[xx * 4 + 2 + yy * ws] += edge;
+//            blur[xx * 4 + 3 + yy * ws] += edge;
+//        }
+//    }
+//    
+//    
+//    pixelsIn = blur; // Replace pointers
     
     // EDGE
     // Skip edge row, edge x-direction
@@ -778,7 +1036,7 @@
     CGImageRef copiedImage = nil;
     
     if (self.debugEnabled){
-        hImg = [UIImage imageWithCGImage:tImg];      
+        hImg = nil;//[UIImage imageWithCGImage:tImg];      
         CGImageRelease(copiedImage);
     }
 #endif

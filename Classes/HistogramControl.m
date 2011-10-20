@@ -52,7 +52,12 @@
         self.histoCover = [[[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"semitransparent.png"] stretchableImageWithLeftCapWidth:1 topCapHeight:1]] autorelease];
         
         self.histogram.delegate = self;
-        
+
+        // Default values
+        self.slider.minimumValue = 1;//minVal;
+        self.slider.maximumValue = 100;//maxVal;
+        self.slider.value = 5;
+
         self.positionSliderToLeft = NO;
         self.value = 0;
         
