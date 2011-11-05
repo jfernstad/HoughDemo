@@ -83,6 +83,7 @@
     // TODO: Load and set parameters for Hough here.
     self.hough.houghThreshold     = 10;
     self.hough.maxHoughInput      = 1000;
+    self.hough.colorSpace         = [self.hough createColorSpaceSmall];
     self.hough.operationDelegate  = self;
     self.houghInputView.houghRef  = self.hough;
     self.houghTouchView.houghRef  = self.hough;

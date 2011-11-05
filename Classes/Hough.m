@@ -59,12 +59,12 @@
 
 -(void) setupHough;
 -(CGImageRef) houghImageFromPoints:(PointLinkedList*)points persistant:(BOOL)pointsArePersistent;
--(CGColorSpaceRef)createColorSpace;
 
 -(CGImageRef)CGImageWithCVPixelBuffer:(CVPixelBufferRef)pixBuf;
 -(CGImageRef)CGImageWithImage:(CGImageRef)inputImg andSize:(CGSize)newSize;
 -(CVPixelBufferRef)CVPixelBufferWithCGImage:(CGImageRef)cgImg;
 -(CVPixelBufferRef)newEmptyCVPixelBuffer:(CGSize)size;
+-(CVPixelBufferRef)newEmptyCVPixelBuffer16bit:(CGSize)bufSize;
 @end
 
 @implementation Hough
@@ -76,6 +76,7 @@
 @synthesize storeAfterDraw;
 @synthesize operationQueue;
 @synthesize inputUIImage;
+@synthesize colorSpace;
 
 @synthesize houghSpace;
 @synthesize tmpHoughSpace;
@@ -114,6 +115,7 @@
 }
 
 -(void)clear{
+    DLog(@"Cleaning up Hough images");
     [self.operationQueue cancelAllOperations];
     
 	int houghSize    = CVPixelBufferGetDataSize(self.houghSpace);
@@ -168,14 +170,14 @@
         self.tmpHoughSpace = nil;
     }
     
-    houghSpace    = [self newEmptyCVPixelBuffer:self.size];
-    tmpHoughSpace = [self newEmptyCVPixelBuffer:self.size];
+    houghSpace    = [self newEmptyCVPixelBuffer16bit:self.size];
+    tmpHoughSpace = [self newEmptyCVPixelBuffer16bit:self.size];
     
     if (!self.houghSpace || !self.tmpHoughSpace) {
         DLog(@" FAILED TO CREATE HOUGH PIXELBUFFERS !");
     }
     
-    if (!colorSpace) colorSpace = [self createColorSpace];
+    if (!colorSpace) colorSpace = [self createColorSpaceBig];
     
     isSetup = YES;
     // TODO: verify we have memory
@@ -220,7 +222,7 @@
     CVPixelBufferLockBaseAddress(self.houghSpace, 0);
     CVPixelBufferLockBaseAddress(self.tmpHoughSpace, 0);
     
-    unsigned char* pointer = CVPixelBufferGetBaseAddress(self.tmpHoughSpace);
+    UInt16* pointer = CVPixelBufferGetBaseAddress(self.tmpHoughSpace);
     
     if (pointsArePersistent) {
         pointer = CVPixelBufferGetBaseAddress(self.houghSpace);
@@ -296,13 +298,13 @@
     // Render
     
     CGFloat decode [] = {0.0f, 255.0f}; // TODO: Change to dynamic range. Calc Max/Min per image.
-    CFDataRef cfImgData = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, pointer, maxDist * maxVals, kCFAllocatorNull);
+    CFDataRef cfImgData = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, (UInt8*)pointer, maxDist * maxVals, kCFAllocatorNull);
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(cfImgData);
 	
     CVPixelBufferUnlockBaseAddress(self.tmpHoughSpace, 0);
     CVPixelBufferUnlockBaseAddress(self.houghSpace, 0);
     
-	CGImageRef tmp = CGImageCreate(maxVals, maxDist, 8, 8, maxVals, colorSpace, kCGImageAlphaNone, dataProvider, decode, NO, kCGRenderingIntentDefault);
+	CGImageRef tmp = CGImageCreate(maxVals, maxDist, 16, 16, 2 * maxVals, colorSpace, kCGImageAlphaNone, dataProvider, decode, NO, kCGRenderingIntentDefault);
     
 	CGColorSpaceRef scpr = CGColorSpaceCreateDeviceRGB();
 	
@@ -340,7 +342,32 @@
 	return outImage;
 }
 
--(CGColorSpaceRef)createColorSpace{
+-(CGColorSpaceRef)createColorSpaceBig{
+    
+    CGColorSpaceRef outSpace = NULL;
+    
+    NSUInteger i = 0;
+    
+    unsigned char colorTable[256*3];
+    
+    // 0 = black
+    colorTable[0] = 0;
+    colorTable[1] = 0;
+    colorTable[2] = 0;
+    
+    for (i = 1; i < 255; i++) {
+        colorTable[i * 3 + 0] = 255;
+        colorTable[i * 3 + 1] = MAX(0,255-i+1);
+        colorTable[i * 3 + 2] = MAX(0,255-i+1);
+    }
+    
+    outSpace = CGColorSpaceCreateIndexed(CGColorSpaceCreateDeviceRGB(), 255, colorTable);
+    
+    return outSpace;
+    
+}
+
+-(CGColorSpaceRef)createColorSpaceSmall{
     
     CGColorSpaceRef outSpace = NULL;
     
@@ -357,9 +384,6 @@
         colorTable[i * 3 + 0] = 255;
         colorTable[i * 3 + 1] = MAX(0,255-(i-1)*255/15);
         colorTable[i * 3 + 2] = MAX(0,255-(i-1)*255/15);
-        //        colorTable[i * 3 + 0] = MIN(128 + i * 10, 255);
-        //        colorTable[i * 3 + 1] = MAX(128 + i, 0);
-        //        colorTable[i * 3 + 2] = MAX(128 + i, 0);
     }
     
     outSpace = CGColorSpaceCreateIndexed(CGColorSpaceCreateDeviceRGB(), 255, colorTable);
@@ -400,8 +424,6 @@
     [self.operationQueue cancelAllOperations];
     self.operationQueue = nil;
     
-    CGColorSpaceRelease(colorSpace);
-    
     self.houghSpace     = nil;
     self.tmpHoughSpace  = nil;
     
@@ -410,6 +432,7 @@
     self.edgeImage      = nil;
     self.thinnedImage   = nil;
     
+    self.colorSpace  = nil;
 	[super dealloc];
 }
 
@@ -1036,7 +1059,7 @@
     CGImageRef copiedImage = nil;
     
     if (self.debugEnabled){
-        hImg = nil;//[UIImage imageWithCGImage:tImg];      
+        hImg = [UIImage imageWithCGImage:tImg];      
         CGImageRelease(copiedImage);
     }
 #endif
@@ -1073,7 +1096,7 @@
     pointRect.size   = self.size;
     
     CVPixelBufferLockBaseAddress(self.houghSpace, 0);
-    unsigned char *rasterData = CVPixelBufferGetBaseAddress(self.houghSpace);
+    UInt16 *rasterData = CVPixelBufferGetBaseAddress(self.houghSpace);
     
 	// Get Positions from Maxima in Houghspace
     maxPoint = 0;
@@ -1101,6 +1124,7 @@
 	
     if (self.operationDelegate) {
         NSDictionary* dic = [NSDictionary dictionaryWithObjectsAndKeys:kOperationAnalyzeHoughSpace, kOperationNameKey, self.intersections, kHoughIntersectionArrayKey, nil];
+//        NSDictionary* dic = [NSDictionary dictionaryWithObjectsAndKeys:kOperationAnalyzeHoughSpace, kOperationNameKey, nil, kHoughIntersectionArrayKey, nil];
         [self.operationDelegate performSelectorOnMainThread:@selector(houghDidFinishOperationWithDictionary:) withObject:dic waitUntilDone:NO];
     }
     
@@ -1241,6 +1265,29 @@
     
     if (ret != kCVReturnSuccess) {
         DLog(@"newEmptyCVPixelBuffer: FAILED TO CREATE NEW PIXELBUFFER !");
+        newBuffer = NULL;
+    }
+    
+    return newBuffer;
+}
+
+-(CVPixelBufferRef)newEmptyCVPixelBuffer16bit:(CGSize)bufSize{
+    CVPixelBufferRef newBuffer = NULL;
+    
+    CVReturn ret = kCVReturnError;
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:
+                         [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
+                         [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, nil];
+    
+    ret = CVPixelBufferCreate(NULL, 
+                              bufSize.width,
+                              bufSize.height, 
+                              kCVPixelFormatType_16Gray,
+                              (CFDictionaryRef)dic,
+                              &newBuffer);
+    
+    if (ret != kCVReturnSuccess) {
+        DLog(@"newEmptyCVPixelBuffer: FAILED TO CREATE NEW 16BIT PIXELBUFFER !");
         newBuffer = NULL;
     }
     

@@ -87,6 +87,7 @@
 @property (nonatomic, assign) CGSize size;
 @property (nonatomic, assign) BOOL storeAfterDraw;
 @property (nonatomic, assign) NSObject<HoughOperationDelegate>* operationDelegate;
+@property (nonatomic, assign) __attribute__((NSObject)) CGColorSpaceRef colorSpace;
 
 @property (nonatomic, readonly) CVPixelBufferRef InputImage;
 @property (nonatomic, readonly) CVPixelBufferRef HoughImage;
@@ -110,6 +111,8 @@
 -(void)makePersistent;  // Stores tmpHoughImage to houghImage;
 -(CGPoint)equationForPoint:(CGRect)pointInRect;
 -(IntersectionLinkedList*)allIntersections;
+-(CGColorSpaceRef)createColorSpaceSmall; // Hrm.. retain count +1
+-(CGColorSpaceRef)createColorSpaceBig;
 
 // Operations
 -(void)executeOperationsWithImage:(UIImage*)rawImage;

@@ -44,6 +44,10 @@ CGSize CGSizeIntegral(CGSize inputSize){
 
 CGSize CGSizeAspectFitSize(CGSize inputSize, CGSize parentSize){
     CGSize outSize = CGSizeZero;
+    
+    if (CGSizeEqualToSize(inputSize, CGSizeZero)) return CGSizeZero;
+    if (CGSizeEqualToSize(parentSize, CGSizeZero)) return CGSizeZero;
+    
     CGFloat scale = MAX(inputSize.width/parentSize.width,
                         inputSize.height/parentSize.height);
     
