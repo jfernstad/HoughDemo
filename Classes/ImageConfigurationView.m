@@ -47,12 +47,14 @@
         self.grayHistControl.histogramColor = [UIColor houghYellow];
         self.grayHistControl.histogramType  = EHistogramTypeNormal; // High intensity = Low count
         self.grayHistControl.histogramStyle = EHistogramStyleFlipHorizontal; // Top = High intensity
-        self.houghHistControl.positionSliderToLeft = NO;
+        self.grayHistControl.useComponents  = EPixelBufferAllColors; // RGB are all gray in this case
+        self.grayHistControl.positionSliderToLeft = NO;
         
         self.houghHistControl.logHistogram = YES;
         self.houghHistControl.histogramColor = [UIColor houghYellow];
         self.houghHistControl.histogramType  = EHistogramTypeReverseCumulative; // High intensity = Low count
         self.houghHistControl.histogramStyle = EHistoGramStyleFlipBoth; // Top = High intensity
+        self.houghHistControl.useComponents  = EPixelBuffer16GrayScale;
         self.houghHistControl.positionSliderToLeft = YES;
         
 #ifdef DEBUG

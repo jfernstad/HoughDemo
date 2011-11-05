@@ -207,6 +207,9 @@
 
     imgRect.size = self.imgView.image.size;
 
+    DLog(@"newImgRect: %@", NSStringFromCGRect(newImgRect));
+    DLog(@"imgRect: %@", NSStringFromCGRect(imgRect));
+
     imgRect.size = CGSizeAspectFitSize(imgRect.size, newImgRect.size);
     newImgRect   = CGRectCenteredInRect(newImgRect, imgRect.size);
 
@@ -300,7 +303,7 @@
     
 #ifdef DEBUG
     NSNumber* debugFlag = [changedValues objectForKey:kHoughDebugFlagChanged];
-    self.hough.debugEnabled = debugFlag.boolValue;
+//    self.hough.debugEnabled = debugFlag.boolValue;
 #endif
     
     if (grayThresholdChanged && (grayThresholdChanged.integerValue != self.hough.grayscaleThreshold)) {

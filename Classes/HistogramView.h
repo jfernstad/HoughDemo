@@ -30,13 +30,13 @@ typedef enum EHistogramStyle {
 @end
 
 @protocol HistogramViewDelegate
--(void)didFinish:(CVPixelBufferRef)image withHistogram:(NSDictionary*)dictionary;
+-(void)didFinish:(CVPixelBufferRef)image withHistogram:(id<HistogramDataSource>)newHistogram;
 @end
 
 @interface HistogramView : UIView <HistogramInputProtocol>
 {
     ImageHist* histogramObject;
-    NSDictionary* histogram;
+    id<HistogramDataSource> histogram;
     LoadingView* loadingView;
 
 }

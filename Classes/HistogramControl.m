@@ -153,37 +153,27 @@
 }
 #pragma mark - Delegates
 
--(void)didFinish:(CVImageBufferRef)image withHistogram:(NSDictionary *)dictionary{
+-(void)didFinish:(CVImageBufferRef)image withHistogram:(id<HistogramDataSource>)newHistogram{
     DLog(@"didFinishWithHistogram");
-    NSArray* componentKeys = [dictionary allKeys];
     
-    NSDictionary* tmpDict = nil;
-    NSDictionary* statsDict = nil;
-    NSNumber* tmpVal = nil;
-    NSInteger minVal = 0;
-    NSInteger maxVal = 0;
+    NSInteger minFreq = 0;
+    NSInteger maxFreq = 0;
     NSInteger minInt = 0;
     NSInteger maxInt = 0;
     
-    if (componentKeys.count > 0) {
+    if ([newHistogram numberOfColorComponents] > 0) {
         
-        tmpDict   = [dictionary objectForKey:[componentKeys objectAtIndex:0]]; // TODO: Don't always take first object, think about it.
-        statsDict = [tmpDict objectForKey:kHistogramStatisticsKey];
+        NSArray* comp        = [newHistogram allColorComponents];
+        NSNumber* compNum    = [comp objectAtIndex:0];
+        NSUInteger component = [compNum integerValue];
         
-        tmpVal = [statsDict objectForKey:kHistogramMinValueKey];
-        minVal = tmpVal.integerValue;
+        minFreq = [newHistogram minFrequency:component];
+        maxFreq = [newHistogram maxFrequency:component];
+        minInt = [newHistogram minIntensity:component];
+        maxInt = [newHistogram maxIntensity:component];
         
-        tmpVal = [statsDict objectForKey:kHistogramMaxValueKey];
-        maxVal = tmpVal.integerValue;
-        
-        tmpVal = [statsDict objectForKey:kHistogramMinIntensityKey];
-        minInt = tmpVal.integerValue;
-        
-        tmpVal = [statsDict objectForKey:kHistogramMaxIntensityKey];
-        maxInt = tmpVal.integerValue;
-        
-        self.slider.minimumValue = minVal;
-        self.slider.maximumValue = maxVal;
+        self.slider.minimumValue = minInt;
+        self.slider.maximumValue = MAX(1, maxInt);
     }
 }
 

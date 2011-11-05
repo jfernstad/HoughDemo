@@ -8,12 +8,47 @@
 
 #import "ImageHist.h"
 
+//@interface ImageHist()
+//@property (nonatomic, assign) NSUInteger minFrequency;
+//@property (nonatomic, assign) NSUInteger maxFrequency;
+//@property (nonatomic, assign) NSUInteger minIntensity;
+//@property (nonatomic, assign) NSUInteger maxIntensity;
+//@end
+//
+
+typedef struct HistogramStruct {
+    NSUInteger minFrequency;
+    NSUInteger maxFrequency;
+    NSUInteger minIntensity;
+    NSUInteger maxIntensity;
+    EPixelBufferComponent colorComponent;
+}HistogramStruct;
+
+@interface ImageHist(){
+    HistogramStruct* histoStruct[4]; // This will be malloc'ed
+}
+@property (nonatomic, assign) NSUInteger  nColorComponents;
+@property (nonatomic, assign) NSUInteger  maxPossibleIntensity;
+@property (nonatomic, assign) NSUInteger* histogram;
+@property (nonatomic, retain) NSArray* validColorComponents;
+@end
+
 @implementation ImageHist
 @synthesize image;
 @synthesize histogramPixelBufferComponent;
 @synthesize histogramType;
 @synthesize finishBlock;
 @synthesize ignoreZeroIntensity;
+
+// HistogramDataSource related
+@synthesize histogram;
+@synthesize nColorComponents;
+@synthesize maxPossibleIntensity;
+@synthesize validColorComponents;
+//@synthesize minFrequency;
+//@synthesize maxFrequency;
+//@synthesize minIntensity;
+//@synthesize maxIntensity;
 
 -(id)init{
     
@@ -31,62 +66,132 @@
 -(void)dealloc{
     self.image = nil;
     self.finishBlock = nil;
+    self.validColorComponents = nil;
     
+    if (self.histogram != NULL) {
+        free(self.histogram);
+        self.histogram = NULL;
+    }
+
+    if (histoStruct != NULL) {
+        if (histoStruct[0]) free(histoStruct[0]);
+        if (histoStruct[1]) free(histoStruct[1]);
+        if (histoStruct[2]) free(histoStruct[2]);
+        if (histoStruct[3]) free(histoStruct[3]);
+        
+        histoStruct[0] = NULL;
+        histoStruct[1] = NULL;
+        histoStruct[2] = NULL;
+        histoStruct[3] = NULL;
+    }
+
     [super dealloc];
 }
-
+//-(void)setHistogram:(NSUInteger *)histogram{
+//}
 -(void)createHistogram{
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    
-    NSMutableDictionary* dic = nil;
-    NSMutableDictionary* curDic = nil;
-    NSMutableDictionary* statsDic = nil;
     
     if (!self.image) return; // TODO: do this better, failBlock?
     
     CVPixelBufferLockBaseAddress(self.image, 0);
     
-    UInt8* pixels = CVPixelBufferGetBaseAddress(self.image);
+    UInt8*  pixels8  = CVPixelBufferGetBaseAddress(self.image);
+    UInt16* pixels16 = CVPixelBufferGetBaseAddress(self.image);
     
-    CVPixelBufferUnlockBaseAddress(self.image, 0);
-    
+    BOOL is16bit = (CVPixelBufferGetPixelFormatType(self.image) == (OSType)'b16g');
+    self.maxPossibleIntensity = (is16bit)?65536:256;
+
     // C-stuff, for speed
-    int histogram[4][256];
-    memset(&histogram, 0, 4 * 256 * sizeof(int));
+
+    if (self.histogram != NULL) {
+        free(self.histogram);
+        self.histogram = NULL;
+    }
+    
+    if (is16bit) {
+        self.histogram = (NSUInteger*)malloc(65536 * sizeof(NSUInteger));
+        memset(self.histogram, 0, 65536 * sizeof(int));
+    }
+    else{
+        self.histogram = (NSUInteger*)malloc(4 * 256 * sizeof(NSUInteger));
+        memset(self.histogram, 0, 4 * 256 * sizeof(int));
+    }
     
     NSMutableArray* aryComponents = [NSMutableArray array];
+    UInt8 nComponents = 0; 
     
-    // Pixel offset, assume Pixelbuffer is ARGB 32bit Big Endian format
-    if (self.histogramPixelBufferComponent & EPixelBufferAlpha) {
+    if (is16bit) {
         [aryComponents addObject:[NSNumber numberWithInt:0]]; 
+        nComponents = 1;
     }
-    if (self.histogramPixelBufferComponent & EPixelBufferRed) {
-        [aryComponents addObject:[NSNumber numberWithInt:1]]; 
-    }
-    if (self.histogramPixelBufferComponent & EPixelBufferGreen) {
-        [aryComponents addObject:[NSNumber numberWithInt:2]]; 
-    }
-    if (self.histogramPixelBufferComponent & EPixelBufferBlue) {
-        [aryComponents addObject:[NSNumber numberWithInt:3]]; 
+    else{
+        // Pixel offset, assume Pixelbuffer is ARGB 32bit Big Endian format
+        // TODO: Clean this mess up
+        if (self.histogramPixelBufferComponent & EPixelBufferAlpha) {
+            [aryComponents addObject:[NSNumber numberWithInt:0]];
+        }
+        if (self.histogramPixelBufferComponent & EPixelBufferRed) {
+            [aryComponents addObject:[NSNumber numberWithInt:1]]; 
+        }
+        if (self.histogramPixelBufferComponent & EPixelBufferGreen) {
+            [aryComponents addObject:[NSNumber numberWithInt:2]]; 
+        }
+        if (self.histogramPixelBufferComponent & EPixelBufferBlue) {
+            [aryComponents addObject:[NSNumber numberWithInt:3]]; 
+        }
+        nComponents = 4;
     }
     
-    UInt8 value = 0;
+    self.nColorComponents = nComponents; // Right now used for memory management
+    self.validColorComponents = aryComponents;
+    
+    if (histoStruct != NULL) {
+        if (histoStruct[0]) free(histoStruct[0]);
+        if (histoStruct[1]) free(histoStruct[1]);
+        if (histoStruct[2]) free(histoStruct[2]);
+        if (histoStruct[3]) free(histoStruct[3]);
+        
+        histoStruct[0] = NULL;
+        histoStruct[1] = NULL;
+        histoStruct[2] = NULL;
+        histoStruct[3] = NULL;
+    }
+    
+    histoStruct[0] = (HistogramStruct*)malloc(sizeof(HistogramStruct));
+    histoStruct[1] = (HistogramStruct*)malloc(sizeof(HistogramStruct));
+    histoStruct[2] = (HistogramStruct*)malloc(sizeof(HistogramStruct));
+    histoStruct[3] = (HistogramStruct*)malloc(sizeof(HistogramStruct));
+
+    memset(histoStruct[0], 0, sizeof(HistogramStruct));
+    memset(histoStruct[1], 0, sizeof(HistogramStruct));
+    memset(histoStruct[2], 0, sizeof(HistogramStruct));
+    memset(histoStruct[3], 0, sizeof(HistogramStruct));
+    
     NSInteger ii = 0;
     NSInteger offset = 0;
+    NSUInteger frequency = 0;
     NSUInteger histValue = 0;
     NSUInteger prevValue = 0;
     NSUInteger bufferSize = CVPixelBufferGetDataSize(self.image);
+    
+    if (is16bit) bufferSize /=2;
     
     // Generate histogram
     
     for (NSNumber* n in aryComponents) {
         offset = [n integerValue];
         
-        for (ii = 0; ii < bufferSize; ii+=4) {
-            value = pixels[ii + offset];
+        for (ii = 0; ii < bufferSize; ii+=nComponents) {
+        
+            if (is16bit) {
+                frequency = pixels16[ii + offset];
+            }else{
+                frequency = pixels8[ii + offset];
+            }
 
-            if (value > 0)
-                histogram[offset][value] += 1;
+            if (frequency > 0)
+                histogram[offset * 256 + frequency] += 1; // With offset 0 for 16 bit, this will work for bith 8bit RGBA and 16bit Grayscale case
         }
     }
 
@@ -97,9 +202,9 @@
                 offset = [n integerValue];
                 prevValue = 0;
                 
-                for (ii = 0; ii < 256; ii++) {
-                    histValue = histogram[offset][ii];
-                    histogram[offset][ii] = histValue + prevValue;
+                for (ii = 0; ii < self.maxPossibleIntensity; ii++) {
+                    histValue = histogram[offset * 256 + ii];
+                    histogram[offset * 256 + ii] = histValue + prevValue;
                     prevValue = histValue + prevValue;
                 }
             }
@@ -109,9 +214,9 @@
                 offset = [n integerValue];
                 prevValue = 0;
                 
-                for (ii = 255; ii >= 0; ii--) {
-                    histValue = histogram[offset][ii];
-                    histogram[offset][ii] = histValue + prevValue;
+                for (ii = self.maxPossibleIntensity - 1; ii >= 0; ii--) {
+                    histValue = histogram[offset * 256 + ii];
+                    histogram[offset * 256 + ii] = histValue + prevValue;
                     prevValue = histValue + prevValue;
                 }
             }
@@ -121,13 +226,12 @@
     }
 
     
-    int intValue = 0;
-    
-    NSInteger minVal       = 9999;
-    NSInteger maxVal       = 0;
+    NSInteger minFrequency = 9999;
+    NSInteger maxFrequency = 0;
     NSInteger minIntensity = 9999;
     NSInteger maxIntensity = 0;
-    BOOL foundMinVal    = NO;
+    BOOL foundMinFreq      = NO;
+    EPixelBufferComponent currentPixelBufferComponent = EPixelBufferNone;
     
     // Store in obj-c array and dictionary
     // Ponder this: Should the histogram simply be an array with NSIndexPath objects? [Component].[Intensity].[Hits] .. Probably not 
@@ -135,60 +239,110 @@
     for (NSNumber* n in aryComponents) {
         offset = [n integerValue];
         
-        minVal       = 0;
-        maxVal       = 0;
-        minIntensity = 9999;
-        maxIntensity = 0;
-        foundMinVal  = NO;
-        //        foundMaxVal  = NO;
-        curDic       = nil;
-        statsDic     = nil;
+        switch (offset) {
+            case 0: 
+                if (is16bit) {
+                    currentPixelBufferComponent = EPixelBuffer16GrayScale;
+                }
+                else{
+                    currentPixelBufferComponent = EPixelBufferAlpha;
+                }
+                break;
+            case 1:currentPixelBufferComponent = EPixelBufferRed;
+                break;
+            case 2:currentPixelBufferComponent = EPixelBufferGreen;
+                break;
+            case 3:currentPixelBufferComponent = EPixelBufferBlue;
+                break;
+            default:
+                currentPixelBufferComponent = EPixelBufferNone; // Should never be here
+                break;
+        }
         
-        for (ii = 0; ii < 255; ii++) {
+        minFrequency = 9999;
+        maxFrequency = 0;
+        minIntensity = 0;
+        maxIntensity = 0;
+        foundMinFreq = NO;
+
+        for (ii = 0; ii < self.maxPossibleIntensity; ii++) {
             
-            intValue = histogram[offset][ii];
+            frequency = histogram[offset * 256 + ii];
             
-            if (minIntensity > intValue) minIntensity = intValue;
-            if (maxIntensity < intValue) maxIntensity = intValue;
+            if (minFrequency > frequency) minFrequency = frequency;
+            if (maxFrequency < frequency) maxFrequency = frequency;
             
-            if (intValue > 0) {
+            if (frequency > 0) {
+                foundMinFreq = YES; // First color with frequency > 0
+                maxIntensity = ii;
                 
-                foundMinVal = YES; // First color with intensity > 0
-                
-                if (!dic) {
-                    dic = [NSMutableDictionary dictionaryWithCapacity:aryComponents.count];
-                }
-                if (!curDic) {
-                    curDic = [NSMutableDictionary dictionaryWithCapacity:256];
-                    [dic setObject:curDic forKey:n];
-                }
-                
-                maxVal = ii;
-                
-                [curDic setObject:[NSNumber numberWithInt:intValue] forKey:[NSNumber numberWithInt:ii]];
             }else{
-                if (!foundMinVal) {
-                    minVal = ii;
+                if (!foundMinFreq) {
+                    minIntensity = ii;
                 }
             }
         }
         
-        if (curDic) {
-            statsDic = [NSMutableDictionary dictionary];
-            
-            [statsDic setObject:[NSNumber numberWithInt:minIntensity] forKey:kHistogramMinIntensityKey];
-            [statsDic setObject:[NSNumber numberWithInt:maxIntensity] forKey:kHistogramMaxIntensityKey];
-            [statsDic setObject:[NSNumber numberWithInt:maxVal] forKey:kHistogramMaxValueKey];
-            [statsDic setObject:[NSNumber numberWithInt:minVal] forKey:kHistogramMinValueKey];
-            
-            [curDic setObject:statsDic forKey:kHistogramStatisticsKey];
-        }
+        histoStruct[offset]->minFrequency   = minFrequency;
+        histoStruct[offset]->maxFrequency   = maxFrequency;
+        histoStruct[offset]->minIntensity   = minIntensity;
+        histoStruct[offset]->maxIntensity   = maxIntensity;
+        histoStruct[offset]->colorComponent = currentPixelBufferComponent;
     }
     
+    CVPixelBufferUnlockBaseAddress(self.image, 0);
+
     if (self.finishBlock) {
-        self.finishBlock(dic);
+        self.finishBlock(self);
     }
     [pool drain];
 }
+
+#pragma mark - HistogramDataSource
+-(NSUInteger)upperIntensityLimit{
+    return self.maxPossibleIntensity;
+}
+-(NSArray*)allColorComponents{
+    return self.validColorComponents;
+}
+-(NSUInteger)numberOfColorComponents{
+    return self.nColorComponents;
+}
+-(EPixelBufferComponent)colorComponents{
+    return self.histogramPixelBufferComponent;
+}
+-(NSInteger)numberOfFrequencies:(NSUInteger)component{ // TODO: Max - Min or actual counted user frequencies?
+    NSUInteger retVal = 0;
+    
+    if (component > self.nColorComponents) return retVal; // Abort, maybe with a message
+
+    return (histoStruct[component]->maxFrequency - histoStruct[component]->minFrequency);
+}
+-(NSUInteger)frequencyForIntensity:(NSUInteger)intensity inComponent:(NSUInteger)component{
+    NSUInteger retVal = 0;
+    
+    if (component >= self.nColorComponents) return retVal; // Abort, maybe with a message
+    if (intensity >  self.maxPossibleIntensity) return retVal;
+    
+    return self.histogram[component * 256 + intensity]; // Again.. grayscale component has to be 0
+}
+-(NSUInteger)maxIntensity:(NSUInteger)component{
+    if (component >= self.nColorComponents) return 0; // Abort, maybe with a message
+
+    return histoStruct[component]->maxIntensity;
+}
+-(NSUInteger)minIntensity:(NSUInteger)component{
+    if (component >= self.nColorComponents) return 0; // Abort, maybe with a message
+    return histoStruct[component]->minIntensity;
+}
+-(NSUInteger)maxFrequency:(NSUInteger)component{
+    if (component >= self.nColorComponents) return 0; // Abort, maybe with a message
+    return histoStruct[component]->maxFrequency;
+}
+-(NSUInteger)minFrequency:(NSUInteger)component{
+    if (component >= self.nColorComponents) return 0; // Abort, maybe with a message
+    return histoStruct[component]->minFrequency;
+}
+
 
 @end

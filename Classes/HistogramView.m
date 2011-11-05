@@ -15,7 +15,7 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
 
 @interface HistogramView()
 @property (nonatomic, retain) ImageHist* histogramObject;
-@property (nonatomic, retain) NSDictionary* histogram;
+@property (nonatomic, assign) id<HistogramDataSource> histogram;
 @property (nonatomic, retain) LoadingView* loadingView;
 -(void)executeInBackground;
 @end
@@ -40,7 +40,7 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
         loadingView = [[LoadingView alloc] initWithFrame:CGRectZero];
         loadingView.backgroundColor = [UIColor clearColor];
         self.backgroundColor  = [UIColor colorWithWhite:0.3 alpha:0.5];
-        self.useComponents    = EPixelBufferAllColors;
+        self.useComponents    = EPixelBufferNone;
         self.stretchHistogram = NO;
         self.logHistogram     = NO;
         self.histogramType    = EHistogramTypeNormal;
@@ -84,11 +84,11 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
     self.histogramObject.histogramPixelBufferComponent = self.useComponents;
     self.histogramObject.histogramType  = self.histogramType;
     self.histogramObject.image          = inputForHistogram;
-    self.histogramObject.finishBlock    = ^(NSDictionary* dic){
-        self.histogram = dic;
+    self.histogramObject.finishBlock    = ^(id<HistogramDataSource> newHistogram){
+        self.histogram = newHistogram;
     
         if (self.delegate) {
-            [self.delegate didFinish:inputForHistogram withHistogram:dic];
+            [self.delegate didFinish:inputForHistogram withHistogram:newHistogram];
         }
     };
 
@@ -112,21 +112,21 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
 - (void)drawRect:(CGRect)rect
 {
     // Drawing code
-    NSDictionary* curDic    = nil;
-    NSDictionary* statsDic  = nil;
+//    NSDictionary* curDic    = nil;
+//    NSDictionary* statsDic  = nil;
 	CGContextRef context    = UIGraphicsGetCurrentContext();
     CGColorRef color        = self.histogramColor.CGColor;
-    NSArray* keys           = [self.histogram allKeys];
-    CGFloat alpha           = MIN(MAX(1,keys.count),3);
+//    NSArray* keys           = [self.histogram allKeys];
+    NSUInteger nComponents = [self.histogram numberOfColorComponents];
+    CGFloat alpha           = MIN(MAX(1,nComponents),3);
 
     CGRect totalRect        = self.bounds;//CGRectInset(self.bounds, 10, 10);
 
     CGRect loadingRect = CGRectCenteredInRect(totalRect, CGSizeMake(30, 30));
     self.loadingView.frame = loadingRect;
     
-    EPixelBufferComponent component = EPixelBufferNone;
-    NSInteger minVal       = 0;
-    NSInteger maxVal       = 0;
+    NSInteger minFrequency = 0;
+    NSInteger maxFrequency = 0;
     NSInteger minIntensity = 0;
     NSInteger maxIntensity = 0;
     
@@ -141,7 +141,10 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
     NSUInteger nValidComponents = 0;
     
     // Count number of valid components in histogram
-    for (NSNumber* n in keys){
+    int component = 0;
+    EPixelBufferComponent colorComponent = EPixelBufferNone;
+
+    for (NSNumber* n in [self.histogram allColorComponents]){
         component = (EPixelBufferComponent)[n intValue];
         
         if ((1 << component) & self.useComponents) {
@@ -149,22 +152,20 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
         }
     }
     
-    for (NSNumber* n in keys) {
+    for (NSNumber* n in [self.histogram allColorComponents]) {
         
-        component = (EPixelBufferComponent)[n intValue];
+        colorComponent = (EPixelBufferComponent)[n intValue];
+        component = [n intValue];
         
         // Hide this component;
         if (!((1 << component) & self.useComponents)) {
             continue;
         }
         
-        curDic   = [self.histogram objectForKey:n];
-        statsDic = [curDic objectForKey:kHistogramStatisticsKey];
-        
-        minVal       = 0;
-        maxVal       = 255;
-        minIntensity = [[statsDic objectForKey:kHistogramMinIntensityKey] integerValue]; // Might never use this
-        maxIntensity = [[statsDic objectForKey:kHistogramMaxIntensityKey] integerValue];
+        minFrequency = [self.histogram minFrequency:component];  // Might never use this
+        maxFrequency = [self.histogram maxFrequency:component];
+        minIntensity = 0;
+        maxIntensity = [self.histogram upperIntensityLimit];
 
         if (!self.histogramColor) {
             if ((1 << component) == EPixelBufferAlpha) {
@@ -184,34 +185,27 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
             }
         }
         
-        NSArray* componentKeys  = [curDic allKeys];
-        NSInteger nValues       = componentKeys.count - 1; // Remove statistics dictionary
         CGRect nextRect         = totalRect;
-        CGFloat height          = totalRect.size.height/255.0;
+        CGFloat height          = totalRect.size.height/[self.histogram upperIntensityLimit];
         
         if (self.stretchHistogram && nValidComponents == 1) {
-            height = totalRect.size.height/nValues;
+            height = totalRect.size.height/[self.histogram numberOfFrequencies:component];
 
-            minVal = [[statsDic objectForKey:kHistogramMinValueKey] integerValue];
-            maxVal = [[statsDic objectForKey:kHistogramMaxValueKey] integerValue];
+            minFrequency = [self.histogram minFrequency:component];
+            maxFrequency = [self.histogram maxFrequency:component];
         
-            // Guard edges
-            minVal = MIN(MAX(minVal, 0),255);
-            maxVal = MIN(MAX(maxVal, 0),255);
         }
         
         nextRect.size = CGSizeMake(0, height); 
         
         CGContextSetFillColorWithColor(context, color);
         
-        for (NSNumber* compNum in componentKeys) {
-
-            // Don't do this for other data types in the array
-            if ([compNum isKindOfClass:[NSNumber class]]) {
-                nextRect.size.width = graphFunction((CGFloat)[(NSNumber*)[curDic objectForKey:compNum] intValue])/graphFunction((CGFloat)maxIntensity) * totalRect.size.width;
-                nextRect.origin.y   = totalRect.origin.y + ([compNum intValue] - minVal) * height;
-                CGContextAddRect(context, CGRectIntegral(nextRect));
-            }
+        NSUInteger frequency = 0;
+        for (NSUInteger intensity = minIntensity; intensity < maxIntensity; intensity++) {
+            frequency = [self.histogram frequencyForIntensity:intensity inComponent:component];
+            nextRect.size.width = graphFunction((CGFloat)frequency)/graphFunction((CGFloat)maxFrequency) * totalRect.size.width;
+            nextRect.origin.y   = totalRect.origin.y + (intensity - minIntensity) * height;
+            CGContextAddRect(context, CGRectIntegral(nextRect));
         }
     
         CGContextFillPath(context);

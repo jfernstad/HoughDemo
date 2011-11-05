@@ -20,17 +20,17 @@
 #define kHistogramMaxIntensityKey      @"HistogramMaxIntensity"
 #define kHistogramMinIntensityKey      @"HistogramMinIntensity"
 
-typedef void (^HistogramFinished)(NSDictionary*);
-
 typedef enum EPixelBufferComponent{
-    EPixelBufferNone      = 0x00,
-    EPixelBufferAlpha     = 0x01,
-    EPixelBufferRed       = 0x02,
-    EPixelBufferGreen     = 0x04,
-    EPixelBufferBlue      = 0x08,
+    EPixelBufferNone        = 0x00,       // Use this for gray color?
+    EPixelBufferAlpha       = 0x01,
+    EPixelBufferRed         = 0x02,
+    EPixelBufferGreen       = 0x04,
+    EPixelBufferBlue        = 0x08,
     
-    EPixelBufferAllColors = 0x0E,
-    EPixelBufferAll       = 0x0F
+    EPixelBuffer16GrayScale = 0x01, 
+    
+    EPixelBufferAllColors   = 0x0E,
+    EPixelBufferAll         = 0x0F
     
 }EPixelBufferComponent;
 
@@ -41,7 +41,22 @@ typedef enum EHistogramType{
     
 }EHistogramType;
 
-@interface ImageHist : NSObject
+@protocol HistogramDataSource
+-(NSUInteger)upperIntensityLimit;
+-(NSUInteger)numberOfColorComponents;
+-(NSArray*)allColorComponents;
+-(NSInteger)numberOfFrequencies:(NSUInteger)component;
+-(EPixelBufferComponent)colorComponents;
+-(NSUInteger)frequencyForIntensity:(NSUInteger)intensity inComponent:(NSUInteger)component;
+-(NSUInteger)maxIntensity:(NSUInteger)component;
+-(NSUInteger)minIntensity:(NSUInteger)component;
+-(NSUInteger)maxFrequency:(NSUInteger)component;
+-(NSUInteger)minFrequency:(NSUInteger)component;
+@end
+
+typedef void (^HistogramFinished)(id<HistogramDataSource>);
+
+@interface ImageHist : NSObject <HistogramDataSource>
 {
     CVPixelBufferRef      image;
     EPixelBufferComponent histogramPixelBufferComponent;
