@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "HoughConstants.h"
 #import "IntersectionLinkedList.h"
+#include "ArrayList.h"
 
 // Dictionary keys
 #define kOperationNameKey           @"OperationName"
@@ -104,7 +105,7 @@
 
 
 // Manual Interaction methods
--(CGImageRef)newHoughSpaceFromPoints: (PointLinkedList*)points persistent:(BOOL)pointsArePersistent;
+-(CGImageRef)newHoughSpaceFromPoints: (ArrayList*)points persistent:(BOOL)pointsArePersistent;
 
 // Useful methods?
 -(void)clear;

@@ -283,6 +283,14 @@
     [points retain];
     CGImageRef img = nil;
 	
+    ArrayList* tmpList = ArrayListCreate(sizeof(CGPoint), 1);
+    CGPoint* p = ArrayListAllocElement(tmpList);
+    
+    if (points.size) {
+        p->x = points.lastPosition->point->x;
+        p->y = points.lastPosition->point->y;
+    }
+
 	NSDate* start;
 	NSTimeInterval imgCreation;
 	
@@ -293,7 +301,7 @@
 		self.busy = YES;
 		
         start = [NSDate date];
-		img   = [hough newHoughSpaceFromPoints:points persistent:self.persistentTouch];
+		img   = [hough newHoughSpaceFromPoints:tmpList persistent:self.persistentTouch];
 		imgCreation = [start timeIntervalSinceNow];
 
         // Show hough image
@@ -316,6 +324,7 @@
 	}
 #endif
     
+    ArrayListDestroy(tmpList);
     [points release];
 }
 -(void)overlayLines:(NSArray *)lines{

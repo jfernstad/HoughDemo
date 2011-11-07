@@ -115,19 +115,12 @@
 }
 
 -(void)replaceLastPointWithPoint:(CGPoint)newLastPoint{
-    PointNode* newNode  = [self newNode];
     PointNode* lastNode = self.lastPosition;
     
     // Copy info from input node
-    if (newNode) {
-        newNode->point->x = newLastPoint.x;
-        newNode->point->y = newLastPoint.y;
-        newNode->previous = lastNode->previous; 
-        newNode->previous->next = newNode;
-        
-        [self removeNode:lastNode];
-        [self addNode:newNode];
-        [self freeNode:lastNode];
+    if (lastNode){
+        lastNode->point->x = newLastPoint.x;
+        lastNode->point->y = newLastPoint.y;
     }
 }
 

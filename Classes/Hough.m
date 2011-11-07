@@ -10,7 +10,7 @@
 #import "CGGeometry+HoughExtensions.h"
 #import <Accelerate/Accelerate.h>
 #import <CoreVideo/CoreVideo.h>
-#import "PointLinkedList.h"
+//#import "PointLinkedList.h"
 #import "ListLinkedList.h"
 
 #define Y_SCALE 2.0f
@@ -58,7 +58,7 @@
 @property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef thinnedImage;
 
 -(void) setupHough;
--(CGImageRef) houghImageFromPoints:(PointLinkedList*)points persistant:(BOOL)pointsArePersistent;
+-(CGImageRef) houghImageFromPoints:(ArrayList*)points persistant:(BOOL)pointsArePersistent;
 
 -(CGImageRef)CGImageWithCVPixelBuffer:(CVPixelBufferRef)pixBuf;
 -(CGImageRef)CGImageWithImage:(CGImageRef)inputImg andSize:(CGSize)newSize;
@@ -208,13 +208,13 @@
 
 #pragma mark - Hough Stuff
 
--(CGImageRef) houghImageFromPoints:(PointLinkedList*)points persistant:(BOOL)pointsArePersistent;{
+-(CGImageRef) houghImageFromPoints:(ArrayList*)points persistant:(BOOL)pointsArePersistent;{
     
     NSAssert(isSetup, @"! Hough doesn't have a frame! call .frame = rect. ");
     
-    if (points.size == 0) return NULL;
+    if (ArrayListElementCount(points) == 0) return NULL;
     
-    PointNode* node = NULL;
+//    PointNode* node = NULL;
     
     int maxDist = self.size.height;
 	int maxVals = self.size.width;
@@ -254,7 +254,7 @@
 	}
 #endif
     
-	CGPoint p, p2;
+	CGPoint *p, p2;
 	int k			= 0;
 	
 	float yOff = self.imgSize.height/2.0f;
@@ -266,14 +266,15 @@
     
     int position = 0;
     
-    [points resetPosition];
-    while ((node = [points next])) {
+    ArrayListIter* iter = ArrayListIterCreate(points);
+    
+    while ((p = ArrayListIterStep(iter))) {
 		
-		p = *(node->point);
+//		p = *(node->point);
         
         // Offset point to middle of hough space
-		xAmp	 = xOff - p.x;
-		yAmp	 = yOff - p.y;
+		xAmp	 = xOff - p->x;
+		yAmp	 = yOff - p->y;
 		
 		// calc cos part: (x-180)*cos
 		vDSP_vsmul(cosValues, 1, &xAmp, cosPart, 1, maxVals);
@@ -294,6 +295,8 @@
 			}
 		}
 	}
+    
+    ArrayListIterDestroy(iter);
     
     // Render
     
@@ -331,7 +334,7 @@
     return outImg;
 }
 
--(CGImageRef)newHoughSpaceFromPoints: (PointLinkedList*)points persistent:(BOOL)pointsArePersistent{
+-(CGImageRef)newHoughSpaceFromPoints: (ArrayList*)points persistent:(BOOL)pointsArePersistent{
 	CGImageRef outImage = [self houghImageFromPoints:points persistant:pointsArePersistent];
     
     if (self.storeAfterDraw && !pointsArePersistent) {
@@ -1012,7 +1015,7 @@
 }
 -(void)createHoughSpaceOp{
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    PointLinkedList* list   = [[PointLinkedList alloc] init];
+    ArrayList* list   = ArrayListCreate(sizeof(CGPoint), 1000);
 
     if (self.operationDelegate) {
         [self.operationDelegate performSelectorOnMainThread:@selector(houghWillBeginOperation:) withObject:kOperationCreateHoughSpaceImage waitUntilDone:NO];
@@ -1028,6 +1031,7 @@
     NSUInteger ws = CVPixelBufferGetBytesPerRow(self.edgeImage);
     UInt8 intensity = 0;
     NSUInteger counter = 0;
+    CGPoint* p = NULL;
     
 	// Get Positions from pixels in edge image
     for( yy = 0; yy < h; yy++){
@@ -1039,7 +1043,11 @@
             intensity = pixels[xx*4 + 1 + yy * ws];
             
             if( intensity > self.grayscaleThreshold ){ // Threshold, Parametrize
-                [list addPoint:CGPointMake(xx, yy)];
+//                [list addPoint:CGPointMake(xx, yy)];
+                p = ArrayListAllocElement(list);
+                
+                p->x = xx;
+                p->y = yy;
                 
                 if (++counter > self.maxHoughInput) {
                     DLog(@"Hit limit @ (%d,%d) %d pixels examined. ", xx,yy,xx*yy*w);
@@ -1049,10 +1057,11 @@
         }
     }
     
-    DLog(@"Got %d points. ", list.size);
+    DLog(@"Got %d points. ", ArrayListElementCount(list));
     
     CGImageRef  tImg = [self newHoughSpaceFromPoints:list persistent:YES]; 
-    [list release];
+    
+    ArrayListDestroy(list);
     
     UIImage* hImg = nil; 
 #ifdef DEBUG

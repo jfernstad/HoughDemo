@@ -17,6 +17,8 @@
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		831BFCC0132C445E00019FBD /* HoughTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 831BFCBF132C445E00019FBD /* HoughTouchView.m */; };
 		832F00AF13D25DF600CE9498 /* HoughBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 832F00AE13D25DF600CE9498 /* HoughBaseViewController.m */; };
+		8333C77214678AED00DED1E2 /* PointLinkedList.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C0E26414421E1A00A4A149 /* PointLinkedList.m */; };
+		8333C77314678AF600DED1E2 /* Bucket2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A9CB913A44F7D00B4CE95 /* Bucket2D.m */; };
 		833AE29813495BDE00DFC76D /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 833AE29413495BDE00DFC76D /* Icon-72.png */; };
 		833AE29B13495BDE00DFC76D /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 833AE29713495BDE00DFC76D /* iTunesArtwork */; };
 		83492F1A1347DE0E002BD8BF /* CircleOverlayDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 83492F191347DE0D002BD8BF /* CircleOverlayDelegate.m */; };
@@ -35,9 +37,7 @@
 		836AF307140B321200219303 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E4BCB31347C11700BFF07D /* QuartzCore.framework */; };
 		836AF308140B321200219303 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83CBB22B1319BC160092FE93 /* Accelerate.framework */; };
 		836AF309140B321200219303 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83F1366613FB631300A6CEF3 /* CoreVideo.framework */; };
-		836AF30A140B366500219303 /* Bucket2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A9CB913A44F7D00B4CE95 /* Bucket2D.m */; };
 		836DE7131370F2AA0010D82A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 836DE7121370F2AA0010D82A /* test.jpg */; };
-		837A9CBA13A44F7E00B4CE95 /* Bucket2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A9CB913A44F7D00B4CE95 /* Bucket2D.m */; };
 		8397FEA7141D57DC00A4678E /* ConfigurationBaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8397FEA6141D57DC00A4678E /* ConfigurationBaseView.m */; };
 		8397FEAA141D641A00A4678E /* lobe.png in Resources */ = {isa = PBXBuildFile; fileRef = 8397FEA9141D641A00A4678E /* lobe.png */; };
 		8397FEB1141D673C00A4678E /* FreeHandConfigurationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8397FEB0141D673C00A4678E /* FreeHandConfigurationView.m */; };
@@ -45,7 +45,6 @@
 		839C9DC71373BC770074A39C /* hand.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 839C9DC61373BC770074A39C /* hand.jpg */; };
 		83A23BC3141C5DA6007C2158 /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A23BC2141C5DA6007C2158 /* InfoViewController.m */; };
 		83A23BC5141C618A007C2158 /* information.html in Resources */ = {isa = PBXBuildFile; fileRef = 83A23BC4141C618A007C2158 /* information.html */; };
-		83C0E26514421E1A00A4A149 /* PointLinkedList.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C0E26414421E1A00A4A149 /* PointLinkedList.m */; };
 		83CBB19F131997300092FE93 /* HoughInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBB19E131997300092FE93 /* HoughInputView.m */; };
 		83CBB2261319B9160092FE93 /* Hough.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBB2251319B9160092FE93 /* Hough.m */; };
 		83CBB22C1319BC160092FE93 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83CBB22B1319BC160092FE93 /* Accelerate.framework */; };
@@ -58,8 +57,8 @@
 		83E4BCB21347B48D00BFF07D /* HoughLineOverlayDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E4BCB11347B48D00BFF07D /* HoughLineOverlayDelegate.m */; };
 		83E4BCB41347C11700BFF07D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E4BCB31347C11700BFF07D /* QuartzCore.framework */; };
 		83F1366713FB631300A6CEF3 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83F1366613FB631300A6CEF3 /* CoreVideo.framework */; };
-		83F34CD31442744600337A25 /* ListLinkedList.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F34CD21442744600337A25 /* ListLinkedList.m */; };
 		83F34CD61442A03A00337A25 /* IntersectionLinkedList.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F34CD51442A03A00337A25 /* IntersectionLinkedList.m */; };
+		83F6325B1464DB8500BDFBC0 /* ArrayList.c in Sources */ = {isa = PBXBuildFile; fileRef = 83F632591464DB8500BDFBC0 /* ArrayList.c */; };
 		83FD84141389FB20000D4F48 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83FD84131389FB20000D4F48 /* LoadingView.m */; };
 		83FF4115141539C600BA91D4 /* ImageHist.m in Sources */ = {isa = PBXBuildFile; fileRef = 83FF4114141539C600BA91D4 /* ImageHist.m */; };
 		83FF41181415689000BA91D4 /* HistogramView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83FF41171415689000BA91D4 /* HistogramView.m */; };
@@ -139,6 +138,8 @@
 		83F34CD21442744600337A25 /* ListLinkedList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListLinkedList.m; sourceTree = "<group>"; };
 		83F34CD41442A03A00337A25 /* IntersectionLinkedList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntersectionLinkedList.h; sourceTree = "<group>"; };
 		83F34CD51442A03A00337A25 /* IntersectionLinkedList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntersectionLinkedList.m; sourceTree = "<group>"; };
+		83F632591464DB8500BDFBC0 /* ArrayList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ArrayList.c; sourceTree = "<group>"; };
+		83F6325A1464DB8500BDFBC0 /* ArrayList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArrayList.h; sourceTree = "<group>"; };
 		83FD84121389FB20000D4F48 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
 		83FD84131389FB20000D4F48 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
 		83FF4113141539C600BA91D4 /* ImageHist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageHist.h; sourceTree = "<group>"; };
@@ -308,6 +309,8 @@
 			children = (
 				83CBB2241319B9160092FE93 /* Hough.h */,
 				83CBB2251319B9160092FE93 /* Hough.m */,
+				83F6325A1464DB8500BDFBC0 /* ArrayList.h */,
+				83F632591464DB8500BDFBC0 /* ArrayList.c */,
 				837A9CB813A44F7D00B4CE95 /* Bucket2D.h */,
 				837A9CB913A44F7D00B4CE95 /* Bucket2D.m */,
 				83FF4113141539C600BA91D4 /* ImageHist.h */,
@@ -503,7 +506,6 @@
 				8353D8431370F701008B125C /* HoughFreeHandViewController.m in Sources */,
 				839C9DC31373BA690074A39C /* HoughImageViewController.m in Sources */,
 				83FD84141389FB20000D4F48 /* LoadingView.m in Sources */,
-				837A9CBA13A44F7E00B4CE95 /* Bucket2D.m in Sources */,
 				832F00AF13D25DF600CE9498 /* HoughBaseViewController.m in Sources */,
 				83E3F334140DC5F900E59A29 /* NotificationView.m in Sources */,
 				83FF4115141539C600BA91D4 /* ImageHist.m in Sources */,
@@ -513,9 +515,10 @@
 				8397FEB1141D673C00A4678E /* FreeHandConfigurationView.m in Sources */,
 				834C1FD11438FB4700FE50FB /* ImageConfigurationView.m in Sources */,
 				83E1188914392B4700216098 /* HistogramControl.m in Sources */,
-				83C0E26514421E1A00A4A149 /* PointLinkedList.m in Sources */,
-				83F34CD31442744600337A25 /* ListLinkedList.m in Sources */,
 				83F34CD61442A03A00337A25 /* IntersectionLinkedList.m in Sources */,
+				83F6325B1464DB8500BDFBC0 /* ArrayList.c in Sources */,
+				8333C77214678AED00DED1E2 /* PointLinkedList.m in Sources */,
+				8333C77314678AF600DED1E2 /* Bucket2D.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -525,7 +528,6 @@
 			files = (
 				836AF300140B30AB00219303 /* UnitTests.m in Sources */,
 				836AF306140B30EC00219303 /* Hough.m in Sources */,
-				836AF30A140B366500219303 /* Bucket2D.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
