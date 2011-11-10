@@ -32,7 +32,7 @@
 @synthesize positionSliderToLeft;
 // From protocol
 @synthesize histogramColor;
-@synthesize useComponents;
+//@synthesize useComponents;
 @synthesize histogramType;
 @synthesize stretchHistogram;
 @synthesize logHistogram;
@@ -153,47 +153,20 @@
 }
 #pragma mark - Delegates
 
--(void)didFinish:(CVImageBufferRef)image withHistogram:(NSDictionary *)dictionary{
+-(void)didFinish:(CVPixelBufferRef)image withHistogram:(NSObject<HistogramDataSource>*)histogramDataSource{
     DLog(@"didFinishWithHistogram");
-    NSArray* componentKeys = [dictionary allKeys];
     
-    NSDictionary* tmpDict = nil;
-    NSDictionary* statsDict = nil;
-    NSNumber* tmpVal = nil;
-    NSInteger minVal = 0;
-    NSInteger maxVal = 0;
-    NSInteger minInt = 0;
-    NSInteger maxInt = 0;
-    
-    if (componentKeys.count > 0) {
-        
-        tmpDict   = [dictionary objectForKey:[componentKeys objectAtIndex:0]]; // TODO: Don't always take first object, think about it.
-        statsDict = [tmpDict objectForKey:kHistogramStatisticsKey];
-        
-        tmpVal = [statsDict objectForKey:kHistogramMinValueKey];
-        minVal = tmpVal.integerValue;
-        
-        tmpVal = [statsDict objectForKey:kHistogramMaxValueKey];
-        maxVal = tmpVal.integerValue;
-        
-        tmpVal = [statsDict objectForKey:kHistogramMinIntensityKey];
-        minInt = tmpVal.integerValue;
-        
-        tmpVal = [statsDict objectForKey:kHistogramMaxIntensityKey];
-        maxInt = tmpVal.integerValue;
-        
-        self.slider.minimumValue = minVal;
-        self.slider.maximumValue = maxVal;
-    }
+    self.slider.minimumValue = [histogramDataSource histogramMinIntensity];
+    self.slider.maximumValue = [histogramDataSource histogramMaxIntensity];
 }
 
 #pragma mark - Protocol implementation
 -(void)setHistogramColor:(UIColor *)newHistogramColor{
     self.histogram.histogramColor = newHistogramColor;
 }
--(void)setUseComponents:(EPixelBufferComponent)newComponents{
-    self.histogram.useComponents = newComponents;
-}
+//-(void)setUseComponents:(EPixelBufferComponent)newComponents{
+//    self.histogram.useComponents = newComponents;
+//}
 -(void)setHistogramType:(EHistogramType)newHistogramType{
     self.histogram.histogramType = newHistogramType;
 }
@@ -211,7 +184,7 @@
 }
 
 -(UIColor*)histogramColor               {return self.histogram.histogramColor;}
--(EPixelBufferComponent)useComponents   {return self.histogram.useComponents;}
+//-(EPixelBufferComponent)useComponents   {return self.histogram.useComponents;}
 -(EHistogramType)histogramType          {return self.histogram.histogramType;}
 -(EHistogramStyle)histogramStyle        {return self.histogram.histogramStyle;}
 -(BOOL)stretchHistogram                 {return self.histogram.stretchHistogram;}

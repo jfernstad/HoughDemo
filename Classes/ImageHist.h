@@ -9,18 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "HoughConstants.h"
 
-#define kHistogramOnRedComponentKey    @"HistogramOnRed"
-#define kHistogramOnGreenComponentKey  @"HistogramOnGreen"
-#define kHistogramOnBlueComponentKey   @"HistogramOnBlue"
-#define kHistogramOnAlphaComponentKey  @"HistogramOnAlpha"
-
-#define kHistogramStatisticsKey        @"HistogramStatistics"
-#define kHistogramMaxValueKey          @"HistogramMaxValue"
-#define kHistogramMinValueKey          @"HistogramMinValue"
-#define kHistogramMaxIntensityKey      @"HistogramMaxIntensity"
-#define kHistogramMinIntensityKey      @"HistogramMinIntensity"
-
-typedef void (^HistogramFinished)(NSDictionary*);
+typedef struct HistoStruct{
+    NSUInteger maxIntensity;
+    NSUInteger minIntensity;
+    NSUInteger maxFrequency;
+    NSUInteger minFrequency;
+    NSUInteger* histogram;
+}HistoStruct;
 
 typedef enum EPixelBufferComponent{
     EPixelBufferNone      = 0x00,
@@ -41,20 +36,23 @@ typedef enum EHistogramType{
     
 }EHistogramType;
 
-@interface ImageHist : NSObject
-{
-    CVPixelBufferRef      image;
-    EPixelBufferComponent histogramPixelBufferComponent;
-    EHistogramType        histogramType;
-    HistogramFinished     finishBlock;
-    
-}
-@property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef image;
-@property (nonatomic, assign) EPixelBufferComponent histogramPixelBufferComponent;
-@property (nonatomic, assign) EHistogramType        histogramType;
-@property (nonatomic, copy)   HistogramFinished     finishBlock;
-@property (nonatomic, assign) BOOL ignoreZeroIntensity;
+@protocol HistogramDataSource
+-(NSUInteger)histogramMaxIntensity;
+-(NSUInteger)histogramMinIntensity;
+-(NSUInteger)histogramMaxFrequency;
+-(NSUInteger)histogramMinFrequency;
+-(NSUInteger)frequecyForIntensity:(NSUInteger)intensity;
+@end
 
--(void)createHistogram;
+typedef void (^HistogramFinished)(NSObject<HistogramDataSource>*);
+
+@interface ImageHist : NSObject <HistogramDataSource>
+@property (nonatomic, retain) __attribute__((NSObject)) CVPixelBufferRef image;
+@property (nonatomic, assign) EHistogramType  histogramType;
+@property (nonatomic, copy)   HistogramFinished finishBlock;
+@property (nonatomic, assign) BOOL ignoreZeroIntensity;
+@property (nonatomic, assign) NSUInteger componentOffset;
+
+-(void)createHistogram:(NSString*)identifier;
 @end
 

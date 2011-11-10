@@ -8,22 +8,29 @@
 
 #import "ImageHist.h"
 
+@interface ImageHist()
+-(void)allocStruct;
+-(void)deleteStruct;
+@property (nonatomic, assign) HistoStruct* histoStruct;
+@end
+
 @implementation ImageHist
 @synthesize image;
-@synthesize histogramPixelBufferComponent;
 @synthesize histogramType;
 @synthesize finishBlock;
 @synthesize ignoreZeroIntensity;
+@synthesize histoStruct;
+@synthesize componentOffset;
 
 -(id)init{
     
     if ((self = [super init])) {
-        self.histogramPixelBufferComponent = EPixelBufferAllColors;
-        self.histogramType                 = EHistogramTypeNormal;
-        
+        self.histogramType = EHistogramTypeNormal;
+        self.histoStruct = NULL;
         self.finishBlock = nil;
         self.image = nil;
         self.ignoreZeroIntensity = YES;
+        self.componentOffset = 1;
     }
     return self;
 }
@@ -31,18 +38,49 @@
 -(void)dealloc{
     self.image = nil;
     self.finishBlock = nil;
+    [self deleteStruct];
     
     [super dealloc];
 }
 
--(void)createHistogram{
+#pragma mark - Private
+
+-(void)allocStruct{
+    self.histoStruct = (HistoStruct*)malloc(sizeof(HistoStruct));
+    
+    if (self.histoStruct) {
+        self.histoStruct->histogram = (NSUInteger*)malloc(256 * sizeof(NSUInteger));
+        
+        if (!self.histoStruct->histogram) {
+            DLog(@"Failed to allocate memory");
+            [self deleteStruct];
+            return;
+        }
+    }
+    
+    memset(self.histoStruct->histogram, 0, 256 * sizeof(NSUInteger));
+    self.histoStruct->maxFrequency = 0;
+    self.histoStruct->minFrequency = 0;
+    self.histoStruct->maxIntensity = 0;
+    self.histoStruct->minIntensity = 0;
+}
+-(void)deleteStruct{
+    
+    if (self.histoStruct && self.histoStruct->histogram) free(self.histoStruct->histogram);
+    if (self.histoStruct) free(self.histoStruct);
+    
+    self.histoStruct = NULL;
+}
+
+#pragma mark -
+
+-(void)createHistogram:(NSString*)identifier{
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
-    NSMutableDictionary* dic = nil;
-    NSMutableDictionary* curDic = nil;
-    NSMutableDictionary* statsDic = nil;
-    
     if (!self.image) return; // TODO: do this better, failBlock?
+    
+    [self deleteStruct];
+    [self allocStruct];
     
     CVPixelBufferLockBaseAddress(self.image, 0);
     
@@ -51,80 +89,52 @@
     CVPixelBufferUnlockBaseAddress(self.image, 0);
     
     // C-stuff, for speed
-    int histogram[4][256];
-    memset(&histogram, 0, 4 * 256 * sizeof(int));
-    
-    NSMutableArray* aryComponents = [NSMutableArray array];
-    
-    // Pixel offset, assume Pixelbuffer is ARGB 32bit Big Endian format
-    if (self.histogramPixelBufferComponent & EPixelBufferAlpha) {
-        [aryComponents addObject:[NSNumber numberWithInt:0]]; 
-    }
-    if (self.histogramPixelBufferComponent & EPixelBufferRed) {
-        [aryComponents addObject:[NSNumber numberWithInt:1]]; 
-    }
-    if (self.histogramPixelBufferComponent & EPixelBufferGreen) {
-        [aryComponents addObject:[NSNumber numberWithInt:2]]; 
-    }
-    if (self.histogramPixelBufferComponent & EPixelBufferBlue) {
-        [aryComponents addObject:[NSNumber numberWithInt:3]]; 
-    }
-    
     UInt8 value = 0;
     NSInteger ii = 0;
-    NSInteger offset = 0;
+    NSInteger offset = self.componentOffset;
     NSUInteger histValue = 0;
     NSUInteger prevValue = 0;
     NSUInteger bufferSize = CVPixelBufferGetDataSize(self.image);
     
     // Generate histogram
     
-    for (NSNumber* n in aryComponents) {
-        offset = [n integerValue];
+    for (ii = 0; ii < bufferSize; ii+=4) {
+        value = pixels[ii + offset];
         
-        for (ii = 0; ii < bufferSize; ii+=4) {
-            value = pixels[ii + offset];
-
-            if (value > 0)
-                histogram[offset][value] += 1;
-        }
+        if (value > 0)
+            self.histoStruct->histogram[value] += 1;
     }
-
+    
     // In case we're doing accumulative stuff
     switch (self.histogramType) {
         case EHistogramTypeCumulative:
-            for (NSNumber* n in aryComponents) {
-                offset = [n integerValue];
-                prevValue = 0;
-                
-                for (ii = 0; ii < 256; ii++) {
-                    histValue = histogram[offset][ii];
-                    histogram[offset][ii] = histValue + prevValue;
-                    prevValue = histValue + prevValue;
-                }
+            prevValue = 0;
+            
+            for (ii = 0; ii < 256; ii++) {
+                histValue = self.histoStruct->histogram[ii];
+                self.histoStruct->histogram[ii] = histValue + prevValue;
+                prevValue = histValue + prevValue;
             }
             break;
         case EHistogramTypeReverseCumulative:
-            for (NSNumber* n in aryComponents) {
-                offset = [n integerValue];
-                prevValue = 0;
-                
-                for (ii = 255; ii >= 0; ii--) {
-                    histValue = histogram[offset][ii];
-                    histogram[offset][ii] = histValue + prevValue;
-                    prevValue = histValue + prevValue;
-                }
+            prevValue = 0;
+            
+            for (ii = 255; ii >= 0; ii--) {
+                histValue = self.histoStruct->histogram[ii];
+                self.histoStruct->histogram[ii] = histValue + prevValue;
+                prevValue = histValue + prevValue;
             }
+            
             break;
         default:
             break;
     }
-
     
-    int intValue = 0;
     
-    NSInteger minVal       = 9999;
-    NSInteger maxVal       = 0;
+    UInt8 frequency = 0;
+    
+    NSInteger minFreq       = 9999;
+    NSInteger maxFreq       = 0;
     NSInteger minIntensity = 9999;
     NSInteger maxIntensity = 0;
     BOOL foundMinVal    = NO;
@@ -132,63 +142,78 @@
     // Store in obj-c array and dictionary
     // Ponder this: Should the histogram simply be an array with NSIndexPath objects? [Component].[Intensity].[Hits] .. Probably not 
     // Might wanna use c-structs for this instead. 
-    for (NSNumber* n in aryComponents) {
-        offset = [n integerValue];
+    minFreq       = 9999;
+    maxFreq       = 0;
+    minIntensity = 0;
+    maxIntensity = 0;
+    foundMinVal  = NO;
+    //        foundMaxVal  = NO;
+    
+    for (ii = 0; ii < 255; ii++) {
+        frequency = self.histoStruct->histogram[ii];
         
-        minVal       = 0;
-        maxVal       = 0;
-        minIntensity = 9999;
-        maxIntensity = 0;
-        foundMinVal  = NO;
-        //        foundMaxVal  = NO;
-        curDic       = nil;
-        statsDic     = nil;
+        if (minFreq > frequency) minFreq = frequency;
+        if (maxFreq < frequency) maxFreq = frequency;
         
-        for (ii = 0; ii < 255; ii++) {
-            
-            intValue = histogram[offset][ii];
-            
-            if (minIntensity > intValue) minIntensity = intValue;
-            if (maxIntensity < intValue) maxIntensity = intValue;
-            
-            if (intValue > 0) {
-                
-                foundMinVal = YES; // First color with intensity > 0
-                
-                if (!dic) {
-                    dic = [NSMutableDictionary dictionaryWithCapacity:aryComponents.count];
-                }
-                if (!curDic) {
-                    curDic = [NSMutableDictionary dictionaryWithCapacity:256];
-                    [dic setObject:curDic forKey:n];
-                }
-                
-                maxVal = ii;
-                
-                [curDic setObject:[NSNumber numberWithInt:intValue] forKey:[NSNumber numberWithInt:ii]];
-            }else{
-                if (!foundMinVal) {
-                    minVal = ii;
-                }
+        if (frequency > 0) {
+            foundMinVal = YES; // First color with intensity > 0
+            maxIntensity = ii;
+        }else{
+            if (!foundMinVal) {
+                minIntensity = ii;
             }
-        }
-        
-        if (curDic) {
-            statsDic = [NSMutableDictionary dictionary];
-            
-            [statsDic setObject:[NSNumber numberWithInt:minIntensity] forKey:kHistogramMinIntensityKey];
-            [statsDic setObject:[NSNumber numberWithInt:maxIntensity] forKey:kHistogramMaxIntensityKey];
-            [statsDic setObject:[NSNumber numberWithInt:maxVal] forKey:kHistogramMaxValueKey];
-            [statsDic setObject:[NSNumber numberWithInt:minVal] forKey:kHistogramMinValueKey];
-            
-            [curDic setObject:statsDic forKey:kHistogramStatisticsKey];
         }
     }
     
+    self.histoStruct->maxFrequency = maxFreq;
+    self.histoStruct->minFrequency = minFreq;
+    self.histoStruct->maxIntensity = maxIntensity;
+    self.histoStruct->minIntensity = minIntensity;
+
     if (self.finishBlock) {
-        self.finishBlock(dic);
+        self.finishBlock(self);
     }
     [pool drain];
+}
+
+#pragma mark - DataSource
+
+-(NSUInteger)histogramMaxIntensity{
+    NSUInteger max = 0;
+    if (self.histoStruct) {
+        max = self.histoStruct->maxIntensity;
+    }
+    return max;
+}
+-(NSUInteger)histogramMinIntensity{
+    NSUInteger min = 0;
+    if (self.histoStruct) {
+        min = self.histoStruct->minIntensity;
+    }
+    return min;
+}
+-(NSUInteger)histogramMaxFrequency{
+    NSUInteger max = 0;
+    if (self.histoStruct) {
+        max = self.histoStruct->maxFrequency;
+    }
+    return max;
+}
+-(NSUInteger)histogramMinFrequency{
+    NSUInteger min = 0;
+    if (self.histoStruct) {
+        min = self.histoStruct->minFrequency;
+    }
+    return min;
+}
+-(NSUInteger)frequecyForIntensity:(NSUInteger)intensity{
+    NSUInteger freq = 0;
+
+    if (intensity <= self.histoStruct->maxIntensity &&
+        intensity >= self.histoStruct->minIntensity) {
+        freq = self.histoStruct->histogram[intensity];
+    }
+    return freq;
 }
 
 @end

@@ -21,7 +21,7 @@ typedef enum EHistogramStyle {
 
 @protocol HistogramInputProtocol
 @property (nonatomic, retain) UIColor* histogramColor;
-@property (nonatomic, assign) EPixelBufferComponent useComponents;
+//@property (nonatomic, assign) EPixelBufferComponent useComponents;
 @property (nonatomic, assign) EHistogramType histogramType;
 @property (nonatomic, assign) EHistogramStyle histogramStyle;
 @property (nonatomic, assign) BOOL stretchHistogram;
@@ -30,7 +30,7 @@ typedef enum EHistogramStyle {
 @end
 
 @protocol HistogramViewDelegate
--(void)didFinish:(CVPixelBufferRef)image withHistogram:(NSDictionary*)dictionary;
+-(void)didFinish:(CVPixelBufferRef)image withHistogram:(NSObject<HistogramDataSource>*)histogramDataSource;
 @end
 
 @interface HistogramView : UIView <HistogramInputProtocol>
