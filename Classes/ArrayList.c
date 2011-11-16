@@ -31,6 +31,7 @@ struct _ArrayList {
 	size_t elemSize, elemsPerNode;
 	size_t allocated; /* Number of elements currently allocated from the last node. */
 	size_t elemCount; /* Total number of elements allocated in the array. */
+    int retainCount; /* Owners */
 };
 
 /* ArrayListIter provides fast sequential access into the array.
@@ -52,15 +53,24 @@ ArrayList * ArrayListCreate(size_t elemSize, size_t elemsPerNode)
 		lst->elemSize = elemSize;
 		lst->elemsPerNode = elemsPerNode;
 		lst->allocated = lst->elemCount = 0;
+        lst->retainCount = 1;
 	}
 	return lst;
 }
 
+void ArrayListRetain(ArrayList* lst){
+	if (lst) {
+        lst->retainCount++;
+    }
+}
 void ArrayListDestroy(ArrayList * lst)
 {
 	if (lst) {
-		if (lst->first) ArrayListNodeDestroy(lst->first);
-		free(lst);
+        lst->retainCount--;
+        if (lst->retainCount <= 0) {
+            if (lst->first) ArrayListNodeDestroy(lst->first);
+            free(lst);
+        }
 	}
 }
 

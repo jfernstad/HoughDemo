@@ -18,6 +18,10 @@ typedef struct _ArrayListIter ArrayListIter;
  */
 ArrayList * ArrayListCreate(size_t elemSize, size_t elemsPerNode);
 /**
+ * Allow for reference counting - NOT thread safe
+ */
+void ArrayListRetain(ArrayList* lst);
+/**
  * Free all of the memory associated with an ArrayList, previously
  * created by ArrayListCreate. All elements stored in the list will
  * immediately be invalid, as will the list itself. 
