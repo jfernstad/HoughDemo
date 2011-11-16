@@ -152,10 +152,17 @@ typedef CGFloat(^GraphCalculator)(CGFloat);
     
     CGContextSetFillColorWithColor(context, color);
     
-    for (NSUInteger ii = minFreq; ii < nValues; ii++) {
+    int drawCounter = 0;
+    
+    for (NSUInteger ii = minIntensity; ii < nValues; ii++) {
         nextRect.size.width = graphFunction((CGFloat)[self.histogramObject frequecyForIntensity:ii])/graphFunction((CGFloat)maxIntensity) * totalRect.size.width;
         nextRect.origin.y   = totalRect.origin.y + (ii - minFreq) * height;
         CGContextAddRect(context, CGRectIntegral(nextRect));
+
+        if (drawCounter++ > 1000) {
+            CGContextFillPath(context);
+            drawCounter = 0;
+        }
     }
     
     CGContextFillPath(context);

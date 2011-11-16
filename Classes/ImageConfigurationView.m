@@ -38,22 +38,24 @@
 
     if ((self = [super initWithFrame:frame])) {
         self.grayHistControl  = [[[HistogramControl alloc] initWithFrame:CGRectZero] autorelease];
-        self.houghHistControl = [[[HistogramControl alloc] initWithFrame:CGRectZero] autorelease];
+//        self.houghHistControl = [[[HistogramControl alloc] initWithFrame:CGRectZero] autorelease];
     
         [self.grayHistControl addTarget:self action:@selector(grayThresholdSet:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
-        [self.houghHistControl addTarget:self action:@selector(houghThresholdSet:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
+//        [self.houghHistControl addTarget:self action:@selector(houghThresholdSet:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
         
+        // 8bit image
         self.grayHistControl.logHistogram = YES;
         self.grayHistControl.histogramColor = [UIColor houghYellow];
         self.grayHistControl.histogramType  = EHistogramTypeNormal; // High intensity = Low count
         self.grayHistControl.histogramStyle = EHistogramStyleFlipHorizontal; // Top = High intensity
-        self.houghHistControl.positionSliderToLeft = NO;
-        
-        self.houghHistControl.logHistogram = YES;
-        self.houghHistControl.histogramColor = [UIColor houghYellow];
-        self.houghHistControl.histogramType  = EHistogramTypeReverseCumulative; // High intensity = Low count
-        self.houghHistControl.histogramStyle = EHistoGramStyleFlipBoth; // Top = High intensity
-        self.houghHistControl.positionSliderToLeft = YES;
+        self.grayHistControl.positionSliderToLeft = NO;
+
+        // 16 bit image
+//        self.houghHistControl.logHistogram = YES;
+//        self.houghHistControl.histogramColor = [UIColor houghYellow];
+//        self.houghHistControl.histogramType  = EHistogramTypeReverseCumulative; // High intensity = Low count
+//        self.houghHistControl.histogramStyle = EHistoGramStyleFlipBoth; // Top = High intensity
+//        self.houghHistControl.positionSliderToLeft = YES;
         
 #ifdef DEBUG
         self.debugSwitch = [[[UISwitch alloc] initWithFrame:CGRectZero] autorelease];

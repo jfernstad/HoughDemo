@@ -214,6 +214,7 @@
     
     if (ArrayListElementCount(points) == 0) return NULL;
     
+    ArrayListRetain(points);
 //    PointNode* node = NULL;
     
     int maxDist = self.size.height;
@@ -297,7 +298,7 @@
 	}
     
     ArrayListIterDestroy(iter);
-    
+    ArrayListDestroy(points);
     // Render
     
     CGFloat decode [] = {0.0f, 255.0f}; // TODO: Change to dynamic range. Calc Max/Min per image.
@@ -335,7 +336,8 @@
 }
 
 -(CGImageRef)newHoughSpaceFromPoints: (ArrayList*)points persistent:(BOOL)pointsArePersistent{
-	CGImageRef outImage = [self houghImageFromPoints:points persistant:pointsArePersistent];
+
+    CGImageRef outImage = [self houghImageFromPoints:points persistant:pointsArePersistent];
     
     if (self.storeAfterDraw && !pointsArePersistent) {
         [self makePersistent];
@@ -1057,7 +1059,7 @@
         }
     }
     
-    DLog(@"Got %d points. ", ArrayListElementCount(list));
+    DLog(@"Got %d points. ", (int)ArrayListElementCount(list));
     
     CGImageRef  tImg = [self newHoughSpaceFromPoints:list persistent:YES]; 
     

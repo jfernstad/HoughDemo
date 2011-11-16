@@ -110,7 +110,7 @@
         case EHistogramTypeCumulative:
             prevValue = 0;
             
-            for (ii = 0; ii < 256; ii++) {
+            for (ii = 0; ii < 255; ii++) {
                 histValue = self.histoStruct->histogram[ii];
                 self.histoStruct->histogram[ii] = histValue + prevValue;
                 prevValue = histValue + prevValue;
@@ -131,7 +131,7 @@
     }
     
     
-    UInt8 frequency = 0;
+    NSInteger frequency = 0;
     
     NSInteger minFreq       = 9999;
     NSInteger maxFreq       = 0;
@@ -142,9 +142,9 @@
     // Store in obj-c array and dictionary
     // Ponder this: Should the histogram simply be an array with NSIndexPath objects? [Component].[Intensity].[Hits] .. Probably not 
     // Might wanna use c-structs for this instead. 
-    minFreq       = 9999;
-    maxFreq       = 0;
-    minIntensity = 0;
+    minFreq      = 9999;
+    maxFreq      = 0;
+    minIntensity = 999;
     maxIntensity = 0;
     foundMinVal  = NO;
     //        foundMaxVal  = NO;
@@ -152,8 +152,10 @@
     for (ii = 0; ii < 255; ii++) {
         frequency = self.histoStruct->histogram[ii];
         
-        if (minFreq > frequency) minFreq = frequency;
-        if (maxFreq < frequency) maxFreq = frequency;
+//        DLog(@"Intensity:Freq - %d:%d", ii, frequency);
+        
+        if (frequency < minFreq) minFreq = frequency;
+        if (frequency > maxFreq) maxFreq = frequency;
         
         if (frequency > 0) {
             foundMinVal = YES; // First color with intensity > 0
@@ -163,6 +165,11 @@
                 minIntensity = ii;
             }
         }
+    }
+    
+    // Safety catch
+    if (minIntensity > maxIntensity) {
+        minIntensity = maxIntensity;
     }
     
     self.histoStruct->maxFrequency = maxFreq;
